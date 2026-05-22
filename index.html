@@ -4,373 +4,296 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>P&L Dashboard — Núcleo Mano & Dan</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root {
-  --bg: #0a0d12;
-  --bg2: #111520;
-  --bg3: #181d28;
-  --border: rgba(255,255,255,0.07);
-  --text: #e8ecf4;
-  --muted: #6b7591;
-  --accent: #3b82f6;
-  --red: #ef4444;
-  --red-dim: rgba(239,68,68,0.12);
-  --amber: #f59e0b;
-  --amber-dim: rgba(245,158,11,0.12);
-  --green: #22c55e;
-  --green-dim: rgba(34,197,94,0.12);
-  --navy: #1e3a5f;
+  --bg:      #ffffff;
+  --bg2:     #f7f7f7;
+  --bg3:     #eeeeee;
+  --border:  #e2e2e2;
+  --text:    #111111;
+  --muted:   #6b6b6b;
+  --light:   #aaaaaa;
+  --yellow:  #f5c800;
+  --yellow-d:#c9a300;
+  --black:   #111111;
+  --gray:    #555555;
+  --red:     #b91c1c;
+  --red-bg:  #fef2f2;
+  --amber:   #b45309;
+  --amber-bg:#fffbeb;
+  --green:   #15803d;
+  --green-bg:#f0fdf4;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Red Hat Display', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  padding: 0 0 80px;
+  padding-bottom: 80px;
 }
-/* HEADER */
+
+/* ── HEADER ── */
 .header {
-  background: linear-gradient(135deg, #0d1829 0%, #0a1020 100%);
-  border-bottom: 1px solid var(--border);
-  padding: 32px 48px 28px;
+  background: var(--black);
+  padding: 36px 52px 32px;
   position: relative;
-  overflow: hidden;
 }
-.header::before {
+.header::after {
   content: '';
   position: absolute;
-  top: -60px; right: -60px;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
-  pointer-events: none;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--yellow);
 }
-.header-top { display: flex; align-items: flex-start; justify-content: space-between; }
-.header-label {
-  font-family: 'DM Mono', monospace;
+.header-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.header-eyebrow {
   font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  color: var(--yellow);
+  margin-bottom: 10px;
 }
 .header-title {
-  font-size: 28px;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 900;
+  color: #ffffff;
   letter-spacing: -0.5px;
   line-height: 1.1;
 }
-.header-title span { color: var(--accent); }
-.header-sub {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 6px;
-  font-weight: 400;
-}
+.header-title em { color: var(--yellow); font-style: normal; }
+.header-sub { font-size: 13px; color: #888; margin-top: 8px; font-weight: 400; }
 .header-meta {
   text-align: right;
-  font-family: 'DM Mono', monospace;
   font-size: 11px;
-  color: var(--muted);
-  line-height: 1.8;
+  font-weight: 500;
+  color: #666;
+  line-height: 2;
+  white-space: nowrap;
 }
-/* NAV TABS */
+.header-meta strong { color: var(--yellow); }
+
+/* ── NAV ── */
 .nav {
   display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
-  padding: 0 48px;
-  background: var(--bg2);
+  border-bottom: 2px solid var(--border);
+  padding: 0 52px;
+  background: var(--bg);
+  position: sticky; top: 0; z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 .nav-btn {
-  padding: 14px 20px;
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 16px 22px;
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 13px; font-weight: 700;
   color: var(--muted);
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  transition: all .2s;
-  letter-spacing: 0.3px;
+  background: none; border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer; transition: all .15s;
+  margin-bottom: -2px;
 }
-.nav-btn:hover { color: var(--text); }
-.nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-/* CONTENT */
-.content { padding: 36px 48px; }
+.nav-btn:hover { color: var(--black); }
+.nav-btn.active { color: var(--black); border-bottom-color: var(--yellow); }
+
+/* ── CONTENT ── */
+.content { padding: 36px 52px; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
-/* KPI CARDS */
+
+/* ── KPI CARDS ── */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 12px;
-  margin-bottom: 36px;
-}
-.kpi {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 18px 20px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color .2s;
-}
-.kpi:hover { border-color: rgba(255,255,255,0.14); }
-.kpi-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-.kpi-val {
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -1px;
-}
-.kpi-val.red { color: var(--red); }
-.kpi-val.green { color: var(--green); }
-.kpi-val.amber { color: var(--amber); }
-.kpi-val.blue { color: var(--accent); }
-.kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
-.kpi-bar {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-}
-.kpi-bar.red { background: linear-gradient(90deg, var(--red), transparent); }
-.kpi-bar.green { background: linear-gradient(90deg, var(--green), transparent); }
-.kpi-bar.amber { background: linear-gradient(90deg, var(--amber), transparent); }
-.kpi-bar.blue { background: linear-gradient(90deg, var(--accent), transparent); }
-/* SECTION */
-.section-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-.section-title {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-}
-.section-note {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: var(--muted);
-  margin-left: auto;
-}
-/* FILTERS */
-.filters {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.filter-btn {
-  padding: 5px 14px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .15s;
-}
-.filter-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
-.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-/* TABLE */
-.table-wrap {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
   margin-bottom: 32px;
 }
+.kpi {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow .2s, transform .15s;
+}
+.kpi:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
+.kpi-stripe {
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+}
+.kpi-stripe.yellow { background: var(--yellow); }
+.kpi-stripe.black  { background: var(--black); }
+.kpi-stripe.red    { background: var(--red); }
+.kpi-stripe.green  { background: var(--green); }
+.kpi-stripe.gray   { background: #999; }
+.kpi-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.kpi-val { font-size: 28px; font-weight: 900; line-height: 1; letter-spacing: -1px; color: var(--black); }
+.kpi-val.red   { color: var(--red); }
+.kpi-val.green { color: var(--green); }
+.kpi-val.amber { color: var(--amber); }
+.kpi-val.yellow { color: var(--yellow-d); }
+.kpi-val.gray  { color: var(--gray); }
+.kpi-sub { font-size: 11px; font-weight: 500; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+
+/* ── SECTION HEAD ── */
+.section-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px; padding-bottom: 12px;
+  border-bottom: 2px solid var(--black);
+}
+.section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+.section-pill {
+  background: var(--yellow); color: var(--black);
+  font-size: 10px; font-weight: 800;
+  padding: 2px 8px; border-radius: 3px; letter-spacing: 0.5px;
+}
+
+/* ── FILTERS ── */
+.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-left: auto; margin-bottom: 0; }
+.filter-btn {
+  padding: 5px 14px; border-radius: 4px;
+  border: 1.5px solid var(--border);
+  background: var(--bg); color: var(--muted);
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 12px; font-weight: 700; cursor: pointer; transition: all .15s;
+}
+.filter-btn:hover { border-color: var(--black); color: var(--black); }
+.filter-btn.active { background: var(--black); border-color: var(--black); color: #fff; }
+
+/* ── TABLE ── */
+.table-wrap { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 32px; }
 table { width: 100%; border-collapse: collapse; }
 th {
-  background: #0f1520;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 12px 16px;
-  text-align: left;
-  font-weight: 500;
-  border-bottom: 1px solid var(--border);
+  background: var(--black);
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #ccc;
+  padding: 12px 16px; text-align: left;
 }
 th:not(:first-child) { text-align: center; }
 td {
-  padding: 12px 16px;
-  font-size: 13px;
+  padding: 11px 16px; font-size: 13px; font-weight: 500;
   border-bottom: 1px solid var(--border);
-  text-align: center;
-  transition: background .15s;
+  text-align: center; background: var(--bg);
+  transition: background .1s;
 }
-td:first-child { text-align: left; font-weight: 600; }
+td:first-child { text-align: left; font-weight: 700; }
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(255,255,255,0.025); }
-.badge {
-  display: inline-block;
-  padding: 3px 9px;
-  border-radius: 5px;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-.badge-red    { background: var(--red-dim);   color: #f87171; }
-.badge-amber  { background: var(--amber-dim); color: #fbbf24; }
-.badge-green  { background: var(--green-dim); color: #4ade80; }
-.val-red   { color: #f87171; font-weight: 600; }
-.val-green { color: #4ade80; font-weight: 600; }
-.val-amber { color: #fbbf24; font-weight: 600; }
+tr:nth-child(even) td { background: #fafafa; }
+tr:hover td { background: #fffde7 !important; }
+
+/* ── BADGES ── */
+.badge { display: inline-block; padding: 3px 9px; border-radius: 4px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; }
+.badge-red    { background: var(--red-bg);   color: var(--red); }
+.badge-amber  { background: var(--amber-bg); color: var(--amber); }
+.badge-green  { background: var(--green-bg); color: var(--green); }
+
+.val-red   { color: var(--red);   font-weight: 700; }
+.val-green { color: var(--green); font-weight: 700; }
+.val-amber { color: var(--amber); font-weight: 700; }
 .val-muted { color: var(--muted); }
-/* OVERBURN CELLS */
-.ob-red    { background: rgba(239,68,68,0.15);  color: #f87171; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; border-radius: 4px; padding: 3px 6px; display: inline-block; }
-.ob-amber  { background: rgba(245,158,11,0.15); color: #fbbf24; font-family: 'DM Mono', monospace; font-size: 12px; border-radius: 4px; padding: 3px 6px; display: inline-block; }
-.ob-green  { background: rgba(34,197,94,0.12);  color: #4ade80; font-family: 'DM Mono', monospace; font-size: 12px; border-radius: 4px; padding: 3px 6px; display: inline-block; }
-.ob-muted  { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; }
-/* CHARTS */
-.charts-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 32px;
-}
-.chart-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 20px 24px;
-}
-.chart-card-title {
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.chart-card-sub {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
+
+/* ── OVERBURN ── */
+.ob-red   { background: var(--red-bg);   color: var(--red);   font-size: 11px; font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; }
+.ob-amber { background: var(--amber-bg); color: var(--amber); font-size: 11px; font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; }
+.ob-green { background: var(--green-bg); color: var(--green); font-size: 11px; font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; }
+.ob-muted { color: var(--light); font-size: 11px; }
+
+/* ── CHARTS ── */
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+.chart-card { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 22px 24px; }
+.chart-card-title { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+.chart-card-sub   { font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 18px; }
 canvas { max-height: 240px; }
-/* STATUS DOT */
-.status-dot {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-}
-.dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
-.dot-active { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-.dot-done   { background: var(--muted); }
-/* LEGEND */
-.legend {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: var(--muted);
-}
-.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+/* ── STATUS ── */
+.status-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dot-active { background: var(--yellow); box-shadow: 0 0 0 2px rgba(245,200,0,0.3); }
+.dot-done   { background: var(--light); }
+
+/* ── LEGEND ── */
+.legend { display: flex; gap: 16px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── FOOTER ── */
+.footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid var(--black); text-align: center; font-size: 11px; font-weight: 600; color: var(--light); letter-spacing: 0.5px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-top">
+  <div class="header-inner">
     <div>
-      <div class="header-label">Núcleo Mano &amp; Dan — Bauducco 2026</div>
-      <div class="header-title">P&amp;L <span>Dashboard</span></div>
+      <div class="header-eyebrow">Núcleo Mano &amp; Dan — Bauducco 2026</div>
+      <div class="header-title">P&amp;L <em>Dashboard</em></div>
       <div class="header-sub">Análise de Resultados, Rentabilidade e Aprendizados</div>
     </div>
     <div class="header-meta">
       Ampfy | Bauducco<br>
-      Última atualização: 03/04/2026<br>
-      <span style="color:var(--accent)">v43</span>
+      Atualização: 03/04/2026<br>
+      <strong>v43</strong>
     </div>
   </div>
 </div>
 
 <div class="nav">
-  <button class="nav-btn active" onclick="showTab('overview')">Visão Geral</button>
-  <button class="nav-btn" onclick="showTab('ebitda')">EBITDA</button>
-  <button class="nav-btn" onclick="showTab('overburn')">Overburn</button>
-  <button class="nav-btn" onclick="showTab('custo')">Análise de Custo</button>
+  <button class="nav-btn active" onclick="showTab('overview',this)">Visão Geral</button>
+  <button class="nav-btn" onclick="showTab('pl',this)">P&amp;L</button>
+  <button class="nav-btn" onclick="showTab('overburn',this)">Overburn</button>
+  <button class="nav-btn" onclick="showTab('custo',this)">Análise de Custo</button>
 </div>
 
 <div class="content">
 
-<!-- ═══════════ TAB: VISÃO GERAL ═══════════ -->
+<!-- ══ VISÃO GERAL ══ -->
 <div id="tab-overview" class="tab-panel active">
-
   <div class="kpi-grid">
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe yellow"></div>
       <div class="kpi-label">Projetos Ativos</div>
-      <div class="kpi-val blue">4</div>
+      <div class="kpi-val">4</div>
       <div class="kpi-sub">Netflix · Minions · Fini · Hambúrguer</div>
-      <div class="kpi-bar blue"></div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe gray"></div>
       <div class="kpi-label">Projetos Finalizados</div>
-      <div class="kpi-val" style="color:var(--muted)">6</div>
-      <div class="kpi-sub">No Bread · CB Natal · Reality Natal...</div>
-      <div class="kpi-bar" style="background:linear-gradient(90deg,var(--muted),transparent)"></div>
+      <div class="kpi-val gray">6</div>
+      <div class="kpi-sub">No Bread · CB Natal · Reality...</div>
     </div>
-    <div class="kpi">
-      <div class="kpi-label">Melhor EBITDA Ativo</div>
+    <div class="kpi"><div class="kpi-stripe green"></div>
+      <div class="kpi-label">Melhor P&amp;L Ativo</div>
       <div class="kpi-val green">+65,77%</div>
       <div class="kpi-sub">Fini</div>
-      <div class="kpi-bar green"></div>
     </div>
-    <div class="kpi">
-      <div class="kpi-label">Pior EBITDA Geral</div>
+    <div class="kpi"><div class="kpi-stripe red"></div>
+      <div class="kpi-label">Pior P&amp;L Geral</div>
       <div class="kpi-val red">-275,30%</div>
       <div class="kpi-sub">No Bread</div>
-      <div class="kpi-bar red"></div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Maior Gap Negativo</div>
       <div class="kpi-val red">-R$526k</div>
       <div class="kpi-sub">Netflix</div>
-      <div class="kpi-bar red"></div>
     </div>
   </div>
 
   <div class="charts-grid">
     <div class="chart-card">
-      <div class="chart-card-title">EBITDA por Projeto</div>
-      <div class="chart-card-sub">EBITDA% = Receita Final / (Receita Bruta × 85,75%)</div>
-      <canvas id="ebitdaChart"></canvas>
+      <div class="chart-card-title">P&amp;L % por Projeto</div>
+      <div class="chart-card-sub">P&amp;L% = Receita Final / (Receita Bruta × 85,75%) — meta: 25%</div>
+      <canvas id="plChart"></canvas>
     </div>
     <div class="chart-card">
-      <div class="chart-card-title">Gap: Proposta Aprovada vs Projetada</div>
-      <div class="chart-card-sub">Valores em R$ mil — positivo = cobriu o custo</div>
+      <div class="chart-card-title">Gap: Aprovada vs Projetada</div>
+      <div class="chart-card-sub">R$ mil — positivo = cobriu o custo real</div>
       <canvas id="gapChart"></canvas>
     </div>
   </div>
 
   <div class="section-head">
-    <div class="section-title">Resumo por Projeto</div>
+    <div class="section-title">Resultado por Projeto</div>
+    <div class="section-pill">10 projetos</div>
     <div class="filters">
       <button class="filter-btn active" onclick="filterOverview('todos',this)">Todos</button>
       <button class="filter-btn" onclick="filterOverview('ativo',this)">🔄 Ativos</button>
@@ -379,106 +302,85 @@ canvas { max-height: 240px; }
     </div>
   </div>
   <div class="table-wrap">
-    <table>
-      <thead><tr>
-        <th>Projeto</th><th>Rec. Bruta</th><th>Resultado</th><th>EBITDA</th><th>Gap Custo</th><th>Ação</th><th>Status</th>
-      </tr></thead>
-      <tbody id="overview-body"></tbody>
-    </table>
+    <table><thead><tr>
+      <th>Projeto</th><th>Rec. Bruta</th><th>Resultado</th><th>P&amp;L %</th><th>Gap Custo</th><th>Ação</th><th>Status</th>
+    </tr></thead><tbody id="overview-body"></tbody></table>
   </div>
-
 </div>
 
-<!-- ═══════════ TAB: EBITDA ═══════════ -->
-<div id="tab-ebitda" class="tab-panel">
-
+<!-- ══ P&L ══ -->
+<div id="tab-pl" class="tab-panel">
   <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
-    <div class="kpi">
-      <div class="kpi-label">Meta EBITDA</div>
-      <div class="kpi-val blue">25%</div>
+    <div class="kpi"><div class="kpi-stripe yellow"></div>
+      <div class="kpi-label">Meta P&amp;L</div>
+      <div class="kpi-val yellow">25%</div>
       <div class="kpi-sub">Target definido pela operação</div>
-      <div class="kpi-bar blue"></div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe green"></div>
       <div class="kpi-label">Ativos acima da meta</div>
       <div class="kpi-val green">2 / 4</div>
       <div class="kpi-sub">Fini (+65,77%) · Hambúrguer (+34,25%)</div>
-      <div class="kpi-bar green"></div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Ativos abaixo da meta</div>
       <div class="kpi-val red">2 / 4</div>
       <div class="kpi-sub">Netflix (-94,01%) · Minions (-22,65%)</div>
-      <div class="kpi-bar red"></div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe gray"></div>
       <div class="kpi-label">Finalizados positivos</div>
-      <div class="kpi-val amber">0 / 6</div>
-      <div class="kpi-sub">Nenhum finalizados cobriu o custo real</div>
-      <div class="kpi-bar amber"></div>
+      <div class="kpi-val gray">0 / 6</div>
+      <div class="kpi-sub">Nenhum cobriu o custo real</div>
     </div>
   </div>
 
   <div class="chart-card" style="margin-bottom:24px">
-    <div class="chart-card-title">EBITDA % por Projeto — Linha de meta: 25%</div>
-    <div class="chart-card-sub">Vermelho = abaixo de 0% · Amarelo = 0% a 25% · Verde = acima de 25%</div>
-    <canvas id="ebitdaDetail" style="max-height:300px"></canvas>
+    <div class="chart-card-title">P&amp;L % por Projeto — linha de meta: 25%</div>
+    <div class="chart-card-sub">🔴 Abaixo de 0% &nbsp;·&nbsp; 🟡 Entre 0% e 25% &nbsp;·&nbsp; 🟢 Acima de 25%</div>
+    <canvas id="plDetail" style="max-height:300px"></canvas>
   </div>
 
-  <div class="section-head">
-    <div class="section-title">Tabela EBITDA Detalhada</div>
-  </div>
+  <div class="section-head"><div class="section-title">Tabela P&amp;L Detalhada</div></div>
   <div class="table-wrap">
-    <table>
-      <thead><tr>
-        <th>Projeto</th><th>Rec. Bruta</th><th>Rec. Final</th><th>EBITDA %</th><th>vs Meta (25%)</th><th>Status</th>
-      </tr></thead>
-      <tbody id="ebitda-body"></tbody>
-    </table>
+    <table><thead><tr>
+      <th>Projeto</th><th>Rec. Bruta</th><th>Resultado</th><th>P&amp;L %</th><th>vs Meta (25%)</th><th>Status</th>
+    </tr></thead><tbody id="pl-body"></tbody></table>
   </div>
-
 </div>
 
-<!-- ═══════════ TAB: OVERBURN ═══════════ -->
+<!-- ══ OVERBURN ══ -->
 <div id="tab-overburn" class="tab-panel">
-
   <div class="kpi-grid">
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Projetos c/ Overburn</div>
       <div class="kpi-val amber">8 / 10</div>
-      <div class="kpi-sub">Apenas Fini e Hambúrguer abaixo de 100%</div>
-      <div class="kpi-bar amber"></div>
+      <div class="kpi-sub">Fini e Hambúrguer abaixo de 100%</div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Maior Overburn Total</div>
       <div class="kpi-val red">367%</div>
       <div class="kpi-sub">No Bread</div>
-      <div class="kpi-bar red"></div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Depto mais crítico</div>
       <div class="kpi-val red">Atend.</div>
-      <div class="kpi-sub">Overburn em 9 dos 10 projetos</div>
-      <div class="kpi-bar red"></div>
+      <div class="kpi-sub">Overburn em 9 de 10 projetos</div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Pior Atendimento</div>
       <div class="kpi-val red">1.031%</div>
       <div class="kpi-sub">No Bread</div>
-      <div class="kpi-bar red"></div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe green"></div>
       <div class="kpi-label">Melhor Controle</div>
       <div class="kpi-val green">30%</div>
       <div class="kpi-sub">Fini — total consumido</div>
-      <div class="kpi-bar green"></div>
     </div>
   </div>
 
   <div class="charts-grid">
     <div class="chart-card">
-      <div class="chart-card-title">Overburn de Atendimento por Projeto</div>
-      <div class="chart-card-sub">Departamento com maior overburn sistemático</div>
+      <div class="chart-card-title">Overburn de Atendimento</div>
+      <div class="chart-card-sub">Departamento mais crítico — % do vendido</div>
       <canvas id="atenChart"></canvas>
     </div>
     <div class="chart-card">
@@ -490,93 +392,82 @@ canvas { max-height: 240px; }
 
   <div class="section-head">
     <div class="section-title">Overburn por Departamento</div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> Acima de 200%</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> 101% a 200%</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div> Até 100%</div>
+    <div class="legend" style="margin-left:auto">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red-bg);border:1px solid var(--red)"></div>Acima de 200%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--amber-bg);border:1px solid var(--amber)"></div>101–200%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green-bg);border:1px solid var(--green)"></div>Até 100%</div>
     </div>
   </div>
   <div class="table-wrap">
-    <table>
-      <thead><tr>
-        <th>Projeto</th><th>Planej.</th><th>Criação</th><th>Mídia/BI</th><th>Atend.</th><th>Operações</th><th>Total</th><th>Status</th>
-      </tr></thead>
-      <tbody id="overburn-body"></tbody>
-    </table>
+    <table><thead><tr>
+      <th>Projeto</th><th>Planej.</th><th>Criação</th><th>Mídia/BI</th><th>Atend.</th><th>Operações</th><th>Total</th><th>Status</th>
+    </tr></thead><tbody id="overburn-body"></tbody></table>
   </div>
-
 </div>
 
-<!-- ═══════════ TAB: CUSTO ═══════════ -->
+<!-- ══ CUSTO ══ -->
 <div id="tab-custo" class="tab-panel">
-
   <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
-    <div class="kpi">
-      <div class="kpi-label">Projetos c/ Gap Negativo</div>
+    <div class="kpi"><div class="kpi-stripe red"></div>
+      <div class="kpi-label">Com Gap Negativo</div>
       <div class="kpi-val red">9 / 10</div>
       <div class="kpi-sub">Apenas Fini cobriu o custo real</div>
-      <div class="kpi-bar red"></div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Maior Gap Negativo</div>
       <div class="kpi-val red">-R$526k</div>
       <div class="kpi-sub">Netflix</div>
-      <div class="kpi-bar red"></div>
     </div>
-    <div class="kpi">
+    <div class="kpi"><div class="kpi-stripe green"></div>
       <div class="kpi-label">Único Gap Positivo</div>
       <div class="kpi-val green">+R$104k</div>
       <div class="kpi-sub">Fini</div>
-      <div class="kpi-bar green"></div>
     </div>
-    <div class="kpi">
-      <div class="kpi-label">Ratecards</div>
-      <div class="kpi-val blue" style="font-size:18px">5 áreas</div>
+    <div class="kpi"><div class="kpi-stripe yellow"></div>
+      <div class="kpi-label">Ratecards Aplicados</div>
+      <div class="kpi-val yellow">5 áreas</div>
       <div class="kpi-sub">Plan · Cri · Mid · Ate · Ope</div>
-      <div class="kpi-bar blue"></div>
     </div>
   </div>
 
   <div class="chart-card" style="margin-bottom:24px">
     <div class="chart-card-title">Proposta Aprovada vs Proposta Projetada</div>
-    <div class="chart-card-sub">R$ mil — barras lado a lado por projeto</div>
+    <div class="chart-card-sub">R$ mil — ■ preto = aprovada &nbsp;·&nbsp; ■ amarelo = projetada</div>
     <canvas id="custoChart" style="max-height:280px"></canvas>
   </div>
 
   <div class="section-head">
     <div class="section-title">Análise de Custo por Projeto</div>
-    <div class="section-note" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">
-      Plan R$274,70/h · Cri R$227,50/h · Mid R$187,50/h · Ate R$198,70/h · Ope R$205,40/h
-    </div>
+    <span style="font-size:10px;font-weight:600;color:var(--muted);margin-left:auto">
+      Plan R$274,70 · Cri R$227,50 · Mid R$187,50 · Ate R$198,70 · Ope R$205,40
+    </span>
   </div>
   <div class="table-wrap">
-    <table>
-      <thead><tr>
-        <th>Projeto</th><th>Proposta Aprovada</th><th>Horas Consumidas</th><th>Proposta Projetada</th><th>Gap</th><th>Ação</th><th>Status</th>
-      </tr></thead>
-      <tbody id="custo-body"></tbody>
-    </table>
+    <table><thead><tr>
+      <th>Projeto</th><th>Proposta Aprovada</th><th>Horas Consumidas</th><th>Proposta Projetada</th><th>Gap</th><th>Ação</th><th>Status</th>
+    </tr></thead><tbody id="custo-body"></tbody></table>
   </div>
+</div>
 
 </div>
 
-</div><!-- /content -->
+<div class="content" style="padding-top:0">
+  <div class="footer">Documento gerado com apoio de IA &nbsp;·&nbsp; Ampfy | Bauducco | Maio 2026 &nbsp;·&nbsp; v43</div>
+</div>
 
 <script>
-// ── DATA ──
 const projects = [
-  { name:"Netflix",         rec:"R$ 500.000", res:"-R$ 403.089", ebitda:-94.01, acao:"CRITICO", ativo:true,  gap:-526217 },
-  { name:"Minions",         rec:"R$ 74.666",  res:"-R$ 14.504",  ebitda:-22.65, acao:"ATENCAO", ativo:true,  gap:-48087  },
-  { name:"Fini",            rec:"R$ 161.410", res:"+R$ 91.034",  ebitda:65.77,  acao:"OK",      ativo:true,  gap:103818  },
-  { name:"Dia do Hambúrguer",rec:"R$ 15.093", res:"+R$ 4.433",   ebitda:34.25,  acao:"ATENCAO", ativo:true,  gap:-1724   },
-  { name:"No Bread",        rec:"R$ 30.414",  res:"-R$ 71.800",  ebitda:-275.30,acao:"CRITICO", ativo:false, gap:-82561  },
-  { name:"CB Natal 2025",   rec:"R$ 358.259", res:"-R$ 82.149",  ebitda:-26.74, acao:"ATENCAO", ativo:false, gap:-203961 },
-  { name:"Reality Natal",   rec:"R$ 134.705", res:"-R$ 27.558",  ebitda:-23.86, acao:"ATENCAO", ativo:false, gap:-47854  },
-  { name:"CB Novo Menu",    rec:"R$ 198.233", res:"-R$ 24.164",  ebitda:-14.22, acao:"ATENCAO", ativo:false, gap:-89542  },
-  { name:"CB Páscoa",       rec:"R$ 202.488", res:"-R$ 10.324",  ebitda:-5.95,  acao:"ATENCAO", ativo:false, gap:-39248  },
-  { name:"Reality Páscoa",  rec:"R$ 140.084", res:"-R$ 869",     ebitda:-0.72,  acao:"ATENCAO", ativo:false, gap:-42638  },
+  { name:"Netflix",          rec:"R$ 500.000", res:"-R$ 403.089", pl:-94.01, acao:"CRITICO", ativo:true,  gap:-526217 },
+  { name:"Minions",          rec:"R$ 74.666",  res:"-R$ 14.504",  pl:-22.65, acao:"ATENCAO", ativo:true,  gap:-48087  },
+  { name:"Fini",             rec:"R$ 161.410", res:"+R$ 91.034",  pl:65.77,  acao:"OK",      ativo:true,  gap:103818  },
+  { name:"Dia do Hambúrguer",rec:"R$ 15.093",  res:"+R$ 4.433",   pl:34.25,  acao:"ATENCAO", ativo:true,  gap:-1724   },
+  { name:"No Bread",         rec:"R$ 30.414",  res:"-R$ 71.800",  pl:-275.30,acao:"CRITICO", ativo:false, gap:-82561  },
+  { name:"CB Natal 2025",    rec:"R$ 358.259", res:"-R$ 82.149",  pl:-26.74, acao:"ATENCAO", ativo:false, gap:-203961 },
+  { name:"Reality Natal",    rec:"R$ 134.705", res:"-R$ 27.558",  pl:-23.86, acao:"ATENCAO", ativo:false, gap:-47854  },
+  { name:"CB Novo Menu",     rec:"R$ 198.233", res:"-R$ 24.164",  pl:-14.22, acao:"ATENCAO", ativo:false, gap:-89542  },
+  { name:"CB Páscoa",        rec:"R$ 202.488", res:"-R$ 10.324",  pl:-5.95,  acao:"ATENCAO", ativo:false, gap:-39248  },
+  { name:"Reality Páscoa",   rec:"R$ 140.084", res:"-R$ 869",     pl:-0.72,  acao:"ATENCAO", ativo:false, gap:-42638  },
 ];
-
 const overburn = [
   { name:"Netflix",          plan:"94%",  cri:"171%", mid:"401%", ate:"621%",  ope:"440%", tot:"228%", ativo:true  },
   { name:"Minions",          plan:"140%", cri:"156%", mid:"45%",  ate:"229%",  ope:"146%", tot:"133%", ativo:true  },
@@ -589,7 +480,6 @@ const overburn = [
   { name:"CB Novo Menu",     plan:"155%", cri:"98%",  mid:"222%", ate:"356%",  ope:"229%", tot:"147%", ativo:false },
   { name:"CB Páscoa",        plan:"162%", cri:"100%", mid:"100%", ate:"132%",  ope:"179%", tot:"110%", ativo:false },
 ];
-
 const custo = [
   { name:"Netflix",          horas:"4.793h", projetada:"R$ 1.026.217", aprovada:"R$ 500.000", gap:-526217, ativo:true,  acao:"CRITICO" },
   { name:"Minions",          horas:"542h",   projetada:"R$ 122.753",   aprovada:"R$ 74.666",  gap:-48087,  ativo:true,  acao:"ATENCAO" },
@@ -603,210 +493,145 @@ const custo = [
   { name:"CB Páscoa",        horas:"1.089h", projetada:"R$ 241.736",   aprovada:"R$ 202.488", gap:-39248,  ativo:false, acao:"ATENCAO" },
 ];
 
-// ── HELPERS ──
-const fmt = v => v >= 0 ? `+R$ ${(v/1000).toFixed(0)}k` : `-R$ ${(Math.abs(v)/1000).toFixed(0)}k`;
-const fmtFull = v => v >= 0 ? `+R$ ${Math.abs(v).toLocaleString('pt-BR')}` : `-R$ ${Math.abs(v).toLocaleString('pt-BR')}`;
+const fmt = v => v>=0 ? `+R$ ${(v/1000).toFixed(0)}k` : `-R$ ${(Math.abs(v)/1000).toFixed(0)}k`;
 
 function acaoBadge(a) {
-  const cls = a==='CRITICO'?'red':a==='ATENCAO'?'amber':'green';
-  const lbl = a==='CRITICO'?'CRÍTICO':a==='ATENCAO'?'ATENÇÃO':'OK';
-  return `<span class="badge badge-${cls}">${lbl}</span>`;
+  const m={CRITICO:['red','CRÍTICO'],ATENCAO:['amber','ATENÇÃO'],OK:['green','OK']};
+  return `<span class="badge badge-${m[a][0]}">${m[a][1]}</span>`;
 }
 function statusDot(ativo) {
   return ativo
-    ? `<span class="status-dot"><span class="dot dot-active"></span> Em andamento</span>`
-    : `<span class="status-dot"><span class="dot dot-done"></span> Finalizado</span>`;
+    ? `<span class="status-dot"><span class="dot dot-active"></span>Em andamento</span>`
+    : `<span class="status-dot"><span class="dot dot-done"></span>Finalizado</span>`;
 }
 function obClass(v) {
-  if (v==='n/a') return `<span class="ob-muted">n/a</span>`;
-  const n = parseInt(v);
-  if (n > 200) return `<span class="ob-red">${v}</span>`;
-  if (n > 100) return `<span class="ob-amber">${v}</span>`;
+  if(v==='n/a') return `<span class="ob-muted">n/a</span>`;
+  const n=parseInt(v);
+  if(n>200) return `<span class="ob-red">${v}</span>`;
+  if(n>100) return `<span class="ob-amber">${v}</span>`;
   return `<span class="ob-green">${v}</span>`;
 }
-function ebitdaClass(v) {
-  if (v < 0)  return `val-red`;
-  if (v < 25) return `val-amber`;
-  return `val-green`;
-}
+function plClass(v) { return v<0?'val-red':v<25?'val-amber':'val-green'; }
 
-// ── TABS ──
-function showTab(id) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+function showTab(id,btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
-  event.target.classList.add('active');
+  btn.classList.add('active');
 }
 
-// ── RENDER OVERVIEW TABLE ──
-let overviewFilter = 'todos';
-function filterOverview(f, btn) {
-  overviewFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+let ovFilter='todos';
+function filterOverview(f,btn) {
+  ovFilter=f;
+  document.querySelectorAll('#tab-overview .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderOverview();
 }
 function renderOverview() {
-  let data = projects;
-  if (overviewFilter === 'ativo')     data = projects.filter(p => p.ativo);
-  if (overviewFilter === 'finalizado') data = projects.filter(p => !p.ativo);
-  if (overviewFilter === 'critico')    data = projects.filter(p => p.acao === 'CRITICO');
-  document.getElementById('overview-body').innerHTML = data.map(p => {
-    const ec = ebitdaClass(p.ebitda);
-    const gs = p.gap >= 0 ? `<span class="val-green">${fmt(p.gap)}</span>` : `<span class="val-red">${fmt(p.gap)}</span>`;
-    return `<tr>
-      <td>${p.name}</td>
-      <td class="val-muted">${p.rec}</td>
+  let data=projects;
+  if(ovFilter==='ativo')     data=projects.filter(p=>p.ativo);
+  if(ovFilter==='finalizado') data=projects.filter(p=>!p.ativo);
+  if(ovFilter==='critico')   data=projects.filter(p=>p.acao==='CRITICO');
+  document.getElementById('overview-body').innerHTML=data.map(p=>{
+    const ec=plClass(p.pl);
+    const gs=p.gap>=0?`<span class="val-green">${fmt(p.gap)}</span>`:`<span class="val-red">${fmt(p.gap)}</span>`;
+    return `<tr><td>${p.name}</td><td class="val-muted">${p.rec}</td>
       <td class="${ec}">${p.res}</td>
-      <td class="${ec}">${p.ebitda > 0 ? '+' : ''}${p.ebitda.toFixed(2)}%</td>
-      <td>${gs}</td>
-      <td>${acaoBadge(p.acao)}</td>
-      <td>${statusDot(p.ativo)}</td>
-    </tr>`;
+      <td class="${ec}">${p.pl>0?'+':''}${p.pl.toFixed(2)}%</td>
+      <td>${gs}</td><td>${acaoBadge(p.acao)}</td><td>${statusDot(p.ativo)}</td></tr>`;
   }).join('');
 }
 
-// ── RENDER EBITDA TABLE ──
-function renderEbitda() {
-  const recBrutas = {
-    "Netflix":"R$ 500.000","Minions":"R$ 74.666","Fini":"R$ 161.410","Dia do Hambúrguer":"R$ 15.093",
-    "No Bread":"R$ 30.414","CB Natal 2025":"R$ 358.259","Reality Natal":"R$ 134.705",
-    "CB Novo Menu":"R$ 198.233","CB Páscoa":"R$ 202.488","Reality Páscoa":"R$ 140.084"
-  };
-  document.getElementById('ebitda-body').innerHTML = projects.map(p => {
-    const ec = ebitdaClass(p.ebitda);
-    const delta = p.ebitda - 25;
-    const deltaStr = delta >= 0
-      ? `<span class="val-green">+${delta.toFixed(2)} pp</span>`
-      : `<span class="val-red">${delta.toFixed(2)} pp</span>`;
-    return `<tr>
-      <td>${p.name}</td>
-      <td class="val-muted">${recBrutas[p.name]||''}</td>
+function renderPL() {
+  const brutas=["R$ 500.000","R$ 74.666","R$ 161.410","R$ 15.093","R$ 30.414","R$ 358.259","R$ 134.705","R$ 198.233","R$ 202.488","R$ 140.084"];
+  document.getElementById('pl-body').innerHTML=projects.map((p,i)=>{
+    const ec=plClass(p.pl);
+    const d=p.pl-25;
+    const ds=d>=0?`<span class="val-green">+${d.toFixed(2)} pp</span>`:`<span class="val-red">${d.toFixed(2)} pp</span>`;
+    return `<tr><td>${p.name}</td><td class="val-muted">${brutas[i]}</td>
       <td class="${ec}">${p.res}</td>
-      <td class="${ec}">${p.ebitda > 0 ? '+' : ''}${p.ebitda.toFixed(2)}%</td>
-      <td>${deltaStr}</td>
-      <td>${statusDot(p.ativo)}</td>
-    </tr>`;
+      <td class="${ec}">${p.pl>0?'+':''}${p.pl.toFixed(2)}%</td>
+      <td>${ds}</td><td>${statusDot(p.ativo)}</td></tr>`;
   }).join('');
 }
 
-// ── RENDER OVERBURN TABLE ──
 function renderOverburn() {
-  document.getElementById('overburn-body').innerHTML = overburn.map(p => `<tr>
-    <td>${p.name}</td>
-    <td>${obClass(p.plan)}</td>
-    <td>${obClass(p.cri)}</td>
-    <td>${obClass(p.mid)}</td>
-    <td>${obClass(p.ate)}</td>
-    <td>${obClass(p.ope)}</td>
-    <td>${obClass(p.tot)}</td>
-    <td>${statusDot(p.ativo)}</td>
-  </tr>`).join('');
+  document.getElementById('overburn-body').innerHTML=overburn.map(p=>
+    `<tr><td>${p.name}</td>${[p.plan,p.cri,p.mid,p.ate,p.ope,p.tot].map(v=>`<td>${obClass(v)}</td>`).join('')}<td>${statusDot(p.ativo)}</td></tr>`
+  ).join('');
 }
 
-// ── RENDER CUSTO TABLE ──
 function renderCusto() {
-  document.getElementById('custo-body').innerHTML = custo.map(r => {
-    const gs = r.gap >= 0
-      ? `<span class="val-green">+R$ ${r.gap.toLocaleString('pt-BR')}</span>`
-      : `<span class="val-red">-R$ ${Math.abs(r.gap).toLocaleString('pt-BR')}</span>`;
-    return `<tr>
-      <td>${r.name}</td>
-      <td class="val-muted">${r.aprovada}</td>
-      <td class="val-muted" style="font-family:'DM Mono',monospace;font-size:12px">${r.horas}</td>
-      <td class="val-muted">${r.projetada}</td>
-      <td>${gs}</td>
-      <td>${acaoBadge(r.acao)}</td>
-      <td>${statusDot(r.ativo)}</td>
-    </tr>`;
+  document.getElementById('custo-body').innerHTML=custo.map(r=>{
+    const gs=r.gap>=0
+      ?`<span class="val-green">+R$ ${r.gap.toLocaleString('pt-BR')}</span>`
+      :`<span class="val-red">-R$ ${Math.abs(r.gap).toLocaleString('pt-BR')}</span>`;
+    return `<tr><td>${r.name}</td><td class="val-muted">${r.aprovada}</td>
+      <td style="font-size:12px;color:var(--muted)">${r.horas}</td>
+      <td class="val-muted">${r.projetada}</td><td>${gs}</td>
+      <td>${acaoBadge(r.acao)}</td><td>${statusDot(r.ativo)}</td></tr>`;
   }).join('');
 }
 
 // ── CHARTS ──
-const chartOpts = {
-  responsive: true,
-  maintainAspectRatio: true,
-  plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a2035', titleFont: { family: 'DM Mono' }, bodyFont: { family: 'DM Mono' } } },
-  scales: {
-    x: { ticks: { color: '#6b7591', font: { size: 10, family: 'DM Mono' }, maxRotation: 30 }, grid: { color: 'rgba(255,255,255,0.04)' } },
-    y: { ticks: { color: '#6b7591', font: { size: 10, family: 'DM Mono' } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+const labels = projects.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+const co = {
+  responsive:true, maintainAspectRatio:true,
+  plugins:{legend:{display:false}, tooltip:{backgroundColor:'#111',titleFont:{family:'Red Hat Display',weight:'700'},bodyFont:{family:'Red Hat Display'}}},
+  scales:{
+    x:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'},maxRotation:30},grid:{color:'rgba(0,0,0,0.05)'}},
+    y:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'}},grid:{color:'rgba(0,0,0,0.05)'}}
   }
 };
 
-const labels = projects.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
-const ebitdaVals = projects.map(p => p.ebitda);
-const ebitdaColors = ebitdaVals.map(v => v >= 25 ? '#22c55e' : v >= 0 ? '#f59e0b' : '#ef4444');
+const plVals   = projects.map(p=>p.pl);
+const plColors = plVals.map(v=>v>=25?'#15803d':v>=0?'#b45309':'#b91c1c');
 
-new Chart(document.getElementById('ebitdaChart'), {
-  type: 'bar',
-  data: { labels, datasets: [{ data: ebitdaVals, backgroundColor: ebitdaColors, borderRadius: 4 }] },
-  options: { ...chartOpts, plugins: { ...chartOpts.plugins,
-    annotation: { annotations: { line1: { type:'line', yMin:25, yMax:25, borderColor:'rgba(59,130,246,0.5)', borderWidth:1, borderDash:[4,4] } } }
-  }, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v+'%' } } } }
+new Chart(document.getElementById('plChart'),{type:'bar',
+  data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:4}]},
+  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
-const gapVals = projects.map(p => p.gap/1000);
-const gapColors = gapVals.map(v => v >= 0 ? '#22c55e' : '#ef4444');
-new Chart(document.getElementById('gapChart'), {
-  type: 'bar',
-  data: { labels, datasets: [{ data: gapVals, backgroundColor: gapColors, borderRadius: 4 }] },
-  options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => 'R$'+v+'k' } } } }
+const gapVals  = projects.map(p=>p.gap/1000);
+const gapColors= gapVals.map(v=>v>=0?'#15803d':'#b91c1c');
+new Chart(document.getElementById('gapChart'),{type:'bar',
+  data:{labels,datasets:[{data:gapVals,backgroundColor:gapColors,borderRadius:4}]},
+  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>'R$'+v+'k'}}}}
 });
 
-const atenVals = overburn.map(p => parseInt(p.ate) || 0);
-const atenColors = atenVals.map(v => v > 200 ? '#ef4444' : v > 100 ? '#f59e0b' : '#22c55e');
-new Chart(document.getElementById('atenChart'), {
-  type: 'bar',
-  data: { labels: overburn.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.')),
-    datasets: [{ data: atenVals, backgroundColor: atenColors, borderRadius: 4 }] },
-  options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v+'%' } } } }
+new Chart(document.getElementById('plDetail'),{type:'bar',
+  data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:5}]},
+  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
-const totVals = overburn.map(p => parseInt(p.tot) || 0);
-const totColors = totVals.map(v => v > 200 ? '#ef4444' : v > 100 ? '#f59e0b' : '#22c55e');
-new Chart(document.getElementById('totalChart'), {
-  type: 'bar',
-  data: { labels: overburn.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.')),
-    datasets: [{ data: totVals, backgroundColor: totColors, borderRadius: 4 }] },
-  options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v+'%' } } } }
+const ob2=overburn.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+const atenVals=overburn.map(p=>parseInt(p.ate)||0);
+const atenCol =atenVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
+new Chart(document.getElementById('atenChart'),{type:'bar',
+  data:{labels:ob2,datasets:[{data:atenVals,backgroundColor:atenCol,borderRadius:4}]},
+  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
-// Custo chart
-const custoLabels = custo.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
-const aprovadaVals = [500, 74.7, 161.4, 15.1, 30.4, 358.3, 198.2, 134.7, 140.1, 202.5];
-const projetadaVals = [1026.2, 122.8, 57.6, 16.8, 113, 562.2, 287.8, 182.6, 182.7, 241.7];
-new Chart(document.getElementById('custoChart'), {
-  type: 'bar',
-  data: { labels: custoLabels,
-    datasets: [
-      { label: 'Proposta Aprovada', data: aprovadaVals, backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 3 },
-      { label: 'Proposta Projetada', data: projetadaVals, backgroundColor: 'rgba(239,68,68,0.5)', borderRadius: 3 }
-    ]
-  },
-  options: { ...chartOpts,
-    plugins: { legend: { display: true, labels: { color: '#6b7591', font: { family: 'DM Mono', size: 11 } } }, tooltip: chartOpts.plugins.tooltip },
-    scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => 'R$'+v+'k' } } }
+const totVals=overburn.map(p=>parseInt(p.tot)||0);
+const totCol =totVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
+new Chart(document.getElementById('totalChart'),{type:'bar',
+  data:{labels:ob2,datasets:[{data:totVals,backgroundColor:totCol,borderRadius:4}]},
+  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+});
+
+const custoLabels=custo.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+new Chart(document.getElementById('custoChart'),{type:'bar',
+  data:{labels:custoLabels,datasets:[
+    {label:'Proposta Aprovada', data:[500,74.7,161.4,15.1,30.4,358.3,198.2,134.7,140.1,202.5], backgroundColor:'#111111',borderRadius:3},
+    {label:'Proposta Projetada',data:[1026.2,122.8,57.6,16.8,113,562.2,287.8,182.6,182.7,241.7], backgroundColor:'#f5c800',borderRadius:3},
+  ]},
+  options:{...co,
+    plugins:{...co.plugins,legend:{display:true,labels:{color:'#555',font:{family:'Red Hat Display',size:11,weight:'700'}}}},
+    scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>'R$'+v+'k'}}}
   }
 });
 
-const ebitdaDetailColors = ebitdaVals.map(v => v >= 25 ? '#22c55e' : v >= 0 ? '#f59e0b' : '#ef4444');
-new Chart(document.getElementById('ebitdaDetail'), {
-  type: 'bar',
-  data: { labels, datasets: [{
-    data: ebitdaVals, backgroundColor: ebitdaDetailColors, borderRadius: 5,
-  }] },
-  options: { ...chartOpts,
-    scales: { ...chartOpts.scales,
-      y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v+'%' } }
-    }
-  }
-});
-
-// ── INIT ──
-renderOverview();
-renderEbitda();
-renderOverburn();
-renderCusto();
+renderOverview(); renderPL(); renderOverburn(); renderCusto();
 </script>
 </body>
 </html>
