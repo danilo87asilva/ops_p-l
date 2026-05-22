@@ -342,7 +342,7 @@ canvas { max-height: 240px; }
   <div class="section-head"><div class="section-title">Tabela P&amp;L Detalhada</div></div>
   <div class="table-wrap">
     <table><thead><tr>
-      <th>Projeto</th><th>Rec. Bruta</th><th>Resultado</th><th>P&amp;L %</th><th>vs Meta (25%)</th><th>Status</th>
+      <th>Projeto</th><th>Rec. Bruta</th><th>Resultado</th><th>P&amp;L %</th><th>Status</th>
     </tr></thead><tbody id="pl-body"></tbody></table>
   </div>
 </div>
@@ -547,11 +547,10 @@ function renderPL() {
   document.getElementById('pl-body').innerHTML=projects.map((p,i)=>{
     const ec=plClass(p.pl);
     const d=p.pl-25;
-    const ds=d>=0?`<span class="val-green">+${d.toFixed(2)} pp</span>`:`<span class="val-red">${d.toFixed(2)} pp</span>`;
     return `<tr><td>${p.name}</td><td class="val-muted">${brutas[i]}</td>
       <td class="${ec}">${p.res}</td>
       <td class="${ec}">${p.pl>0?'+':''}${p.pl.toFixed(2)}%</td>
-      <td>${ds}</td><td>${statusDot(p.ativo)}</td></tr>`;
+      <td>${statusDot(p.ativo)}</td></tr>`;
   }).join('');
 }
 
