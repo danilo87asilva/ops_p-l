@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P&L Dashboard — Núcleo Mano & Dan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #0a0d12;
+  --bg2: #111520;
+  --bg3: #181d28;
+  --border: rgba(255,255,255,0.07);
+  --text: #e8ecf4;
+  --muted: #6b7591;
+  --accent: #3b82f6;
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.12);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.12);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.12);
+  --navy: #1e3a5f;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, #0d1829 0%, #0a1020 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 48px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.header-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.header-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.header-title span { color: var(--accent); }
+.header-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+  font-weight: 400;
+}
+.header-meta {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+/* NAV TABS */
+.nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  background: var(--bg2);
+}
+.nav-btn {
+  padding: 14px 20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: 0.3px;
+}
+.nav-btn:hover { color: var(--text); }
+.nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+/* CONTENT */
+.content { padding: 36px 48px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+/* KPI CARDS */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 36px;
+}
+.kpi {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.kpi:hover { border-color: rgba(255,255,255,0.14); }
+.kpi-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.kpi-val {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.kpi-val.red { color: var(--red); }
+.kpi-val.green { color: var(--green); }
+.kpi-val.amber { color: var(--amber); }
+.kpi-val.blue { color: var(--accent); }
+.kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+.kpi-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+}
+.kpi-bar.red { background: linear-gradient(90deg, var(--red), transparent); }
+.kpi-bar.green { background: linear-gradient(90deg, var(--green), transparent); }
+.kpi-bar.amber { background: linear-gradient(90deg, var(--amber), transparent); }
+.kpi-bar.blue { background: linear-gradient(90deg, var(--accent), transparent); }
+/* SECTION */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+.section-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: auto;
+}
+/* FILTERS */
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+}
+.filter-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+/* TABLE */
+.table-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+table { width: 100%; border-collapse: collapse; }
+th {
+  background: #0f1520;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+th:not(:first-child) { text-align: center; }
+td {
+  padding: 12px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  transition: background .15s;
+}
+td:first-child { text-align: left; font-weight: 600; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.025); }
+.badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.badge-red    { background: var(--red-dim);   color: #f87171; }
+.badge-amber  { background: var(--amber-dim); color: #fbbf24; }
+.badge-green  { background: var(--green-dim); color: #4ade80; }
+.val-red   { color: #f87171; font-weight: 600; }
+.val-green { color: #4ade80; font-weight: 600; }
+.val-amber { color: #fbbf24; font-weight: 600; }
+.val-muted { color: var(--muted); }
+/* OVERBURN CELLS */
+.ob-red    { background: rgba(239,68,68,0.15);  color: #f87171; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; border-radius: 4px; padding: 3px 6px; display: inline-block; }
+.ob-amber  { background: rgba(245,158,11,0.15); color: #fbbf24; font-family: 'DM Mono', monospace; font-size: 12px; border-radius: 4px; padding: 3px 6px; display: inline-block; }
+.ob-green  { background: rgba(34,197,94,0.12);  color: #4ade80; font-family: 'DM Mono', monospace; font-size: 12px; border-radius: 4px; padding: 3px 6px; display: inline-block; }
+.ob-muted  { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; }
+/* CHARTS */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.chart-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+}
+.chart-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.chart-card-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+canvas { max-height: 240px; }
+/* STATUS DOT */
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+.dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.dot-active { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.dot-done   { background: var(--muted); }
+/* LEGEND */
+.legend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-label">Núcleo Mano &amp; Dan — Bauducco 2026</div>
+      <div class="header-title">P&amp;L <span>Dashboard</span></div>
+      <div class="header-sub">Análise de Resultados, Rentabilidade e Aprendizados</div>
+    </div>
+    <div class="header-meta">
+      Ampfy | Bauducco<br>
+      Última atualização: 03/04/2026<br>
+      <span style="color:var(--accent)">v43</span>
+    </div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('overview')">Visão Geral</button>
+  <button class="nav-btn" onclick="showTab('ebitda')">EBITDA</button>
+  <button class="nav-btn" onclick="showTab('overburn')">Overburn</button>
+  <button class="nav-btn" onclick="showTab('custo')">Análise de Custo</button>
+</div>
+
+<div class="content">
+
+<!-- ═══════════ TAB: VISÃO GERAL ═══════════ -->
+<div id="tab-overview" class="tab-panel active">
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Projetos Ativos</div>
+      <div class="kpi-val blue">4</div>
+      <div class="kpi-sub">Netflix · Minions · Fini · Hambúrguer</div>
+      <div class="kpi-bar blue"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Projetos Finalizados</div>
+      <div class="kpi-val" style="color:var(--muted)">6</div>
+      <div class="kpi-sub">No Bread · CB Natal · Reality Natal...</div>
+      <div class="kpi-bar" style="background:linear-gradient(90deg,var(--muted),transparent)"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Melhor EBITDA Ativo</div>
+      <div class="kpi-val green">+65,77%</div>
+      <div class="kpi-sub">Fini</div>
+      <div class="kpi-bar green"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Pior EBITDA Geral</div>
+      <div class="kpi-val red">-275,30%</div>
+      <div class="kpi-sub">No Bread</div>
+      <div class="kpi-bar red"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Maior Gap Negativo</div>
+      <div class="kpi-val red">-R$526k</div>
+      <div class="kpi-sub">Netflix</div>
+      <div class="kpi-bar red"></div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-card-title">EBITDA por Projeto</div>
+      <div class="chart-card-sub">EBITDA% = Receita Final / (Receita Bruta × 85,75%)</div>
+      <canvas id="ebitdaChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">Gap: Proposta Aprovada vs Projetada</div>
+      <div class="chart-card-sub">Valores em R$ mil — positivo = cobriu o custo</div>
+      <canvas id="gapChart"></canvas>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="section-title">Resumo por Projeto</div>
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterOverview('todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filterOverview('ativo',this)">🔄 Ativos</button>
+      <button class="filter-btn" onclick="filterOverview('finalizado',this)">✅ Finalizados</button>
+      <button class="filter-btn" onclick="filterOverview('critico',this)">Críticos</button>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>Projeto</th><th>Rec. Bruta</th><th>Resultado</th><th>EBITDA</th><th>Gap Custo</th><th>Ação</th><th>Status</th>
+      </tr></thead>
+      <tbody id="overview-body"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ═══════════ TAB: EBITDA ═══════════ -->
+<div id="tab-ebitda" class="tab-panel">
+
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi">
+      <div class="kpi-label">Meta EBITDA</div>
+      <div class="kpi-val blue">25%</div>
+      <div class="kpi-sub">Target definido pela operação</div>
+      <div class="kpi-bar blue"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Ativos acima da meta</div>
+      <div class="kpi-val green">2 / 4</div>
+      <div class="kpi-sub">Fini (+65,77%) · Hambúrguer (+34,25%)</div>
+      <div class="kpi-bar green"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Ativos abaixo da meta</div>
+      <div class="kpi-val red">2 / 4</div>
+      <div class="kpi-sub">Netflix (-94,01%) · Minions (-22,65%)</div>
+      <div class="kpi-bar red"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Finalizados positivos</div>
+      <div class="kpi-val amber">0 / 6</div>
+      <div class="kpi-sub">Nenhum finalizados cobriu o custo real</div>
+      <div class="kpi-bar amber"></div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:24px">
+    <div class="chart-card-title">EBITDA % por Projeto — Linha de meta: 25%</div>
+    <div class="chart-card-sub">Vermelho = abaixo de 0% · Amarelo = 0% a 25% · Verde = acima de 25%</div>
+    <canvas id="ebitdaDetail" style="max-height:300px"></canvas>
+  </div>
+
+  <div class="section-head">
+    <div class="section-title">Tabela EBITDA Detalhada</div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>Projeto</th><th>Rec. Bruta</th><th>Rec. Final</th><th>EBITDA %</th><th>vs Meta (25%)</th><th>Status</th>
+      </tr></thead>
+      <tbody id="ebitda-body"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ═══════════ TAB: OVERBURN ═══════════ -->
+<div id="tab-overburn" class="tab-panel">
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Projetos c/ Overburn</div>
+      <div class="kpi-val amber">8 / 10</div>
+      <div class="kpi-sub">Apenas Fini e Hambúrguer abaixo de 100%</div>
+      <div class="kpi-bar amber"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Maior Overburn Total</div>
+      <div class="kpi-val red">367%</div>
+      <div class="kpi-sub">No Bread</div>
+      <div class="kpi-bar red"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Depto mais crítico</div>
+      <div class="kpi-val red">Atend.</div>
+      <div class="kpi-sub">Overburn em 9 dos 10 projetos</div>
+      <div class="kpi-bar red"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Pior Atendimento</div>
+      <div class="kpi-val red">1.031%</div>
+      <div class="kpi-sub">No Bread</div>
+      <div class="kpi-bar red"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Melhor Controle</div>
+      <div class="kpi-val green">30%</div>
+      <div class="kpi-sub">Fini — total consumido</div>
+      <div class="kpi-bar green"></div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-card-title">Overburn de Atendimento por Projeto</div>
+      <div class="chart-card-sub">Departamento com maior overburn sistemático</div>
+      <canvas id="atenChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">Overburn Total por Projeto</div>
+      <div class="chart-card-sub">Horas consumidas / horas vendidas (%)</div>
+      <canvas id="totalChart"></canvas>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="section-title">Overburn por Departamento</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> Acima de 200%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> 101% a 200%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div> Até 100%</div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>Projeto</th><th>Planej.</th><th>Criação</th><th>Mídia/BI</th><th>Atend.</th><th>Operações</th><th>Total</th><th>Status</th>
+      </tr></thead>
+      <tbody id="overburn-body"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ═══════════ TAB: CUSTO ═══════════ -->
+<div id="tab-custo" class="tab-panel">
+
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi">
+      <div class="kpi-label">Projetos c/ Gap Negativo</div>
+      <div class="kpi-val red">9 / 10</div>
+      <div class="kpi-sub">Apenas Fini cobriu o custo real</div>
+      <div class="kpi-bar red"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Maior Gap Negativo</div>
+      <div class="kpi-val red">-R$526k</div>
+      <div class="kpi-sub">Netflix</div>
+      <div class="kpi-bar red"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Único Gap Positivo</div>
+      <div class="kpi-val green">+R$104k</div>
+      <div class="kpi-sub">Fini</div>
+      <div class="kpi-bar green"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Ratecards</div>
+      <div class="kpi-val blue" style="font-size:18px">5 áreas</div>
+      <div class="kpi-sub">Plan · Cri · Mid · Ate · Ope</div>
+      <div class="kpi-bar blue"></div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:24px">
+    <div class="chart-card-title">Proposta Aprovada vs Proposta Projetada</div>
+    <div class="chart-card-sub">R$ mil — barras lado a lado por projeto</div>
+    <canvas id="custoChart" style="max-height:280px"></canvas>
+  </div>
+
+  <div class="section-head">
+    <div class="section-title">Análise de Custo por Projeto</div>
+    <div class="section-note" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">
+      Plan R$274,70/h · Cri R$227,50/h · Mid R$187,50/h · Ate R$198,70/h · Ope R$205,40/h
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>Projeto</th><th>Proposta Aprovada</th><th>Horas Consumidas</th><th>Proposta Projetada</th><th>Gap</th><th>Ação</th><th>Status</th>
+      </tr></thead>
+      <tbody id="custo-body"></tbody>
+    </table>
+  </div>
+
+</div>
+
+</div><!-- /content -->
+
+<script>
+// ── DATA ──
+const projects = [
+  { name:"Netflix",         rec:"R$ 500.000", res:"-R$ 403.089", ebitda:-94.01, acao:"CRITICO", ativo:true,  gap:-526217 },
+  { name:"Minions",         rec:"R$ 74.666",  res:"-R$ 14.504",  ebitda:-22.65, acao:"ATENCAO", ativo:true,  gap:-48087  },
+  { name:"Fini",            rec:"R$ 161.410", res:"+R$ 91.034",  ebitda:65.77,  acao:"OK",      ativo:true,  gap:103818  },
+  { name:"Dia do Hambúrguer",rec:"R$ 15.093", res:"+R$ 4.433",   ebitda:34.25,  acao:"ATENCAO", ativo:true,  gap:-1724   },
+  { name:"No Bread",        rec:"R$ 30.414",  res:"-R$ 71.800",  ebitda:-275.30,acao:"CRITICO", ativo:false, gap:-82561  },
+  { name:"CB Natal 2025",   rec:"R$ 358.259", res:"-R$ 82.149",  ebitda:-26.74, acao:"ATENCAO", ativo:false, gap:-203961 },
+  { name:"Reality Natal",   rec:"R$ 134.705", res:"-R$ 27.558",  ebitda:-23.86, acao:"ATENCAO", ativo:false, gap:-47854  },
+  { name:"CB Novo Menu",    rec:"R$ 198.233", res:"-R$ 24.164",  ebitda:-14.22, acao:"ATENCAO", ativo:false, gap:-89542  },
+  { name:"CB Páscoa",       rec:"R$ 202.488", res:"-R$ 10.324",  ebitda:-5.95,  acao:"ATENCAO", ativo:false, gap:-39248  },
+  { name:"Reality Páscoa",  rec:"R$ 140.084", res:"-R$ 869",     ebitda:-0.72,  acao:"ATENCAO", ativo:false, gap:-42638  },
+];
+
+const overburn = [
+  { name:"Netflix",          plan:"94%",  cri:"171%", mid:"401%", ate:"621%",  ope:"440%", tot:"228%", ativo:true  },
+  { name:"Minions",          plan:"140%", cri:"156%", mid:"45%",  ate:"229%",  ope:"146%", tot:"133%", ativo:true  },
+  { name:"Fini",             plan:"62%",  cri:"22%",  mid:"18%",  ate:"59%",   ope:"36%",  tot:"30%",  ativo:true  },
+  { name:"Dia do Hambúrguer",plan:"n/a",  cri:"102%", mid:"40%",  ate:"50%",   ope:"20%",  tot:"87%",  ativo:true  },
+  { name:"No Bread",         plan:"n/a",  cri:"926%", mid:"51%",  ate:"1031%", ope:"36%",  tot:"367%", ativo:false },
+  { name:"CB Natal 2025",    plan:"127%", cri:"143%", mid:"208%", ate:"306%",  ope:"227%", tot:"165%", ativo:false },
+  { name:"Reality Natal",    plan:"0%",   cri:"118%", mid:"120%", ate:"443%",  ope:"389%", tot:"140%", ativo:false },
+  { name:"Reality Páscoa",   plan:"0%",   cri:"121%", mid:"125%", ate:"639%",  ope:"145%", tot:"149%", ativo:false },
+  { name:"CB Novo Menu",     plan:"155%", cri:"98%",  mid:"222%", ate:"356%",  ope:"229%", tot:"147%", ativo:false },
+  { name:"CB Páscoa",        plan:"162%", cri:"100%", mid:"100%", ate:"132%",  ope:"179%", tot:"110%", ativo:false },
+];
+
+const custo = [
+  { name:"Netflix",          horas:"4.793h", projetada:"R$ 1.026.217", aprovada:"R$ 500.000", gap:-526217, ativo:true,  acao:"CRITICO" },
+  { name:"Minions",          horas:"542h",   projetada:"R$ 122.753",   aprovada:"R$ 74.666",  gap:-48087,  ativo:true,  acao:"ATENCAO" },
+  { name:"Fini",             horas:"252h",   projetada:"R$ 57.592",    aprovada:"R$ 161.410", gap:103818,  ativo:true,  acao:"OK"      },
+  { name:"Dia do Hambúrguer",horas:"75h",    projetada:"R$ 16.816",    aprovada:"R$ 15.093",  gap:-1724,   ativo:true,  acao:"ATENCAO" },
+  { name:"No Bread",         horas:"525h",   projetada:"R$ 112.975",   aprovada:"R$ 30.414",  gap:-82561,  ativo:false, acao:"CRITICO" },
+  { name:"CB Natal 2025",    horas:"2.587h", projetada:"R$ 562.220",   aprovada:"R$ 358.259", gap:-203961, ativo:false, acao:"ATENCAO" },
+  { name:"CB Novo Menu",     horas:"1.342h", projetada:"R$ 287.775",   aprovada:"R$ 198.233", gap:-89542,  ativo:false, acao:"ATENCAO" },
+  { name:"Reality Natal",    horas:"874h",   projetada:"R$ 182.559",   aprovada:"R$ 134.705", gap:-47854,  ativo:false, acao:"ATENCAO" },
+  { name:"Reality Páscoa",   horas:"881h",   projetada:"R$ 182.722",   aprovada:"R$ 140.084", gap:-42638,  ativo:false, acao:"ATENCAO" },
+  { name:"CB Páscoa",        horas:"1.089h", projetada:"R$ 241.736",   aprovada:"R$ 202.488", gap:-39248,  ativo:false, acao:"ATENCAO" },
+];
+
+// ── HELPERS ──
+const fmt = v => v >= 0 ? `+R$ ${(v/1000).toFixed(0)}k` : `-R$ ${(Math.abs(v)/1000).toFixed(0)}k`;
+const fmtFull = v => v >= 0 ? `+R$ ${Math.abs(v).toLocaleString('pt-BR')}` : `-R$ ${Math.abs(v).toLocaleString('pt-BR')}`;
+
+function acaoBadge(a) {
+  const cls = a==='CRITICO'?'red':a==='ATENCAO'?'amber':'green';
+  const lbl = a==='CRITICO'?'CRÍTICO':a==='ATENCAO'?'ATENÇÃO':'OK';
+  return `<span class="badge badge-${cls}">${lbl}</span>`;
+}
+function statusDot(ativo) {
+  return ativo
+    ? `<span class="status-dot"><span class="dot dot-active"></span> Em andamento</span>`
+    : `<span class="status-dot"><span class="dot dot-done"></span> Finalizado</span>`;
+}
+function obClass(v) {
+  if (v==='n/a') return `<span class="ob-muted">n/a</span>`;
+  const n = parseInt(v);
+  if (n > 200) return `<span class="ob-red">${v}</span>`;
+  if (n > 100) return `<span class="ob-amber">${v}</span>`;
+  return `<span class="ob-green">${v}</span>`;
+}
+function ebitdaClass(v) {
+  if (v < 0)  return `val-red`;
+  if (v < 25) return `val-amber`;
+  return `val-green`;
+}
+
+// ── TABS ──
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── RENDER OVERVIEW TABLE ──
+let overviewFilter = 'todos';
+function filterOverview(f, btn) {
+  overviewFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderOverview();
+}
+function renderOverview() {
+  let data = projects;
+  if (overviewFilter === 'ativo')     data = projects.filter(p => p.ativo);
+  if (overviewFilter === 'finalizado') data = projects.filter(p => !p.ativo);
+  if (overviewFilter === 'critico')    data = projects.filter(p => p.acao === 'CRITICO');
+  document.getElementById('overview-body').innerHTML = data.map(p => {
+    const ec = ebitdaClass(p.ebitda);
+    const gs = p.gap >= 0 ? `<span class="val-green">${fmt(p.gap)}</span>` : `<span class="val-red">${fmt(p.gap)}</span>`;
+    return `<tr>
+      <td>${p.name}</td>
+      <td class="val-muted">${p.rec}</td>
+      <td class="${ec}">${p.res}</td>
+      <td class="${ec}">${p.ebitda > 0 ? '+' : ''}${p.ebitda.toFixed(2)}%</td>
+      <td>${gs}</td>
+      <td>${acaoBadge(p.acao)}</td>
+      <td>${statusDot(p.ativo)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RENDER EBITDA TABLE ──
+function renderEbitda() {
+  const recBrutas = {
+    "Netflix":"R$ 500.000","Minions":"R$ 74.666","Fini":"R$ 161.410","Dia do Hambúrguer":"R$ 15.093",
+    "No Bread":"R$ 30.414","CB Natal 2025":"R$ 358.259","Reality Natal":"R$ 134.705",
+    "CB Novo Menu":"R$ 198.233","CB Páscoa":"R$ 202.488","Reality Páscoa":"R$ 140.084"
+  };
+  document.getElementById('ebitda-body').innerHTML = projects.map(p => {
+    const ec = ebitdaClass(p.ebitda);
+    const delta = p.ebitda - 25;
+    const deltaStr = delta >= 0
+      ? `<span class="val-green">+${delta.toFixed(2)} pp</span>`
+      : `<span class="val-red">${delta.toFixed(2)} pp</span>`;
+    return `<tr>
+      <td>${p.name}</td>
+      <td class="val-muted">${recBrutas[p.name]||''}</td>
+      <td class="${ec}">${p.res}</td>
+      <td class="${ec}">${p.ebitda > 0 ? '+' : ''}${p.ebitda.toFixed(2)}%</td>
+      <td>${deltaStr}</td>
+      <td>${statusDot(p.ativo)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RENDER OVERBURN TABLE ──
+function renderOverburn() {
+  document.getElementById('overburn-body').innerHTML = overburn.map(p => `<tr>
+    <td>${p.name}</td>
+    <td>${obClass(p.plan)}</td>
+    <td>${obClass(p.cri)}</td>
+    <td>${obClass(p.mid)}</td>
+    <td>${obClass(p.ate)}</td>
+    <td>${obClass(p.ope)}</td>
+    <td>${obClass(p.tot)}</td>
+    <td>${statusDot(p.ativo)}</td>
+  </tr>`).join('');
+}
+
+// ── RENDER CUSTO TABLE ──
+function renderCusto() {
+  document.getElementById('custo-body').innerHTML = custo.map(r => {
+    const gs = r.gap >= 0
+      ? `<span class="val-green">+R$ ${r.gap.toLocaleString('pt-BR')}</span>`
+      : `<span class="val-red">-R$ ${Math.abs(r.gap).toLocaleString('pt-BR')}</span>`;
+    return `<tr>
+      <td>${r.name}</td>
+      <td class="val-muted">${r.aprovada}</td>
+      <td class="val-muted" style="font-family:'DM Mono',monospace;font-size:12px">${r.horas}</td>
+      <td class="val-muted">${r.projetada}</td>
+      <td>${gs}</td>
+      <td>${acaoBadge(r.acao)}</td>
+      <td>${statusDot(r.ativo)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── CHARTS ──
+const chartOpts = {
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a2035', titleFont: { family: 'DM Mono' }, bodyFont: { family: 'DM Mono' } } },
+  scales: {
+    x: { ticks: { color: '#6b7591', font: { size: 10, family: 'DM Mono' }, maxRotation: 30 }, grid: { color: 'rgba(255,255,255,0.04)' } },
+    y: { ticks: { color: '#6b7591', font: { size: 10, family: 'DM Mono' } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+  }
+};
+
+const labels = projects.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+const ebitdaVals = projects.map(p => p.ebitda);
+const ebitdaColors = ebitdaVals.map(v => v >= 25 ? '#22c55e' : v >= 0 ? '#f59e0b' : '#ef4444');
+
+new Chart(document.getElementById('ebitdaChart'), {
+  type: 'bar',
+  data: { labels, datasets: [{ data: ebitdaVals, backgroundColor: ebitdaColors, borderRadius: 4 }] },
+  options: { ...chartOpts, plugins: { ...chartOpts.plugins,
+    annotation: { annotations: { line1: { type:'line', yMin:25, yMax:25, borderColor:'rgba(59,130,246,0.5)', borderWidth:1, borderDash:[4,4] } } }
+  }, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v+'%' } } } }
+});
+
+const gapVals = projects.map(p => p.gap/1000);
+const gapColors = gapVals.map(v => v >= 0 ? '#22c55e' : '#ef4444');
+new Chart(document.getElementById('gapChart'), {
+  type: 'bar',
+  data: { labels, datasets: [{ data: gapVals, backgroundColor: gapColors, borderRadius: 4 }] },
+  options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => 'R$'+v+'k' } } } }
+});
+
+const atenVals = overburn.map(p => parseInt(p.ate) || 0);
+const atenColors = atenVals.map(v => v > 200 ? '#ef4444' : v > 100 ? '#f59e0b' : '#22c55e');
+new Chart(document.getElementById('atenChart'), {
+  type: 'bar',
+  data: { labels: overburn.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.')),
+    datasets: [{ data: atenVals, backgroundColor: atenColors, borderRadius: 4 }] },
+  options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v+'%' } } } }
+});
+
+const totVals = overburn.map(p => parseInt(p.tot) || 0);
+const totColors = totVals.map(v => v > 200 ? '#ef4444' : v > 100 ? '#f59e0b' : '#22c55e');
+new Chart(document.getElementById('totalChart'), {
+  type: 'bar',
+  data: { labels: overburn.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.')),
+    datasets: [{ data: totVals, backgroundColor: totColors, borderRadius: 4 }] },
+  options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v+'%' } } } }
+});
+
+// Custo chart
+const custoLabels = custo.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+const aprovadaVals = [500, 74.7, 161.4, 15.1, 30.4, 358.3, 198.2, 134.7, 140.1, 202.5];
+const projetadaVals = [1026.2, 122.8, 57.6, 16.8, 113, 562.2, 287.8, 182.6, 182.7, 241.7];
+new Chart(document.getElementById('custoChart'), {
+  type: 'bar',
+  data: { labels: custoLabels,
+    datasets: [
+      { label: 'Proposta Aprovada', data: aprovadaVals, backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 3 },
+      { label: 'Proposta Projetada', data: projetadaVals, backgroundColor: 'rgba(239,68,68,0.5)', borderRadius: 3 }
+    ]
+  },
+  options: { ...chartOpts,
+    plugins: { legend: { display: true, labels: { color: '#6b7591', font: { family: 'DM Mono', size: 11 } } }, tooltip: chartOpts.plugins.tooltip },
+    scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => 'R$'+v+'k' } } }
+  }
+});
+
+const ebitdaDetailColors = ebitdaVals.map(v => v >= 25 ? '#22c55e' : v >= 0 ? '#f59e0b' : '#ef4444');
+new Chart(document.getElementById('ebitdaDetail'), {
+  type: 'bar',
+  data: { labels, datasets: [{
+    data: ebitdaVals, backgroundColor: ebitdaDetailColors, borderRadius: 5,
+  }] },
+  options: { ...chartOpts,
+    scales: { ...chartOpts.scales,
+      y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v+'%' } }
+    }
+  }
+});
+
+// ── INIT ──
+renderOverview();
+renderEbitda();
+renderOverburn();
+renderCusto();
+</script>
+</body>
+</html>
