@@ -612,11 +612,9 @@ function renderCusto() {
 
 // ── CHARTS ──
 const labels = projects.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
-const tooltipPct = { callbacks: { label: ctx => ` ${ctx.raw.toFixed(2)}%` } };
-const tooltipBrl = { callbacks: { label: ctx => ` R$ ${Math.abs(ctx.raw).toFixed(0)}k` } };
 const co = {
   responsive:true, maintainAspectRatio:true,
-  plugins:{legend:{display:false}, tooltip:{backgroundColor:'#111',titleFont:{family:'Red Hat Display',weight:'700'},bodyFont:{family:'Red Hat Display'}}},
+  plugins:{legend:{display:false}, tooltip:{backgroundColor:'#111',titleFont:{family:'Red Hat Display',weight:'700'},bodyFont:{family:'Red Hat Display'},callbacks:{label:ctx=>` ${ctx.raw}`}}},
   scales:{
     x:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'},maxRotation:30},grid:{color:'rgba(0,0,0,0.05)'}},
     y:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'}},grid:{color:'rgba(0,0,0,0.05)'}}
@@ -628,19 +626,19 @@ const plColors = plVals.map(v=>v>=25?'#15803d':v>=0?'#b45309':'#b91c1c');
 
 new Chart(document.getElementById('plChart'),{type:'bar',
   data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:4}]},
-  options:{...co,plugins:{...co.plugins,...tooltipPct},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const gapVals  = projects.map(p=>p.gap/1000);
 const gapColors= gapVals.map(v=>v>=0?'#15803d':'#b91c1c');
 new Chart(document.getElementById('gapChart'),{type:'bar',
   data:{labels,datasets:[{data:gapVals,backgroundColor:gapColors,borderRadius:4}]},
-  options:{...co,plugins:{...co.plugins,...tooltipBrl},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>'R$'+v+'k'}}}}
+  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` R$ ${Math.abs(ctx.raw).toFixed(1)}k`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>'R$'+v+'k'}}}}
 });
 
 new Chart(document.getElementById('plDetail'),{type:'bar',
   data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:5}]},
-  options:{...co,plugins:{...co.plugins,...tooltipPct},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const ob2=overburn.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
@@ -648,14 +646,14 @@ const atenVals=overburn.map(p=>p.ate[0]===0?0:Math.round(p.ate[1]/p.ate[0]*100))
 const atenCol =atenVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
 new Chart(document.getElementById('atenChart'),{type:'bar',
   data:{labels:ob2,datasets:[{data:atenVals,backgroundColor:atenCol,borderRadius:4}]},
-  options:{...co,plugins:{...co.plugins,...tooltipPct},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const totVals=overburn.map(p=>p.tot[0]===0?0:Math.round(p.tot[1]/p.tot[0]*100));
 const totCol =totVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
 new Chart(document.getElementById('totalChart'),{type:'bar',
   data:{labels:ob2,datasets:[{data:totVals,backgroundColor:totCol,borderRadius:4}]},
-  options:{...co,plugins:{...co.plugins,...tooltipPct},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const custoLabels=custo.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
@@ -665,7 +663,7 @@ new Chart(document.getElementById('custoChart'),{type:'bar',
     {label:'Proposta Projetada',data:[1026.2,122.8,57.6,16.8,113,562.2,287.8,182.6,182.7,241.7], backgroundColor:'#f5c800',borderRadius:3},
   ]},
   options:{...co,
-    plugins:{...co.plugins,legend:{display:true,labels:{color:'#555',font:{family:'Red Hat Display',size:11,weight:'700'}}}},
+    plugins:{...co.plugins,legend:{display:true,labels:{color:'#555',font:{family:'Red Hat Display',size:11,weight:'700'}}},tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` R$ ${ctx.raw.toFixed(1)}k`}}},
     scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>'R$'+v+'k'}}}
   }
 });
