@@ -220,6 +220,34 @@ canvas { max-height: 240px; }
 
 /* ── FOOTER ── */
 .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid var(--black); text-align: center; font-size: 11px; font-weight: 600; color: var(--light); letter-spacing: 0.5px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .header { padding: 24px 20px 20px; }
+  .header-title { font-size: 22px; }
+  .header-meta { display: none; }
+  .nav { padding: 0 12px; overflow-x: auto; }
+  .nav-btn { padding: 12px 14px; font-size: 12px; white-space: nowrap; }
+  .content { padding: 20px 16px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+  .kpi { padding: 14px; }
+  .kpi-val { font-size: 20px; }
+  .charts-grid { grid-template-columns: 1fr !important; }
+  .chart-card { padding: 16px; }
+  .section-head { flex-wrap: wrap; gap: 8px; }
+  .filters { margin-left: 0 !important; width: 100%; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { min-width: 600px; }
+  th, td { padding: 9px 12px; font-size: 12px; }
+  .header-eyebrow { font-size: 9px; }
+  canvas { max-height: 200px !important; }
+}
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr 1fr !important; }
+  .kpi-val { font-size: 18px; }
+  .kpi-sub { display: none; }
+  .header-title { font-size: 20px; }
+}
 </style>
 </head>
 <body>
@@ -423,10 +451,10 @@ canvas { max-height: 240px; }
       <div class="kpi-val green">+R$104k</div>
       <div class="kpi-sub">Fini</div>
     </div>
-    <div class="kpi"><div class="kpi-stripe yellow"></div>
-      <div class="kpi-label">Ratecards Aplicados</div>
-      <div class="kpi-val yellow">5 áreas</div>
-      <div class="kpi-sub">Plan · Cri · Mid · Ate · Ope</div>
+    <div class="kpi"><div class="kpi-stripe red"></div>
+      <div class="kpi-label">Gap Consolidado</div>
+      <div class="kpi-val red">-R$ 978k</div>
+      <div class="kpi-sub">Soma de todos os 10 projetos</div>
     </div>
   </div>
 
