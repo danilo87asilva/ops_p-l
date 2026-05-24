@@ -282,8 +282,8 @@ canvas { max-height: 240px; }
   <div class="kpi-grid">
     <div class="kpi"><div class="kpi-stripe yellow"></div>
       <div class="kpi-label">Projetos Ativos</div>
-      <div class="kpi-val">4</div>
-      <div class="kpi-sub">Netflix · Minions · Fini · Hambúrguer</div>
+      <div class="kpi-val">5</div>
+      <div class="kpi-sub">Netflix · Minions · Fini · Hambúrguer · Gamescomm</div>
     </div>
     <div class="kpi"><div class="kpi-stripe gray"></div>
       <div class="kpi-label">Projetos Finalizados</div>
@@ -322,7 +322,7 @@ canvas { max-height: 240px; }
 
   <div class="section-head">
     <div class="section-title">Resultado por Projeto</div>
-    <div class="section-pill">10 projetos</div>
+    <div class="section-pill">11 projetos</div>
     <div class="filters">
       <button class="filter-btn active" onclick="filterOverview('todos',this)">Todos</button>
       <button class="filter-btn" onclick="filterOverview('ativo',this)">🔄 Ativos</button>
@@ -347,12 +347,12 @@ canvas { max-height: 240px; }
     </div>
     <div class="kpi"><div class="kpi-stripe green"></div>
       <div class="kpi-label">Ativos acima da meta</div>
-      <div class="kpi-val green">2 / 4</div>
-      <div class="kpi-sub">Fini (+65,77%) · Hambúrguer (+34,25%)</div>
+      <div class="kpi-val green">3 / 5</div>
+      <div class="kpi-sub">Fini (+65,77%) · Gamescomm (+41,48%) · Hambúrguer (+34,25%)</div>
     </div>
     <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Ativos abaixo da meta</div>
-      <div class="kpi-val red">2 / 4</div>
+      <div class="kpi-val red">2 / 5</div>
       <div class="kpi-sub">Netflix (-94,01%) · Minions (-22,65%)</div>
     </div>
     <div class="kpi"><div class="kpi-stripe gray"></div>
@@ -381,8 +381,8 @@ canvas { max-height: 240px; }
   <div class="kpi-grid">
     <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Projetos c/ Overburn</div>
-      <div class="kpi-val amber">8 / 10</div>
-      <div class="kpi-sub">Fini e Hambúrguer abaixo de 100%</div>
+      <div class="kpi-val amber">8 / 11</div>
+      <div class="kpi-sub">Fini, Hambúrguer e Gamescomm abaixo de 100%</div>
     </div>
     <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Maior Overburn Total</div>
@@ -439,8 +439,8 @@ canvas { max-height: 240px; }
   <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Com Gap Negativo</div>
-      <div class="kpi-val red">9 / 10</div>
-      <div class="kpi-sub">Apenas Fini cobriu o custo real</div>
+      <div class="kpi-val red">8 / 11</div>
+      <div class="kpi-sub">Fini e Gamescomm cobriram o custo real</div>
     </div>
     <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Maior Gap Negativo</div>
@@ -450,12 +450,12 @@ canvas { max-height: 240px; }
     <div class="kpi"><div class="kpi-stripe green"></div>
       <div class="kpi-label">Único Gap Positivo</div>
       <div class="kpi-val green">+R$104k</div>
-      <div class="kpi-sub">Fini</div>
+      <div class="kpi-sub">Fini · Gamescomm (+R$3k)</div>
     </div>
     <div class="kpi"><div class="kpi-stripe red"></div>
       <div class="kpi-label">Gap Consolidado</div>
-      <div class="kpi-val red">-R$ 978k</div>
-      <div class="kpi-sub">Soma de todos os 10 projetos</div>
+      <div class="kpi-val red">-R$ 975k</div>
+      <div class="kpi-sub">Soma de todos os 11 projetos</div>
     </div>
   </div>
 
@@ -490,6 +490,7 @@ const projects = [
   { name:"Minions",          rec:"R$ 74.666",  res:"-R$ 14.504",  pl:-22.65, acao:"ATENCAO", ativo:true,  gap:-48087  },
   { name:"Fini",             rec:"R$ 161.410", res:"+R$ 91.034",  pl:65.77,  acao:"OK",      ativo:true,  gap:103818  },
   { name:"Dia do Hambúrguer",rec:"R$ 15.093",  res:"+R$ 4.433",   pl:34.25,  acao:"ATENCAO", ativo:true,  gap:-1724   },
+  { name:"Gamescomm",        rec:"R$ 30.275",  res:"+R$ 10.769",  pl:41.48,  acao:"OK",      ativo:true,  gap:2977    },
   { name:"No Bread",         rec:"R$ 30.414",  res:"-R$ 71.800",  pl:-275.30,acao:"CRITICO", ativo:false, gap:-82561  },
   { name:"CB Natal 2025",    rec:"R$ 358.259", res:"-R$ 82.149",  pl:-26.74, acao:"ATENCAO", ativo:false, gap:-203961 },
   { name:"Reality Natal",    rec:"R$ 134.705", res:"-R$ 27.558",  pl:-23.86, acao:"ATENCAO", ativo:false, gap:-47854  },
@@ -502,6 +503,7 @@ const overburn = [
   { name:"Minions",          plan:[52,73],   cri:[216,338],   mid:[92,41],    ate:[24,55],    ope:[24,35],   tot:[408,542],   ativo:true  },
   { name:"Fini",             plan:[94,58],   cri:[504,109],   mid:[100,18],   ate:[70,41],    ope:[72,26],   tot:[840,252],   ativo:true  },
   { name:"Dia do Hambúrguer",plan:[0,0],     cri:[66,67],     mid:[5,2],      ate:[10,5],     ope:[5,1],     tot:[86,75],     ativo:true  },
+  { name:"Gamescomm",        plan:[0,0],     cri:[136,113],   mid:[0,0],      ate:[14,8],     ope:[6,0],     tot:[156,121],   ativo:true  },
   { name:"No Bread",         plan:[0,0],     cri:[34,315],    mid:[79,40],    ate:[16,165],   ope:[14,5],    tot:[143,525],   ativo:false },
   { name:"CB Natal 2025",    plan:[120,153], cri:[1036,1477], mid:[285,594],  ate:[86,263],   ope:[44,100],  tot:[1571,2587], ativo:false },
   { name:"Reality Natal",    plan:[52,0],    cri:[312,369],   mid:[196,236],  ate:[30,133],   ope:[35,136],  tot:[625,874],   ativo:false },
@@ -514,6 +516,7 @@ const custo = [
   { name:"Minions",          horas:"542h",   projetada:"R$ 122.753",   aprovada:"R$ 74.666",  gap:-48087,  ativo:true,  acao:"ATENCAO" },
   { name:"Fini",             horas:"252h",   projetada:"R$ 57.592",    aprovada:"R$ 161.410", gap:103818,  ativo:true,  acao:"OK"      },
   { name:"Dia do Hambúrguer",horas:"75h",    projetada:"R$ 16.816",    aprovada:"R$ 15.093",  gap:-1724,   ativo:true,  acao:"ATENCAO" },
+  { name:"Gamescomm",        horas:"121h",   projetada:"R$ 27.297",    aprovada:"R$ 30.275",  gap:2977,    ativo:true,  acao:"OK"      },
   { name:"No Bread",         horas:"525h",   projetada:"R$ 112.975",   aprovada:"R$ 30.414",  gap:-82561,  ativo:false, acao:"CRITICO" },
   { name:"CB Natal 2025",    horas:"2.587h", projetada:"R$ 562.220",   aprovada:"R$ 358.259", gap:-203961, ativo:false, acao:"ATENCAO" },
   { name:"CB Novo Menu",     horas:"1.342h", projetada:"R$ 287.775",   aprovada:"R$ 198.233", gap:-89542,  ativo:false, acao:"ATENCAO" },
@@ -572,7 +575,7 @@ function renderOverview() {
 }
 
 function renderPL() {
-  const brutas=["R$ 500.000","R$ 74.666","R$ 161.410","R$ 15.093","R$ 30.414","R$ 358.259","R$ 134.705","R$ 198.233","R$ 202.488","R$ 140.084"];
+  const brutas=["R$ 500.000","R$ 74.666","R$ 161.410","R$ 15.093","R$ 30.275","R$ 30.414","R$ 358.259","R$ 134.705","R$ 198.233","R$ 202.488","R$ 140.084"];
   document.getElementById('pl-body').innerHTML=projects.map((p,i)=>{
     const ec=plClass(p.pl);
     const d=p.pl-25;
@@ -659,8 +662,8 @@ new Chart(document.getElementById('totalChart'),{type:'bar',
 const custoLabels=custo.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
 new Chart(document.getElementById('custoChart'),{type:'bar',
   data:{labels:custoLabels,datasets:[
-    {label:'Proposta Aprovada', data:[500,74.7,161.4,15.1,30.4,358.3,198.2,134.7,140.1,202.5], backgroundColor:'#111111',borderRadius:3},
-    {label:'Proposta Projetada',data:[1026.2,122.8,57.6,16.8,113,562.2,287.8,182.6,182.7,241.7], backgroundColor:'#f5c800',borderRadius:3},
+    {label:'Proposta Aprovada', data:[500,74.7,161.4,15.1,30.3,30.4,358.3,198.2,134.7,140.1,202.5], backgroundColor:'#111111',borderRadius:3},
+    {label:'Proposta Projetada',data:[1026.2,122.8,57.6,16.8,27.3,113,562.2,287.8,182.6,182.7,241.7], backgroundColor:'#f5c800',borderRadius:3},
   ]},
   options:{...co,
     plugins:{...co.plugins,legend:{display:true,labels:{color:'#555',font:{family:'Red Hat Display',size:11,weight:'700'}}},tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` R$ ${ctx.raw.toFixed(1)}k`}}},
