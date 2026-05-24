@@ -8,246 +8,121 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root {
-  --bg:      #ffffff;
-  --bg2:     #f7f7f7;
-  --bg3:     #eeeeee;
-  --border:  #e2e2e2;
-  --text:    #111111;
-  --muted:   #6b6b6b;
-  --light:   #aaaaaa;
-  --yellow:  #f5c800;
-  --yellow-d:#c9a300;
-  --black:   #111111;
-  --gray:    #555555;
-  --red:     #b91c1c;
-  --red-bg:  #fef2f2;
-  --amber:   #b45309;
-  --amber-bg:#fffbeb;
-  --green:   #15803d;
-  --green-bg:#f0fdf4;
+  --bg:#ffffff; --bg2:#f7f7f7; --border:#e2e2e2;
+  --text:#111111; --muted:#6b6b6b; --light:#aaaaaa;
+  --yellow:#f5c800; --yellow-d:#c9a300;
+  --black:#111111; --gray:#555555;
+  --red:#b91c1c; --red-bg:#fef2f2;
+  --amber:#b45309; --amber-bg:#fffbeb;
+  --green:#15803d; --green-bg:#f0fdf4;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Red Hat Display', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding-bottom: 80px;
-}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Red Hat Display',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:80px; }
 
-/* ── HEADER ── */
-.header {
-  background: var(--black);
-  padding: 36px 52px 32px;
-  position: relative;
-}
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 4px;
-  background: var(--yellow);
-}
-.header-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
-.header-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--yellow);
-  margin-bottom: 10px;
-}
-.header-title {
-  font-size: 32px;
-  font-weight: 900;
-  color: #ffffff;
-  letter-spacing: -0.5px;
-  line-height: 1.1;
-}
-.header-title em { color: var(--yellow); font-style: normal; }
-.header-sub { font-size: 13px; color: #888; margin-top: 8px; font-weight: 400; }
-.header-meta {
-  text-align: right;
-  font-size: 11px;
-  font-weight: 500;
-  color: #666;
-  line-height: 2;
-  white-space: nowrap;
-}
-.header-meta strong { color: var(--yellow); }
+.header { background:var(--black); padding:36px 52px 32px; position:relative; }
+.header::after { content:''; position:absolute; bottom:0; left:0; right:0; height:4px; background:var(--yellow); }
+.header-inner { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; }
+.header-eyebrow { font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--yellow); margin-bottom:10px; }
+.header-title { font-size:32px; font-weight:900; color:#fff; letter-spacing:-0.5px; line-height:1.1; }
+.header-title em { color:var(--yellow); font-style:normal; }
+.header-sub { font-size:13px; color:#888; margin-top:8px; }
+.header-meta { text-align:right; font-size:11px; font-weight:500; color:#666; line-height:2; white-space:nowrap; }
+.header-meta strong { color:var(--yellow); }
 
-/* ── NAV ── */
-.nav {
-  display: flex;
-  border-bottom: 2px solid var(--border);
-  padding: 0 52px;
-  background: var(--bg);
-  position: sticky; top: 0; z-index: 10;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+.nav { display:flex; border-bottom:2px solid var(--border); padding:0 52px; background:var(--bg); position:sticky; top:0; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow-x:auto; }
+.nav-btn { padding:16px 22px; font-family:'Red Hat Display',sans-serif; font-size:13px; font-weight:700; color:var(--muted); background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; transition:all .15s; margin-bottom:-2px; white-space:nowrap; }
+.nav-btn:hover { color:var(--black); }
+.nav-btn.active { color:var(--black); border-bottom-color:var(--yellow); }
+
+.content { padding:36px 52px; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+.kpi-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:32px; }
+.kpi { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:20px; position:relative; overflow:hidden; transition:box-shadow .2s,transform .15s; }
+.kpi:hover { box-shadow:0 4px 16px rgba(0,0,0,0.08); transform:translateY(-1px); }
+.kpi-stripe { position:absolute; top:0; left:0; right:0; height:4px; }
+.kpi-stripe.yellow { background:var(--yellow); }
+.kpi-stripe.black  { background:var(--black); }
+.kpi-stripe.red    { background:var(--red); }
+.kpi-stripe.green  { background:var(--green); }
+.kpi-stripe.gray   { background:#999; }
+.kpi-label { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.kpi-val { font-size:28px; font-weight:900; line-height:1; letter-spacing:-1px; color:var(--black); }
+.kpi-val.red   { color:var(--red); }
+.kpi-val.green { color:var(--green); }
+.kpi-val.amber { color:var(--amber); }
+.kpi-val.yellow { color:var(--yellow-d); }
+.kpi-val.gray  { color:var(--gray); }
+.kpi-sub { font-size:11px; font-weight:500; color:var(--muted); margin-top:8px; line-height:1.4; }
+
+.section-head { display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid var(--black); flex-wrap:wrap; }
+.section-title { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:1px; }
+.section-pill { background:var(--yellow); color:var(--black); font-size:10px; font-weight:800; padding:2px 8px; border-radius:3px; }
+.filters { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-left:auto; }
+.filter-btn { padding:5px 14px; border-radius:4px; border:1.5px solid var(--border); background:var(--bg); color:var(--muted); font-family:'Red Hat Display',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:all .15s; }
+.filter-btn:hover { border-color:var(--black); color:var(--black); }
+.filter-btn.active { background:var(--black); border-color:var(--black); color:#fff; }
+
+.table-wrap { border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:32px; overflow-x:auto; }
+table { width:100%; border-collapse:collapse; min-width:600px; }
+th { background:var(--black); font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#ccc; padding:12px 16px; text-align:left; white-space:nowrap; }
+th:not(:first-child) { text-align:center; }
+td { padding:11px 16px; font-size:13px; font-weight:500; border-bottom:1px solid var(--border); text-align:center; background:var(--bg); transition:background .1s; }
+td:first-child { text-align:left; font-weight:700; }
+tr:last-child td { border-bottom:none; }
+tr:nth-child(even) td { background:#fafafa; }
+tr:hover td { background:#fffde7 !important; }
+
+.badge { display:inline-block; padding:3px 9px; border-radius:4px; font-size:10px; font-weight:800; letter-spacing:0.5px; }
+.badge-red   { background:var(--red-bg);   color:var(--red); }
+.badge-amber { background:var(--amber-bg); color:var(--amber); }
+.badge-green { background:var(--green-bg); color:var(--green); }
+.val-red   { color:var(--red);   font-weight:700; }
+.val-green { color:var(--green); font-weight:700; }
+.val-amber { color:var(--amber); font-weight:700; }
+.val-muted { color:var(--muted); }
+
+.ob-red   { background:var(--red-bg);   color:var(--red);   font-size:11px; font-weight:700; border-radius:3px; padding:2px 6px; display:inline-block; }
+.ob-amber { background:var(--amber-bg); color:var(--amber); font-size:11px; font-weight:700; border-radius:3px; padding:2px 6px; display:inline-block; }
+.ob-green { background:var(--green-bg); color:var(--green); font-size:11px; font-weight:700; border-radius:3px; padding:2px 6px; display:inline-block; }
+.ob-muted { color:var(--light); font-size:11px; }
+.ob-black { color:var(--black); font-size:11px; font-weight:700; }
+.ob-sep   { color:var(--border); font-size:11px; margin:0 2px; }
+
+.charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:32px; }
+.chart-card { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:22px 24px; }
+.chart-card-title { font-size:13px; font-weight:800; margin-bottom:4px; }
+.chart-card-sub   { font-size:11px; font-weight:500; color:var(--muted); margin-bottom:18px; }
+canvas { max-height:240px; }
+
+.status-dot { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--muted); }
+.dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.dot-active { background:var(--yellow); box-shadow:0 0 0 2px rgba(245,200,0,0.3); }
+.dot-done   { background:var(--light); }
+
+.legend { display:flex; gap:16px; flex-wrap:wrap; }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:var(--muted); }
+.legend-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+.footer { margin-top:40px; padding-top:20px; border-top:2px solid var(--black); text-align:center; font-size:11px; font-weight:600; color:var(--light); letter-spacing:0.5px; }
+
+@media (max-width:768px) {
+  .header { padding:24px 20px 20px; }
+  .header-title { font-size:22px; }
+  .header-meta { display:none; }
+  .nav { padding:0 12px; }
+  .nav-btn { padding:12px 14px; font-size:12px; }
+  .content { padding:20px 16px; }
+  .kpi-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px; }
+  .kpi { padding:14px; }
+  .kpi-val { font-size:20px; }
+  .charts-grid { grid-template-columns:1fr !important; }
+  .chart-card { padding:16px; }
+  canvas { max-height:200px !important; }
 }
-.nav-btn {
-  padding: 16px 22px;
-  font-family: 'Red Hat Display', sans-serif;
-  font-size: 13px; font-weight: 700;
-  color: var(--muted);
-  background: none; border: none;
-  border-bottom: 3px solid transparent;
-  cursor: pointer; transition: all .15s;
-  margin-bottom: -2px;
-}
-.nav-btn:hover { color: var(--black); }
-.nav-btn.active { color: var(--black); border-bottom-color: var(--yellow); }
-
-/* ── CONTENT ── */
-.content { padding: 36px 52px; }
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* ── KPI CARDS ── */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin-bottom: 32px;
-}
-.kpi {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  transition: box-shadow .2s, transform .15s;
-}
-.kpi:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
-.kpi-stripe {
-  position: absolute; top: 0; left: 0; right: 0; height: 4px;
-}
-.kpi-stripe.yellow { background: var(--yellow); }
-.kpi-stripe.black  { background: var(--black); }
-.kpi-stripe.red    { background: var(--red); }
-.kpi-stripe.green  { background: var(--green); }
-.kpi-stripe.gray   { background: #999; }
-.kpi-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
-.kpi-val { font-size: 28px; font-weight: 900; line-height: 1; letter-spacing: -1px; color: var(--black); }
-.kpi-val.red   { color: var(--red); }
-.kpi-val.green { color: var(--green); }
-.kpi-val.amber { color: var(--amber); }
-.kpi-val.yellow { color: var(--yellow-d); }
-.kpi-val.gray  { color: var(--gray); }
-.kpi-sub { font-size: 11px; font-weight: 500; color: var(--muted); margin-top: 8px; line-height: 1.4; }
-
-/* ── SECTION HEAD ── */
-.section-head {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 14px; padding-bottom: 12px;
-  border-bottom: 2px solid var(--black);
-}
-.section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-.section-pill {
-  background: var(--yellow); color: var(--black);
-  font-size: 10px; font-weight: 800;
-  padding: 2px 8px; border-radius: 3px; letter-spacing: 0.5px;
-}
-
-/* ── FILTERS ── */
-.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-left: auto; margin-bottom: 0; }
-.filter-btn {
-  padding: 5px 14px; border-radius: 4px;
-  border: 1.5px solid var(--border);
-  background: var(--bg); color: var(--muted);
-  font-family: 'Red Hat Display', sans-serif;
-  font-size: 12px; font-weight: 700; cursor: pointer; transition: all .15s;
-}
-.filter-btn:hover { border-color: var(--black); color: var(--black); }
-.filter-btn.active { background: var(--black); border-color: var(--black); color: #fff; }
-
-/* ── TABLE ── */
-.table-wrap { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 32px; }
-table { width: 100%; border-collapse: collapse; }
-th {
-  background: var(--black);
-  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-  text-transform: uppercase; color: #ccc;
-  padding: 12px 16px; text-align: left;
-}
-th:not(:first-child) { text-align: center; }
-td {
-  padding: 11px 16px; font-size: 13px; font-weight: 500;
-  border-bottom: 1px solid var(--border);
-  text-align: center; background: var(--bg);
-  transition: background .1s;
-}
-td:first-child { text-align: left; font-weight: 700; }
-tr:last-child td { border-bottom: none; }
-tr:nth-child(even) td { background: #fafafa; }
-tr:hover td { background: #fffde7 !important; }
-
-/* ── BADGES ── */
-.badge { display: inline-block; padding: 3px 9px; border-radius: 4px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; }
-.badge-red    { background: var(--red-bg);   color: var(--red); }
-.badge-amber  { background: var(--amber-bg); color: var(--amber); }
-.badge-green  { background: var(--green-bg); color: var(--green); }
-
-.val-red   { color: var(--red);   font-weight: 700; }
-.val-green { color: var(--green); font-weight: 700; }
-.val-amber { color: var(--amber); font-weight: 700; }
-.val-muted { color: var(--muted); }
-
-/* ── OVERBURN ── */
-.ob-red   { background: var(--red-bg);   color: var(--red);   font-size: 11px; font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; }
-.ob-amber { background: var(--amber-bg); color: var(--amber); font-size: 11px; font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; }
-.ob-green { background: var(--green-bg); color: var(--green); font-size: 11px; font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; }
-.ob-muted { color: var(--light); font-size: 11px; }
-.ob-sep { color: var(--border); font-size: 11px; margin: 0 2px; }
-
-/* ── CHARTS ── */
-.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
-.chart-card { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 22px 24px; }
-.chart-card-title { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
-.chart-card-sub   { font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 18px; }
-canvas { max-height: 240px; }
-
-/* ── STATUS ── */
-.status-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--muted); }
-.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.dot-active { background: var(--yellow); box-shadow: 0 0 0 2px rgba(245,200,0,0.3); }
-.dot-done   { background: var(--light); }
-
-/* ── LEGEND ── */
-.legend { display: flex; gap: 16px; flex-wrap: wrap; }
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--muted); }
-.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
-/* ── FOOTER ── */
-.footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid var(--black); text-align: center; font-size: 11px; font-weight: 600; color: var(--light); letter-spacing: 0.5px; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  .header { padding: 24px 20px 20px; }
-  .header-title { font-size: 22px; }
-  .header-meta { display: none; }
-  .nav { padding: 0 12px; overflow-x: auto; }
-  .nav-btn { padding: 12px 14px; font-size: 12px; white-space: nowrap; }
-  .content { padding: 20px 16px; }
-  .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
-  .kpi { padding: 14px; }
-  .kpi-val { font-size: 20px; }
-  .charts-grid { grid-template-columns: 1fr !important; }
-  .chart-card { padding: 16px; }
-  .section-head { flex-wrap: wrap; gap: 8px; }
-  .filters { margin-left: 0 !important; width: 100%; }
-  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { min-width: 600px; }
-  th, td { padding: 9px 12px; font-size: 12px; }
-  .header-eyebrow { font-size: 9px; }
-  canvas { max-height: 200px !important; }
-}
-@media (max-width: 480px) {
-  .kpi-grid { grid-template-columns: 1fr 1fr !important; }
-  .kpi-val { font-size: 18px; }
-  .kpi-sub { display: none; }
-  .header-title { font-size: 20px; }
+@media (max-width:480px) {
+  .kpi-grid { grid-template-columns:1fr 1fr !important; }
+  .kpi-sub { display:none; }
 }
 </style>
 </head>
@@ -260,11 +135,7 @@ canvas { max-height: 240px; }
       <div class="header-title">P&amp;L <em>Dashboard</em></div>
       <div class="header-sub">Análise de Resultados, Rentabilidade e Aprendizados</div>
     </div>
-    <div class="header-meta">
-      Ampfy | Bauducco<br>
-      Atualização: 24/05/2026<br>
-      <strong>v43</strong>
-    </div>
+    <div class="header-meta">Ampfy | Bauducco<br>Atualização: 24/05/2026<br><strong>v43</strong></div>
   </div>
 </div>
 
@@ -272,41 +143,30 @@ canvas { max-height: 240px; }
   <button class="nav-btn active" onclick="showTab('overview',this)">Visão Geral</button>
   <button class="nav-btn" onclick="showTab('pl',this)">P&amp;L</button>
   <button class="nav-btn" onclick="showTab('overburn',this)">Overburn</button>
-  <button class="nav-btn" onclick="showTab('custo',this)">Análise de Custo</button>
+  <button class="nav-btn" onclick="showTab('custo',this)">Análise Propostas Comerciais</button>
 </div>
 
 <div class="content">
 
-<!-- ══ VISÃO GERAL ══ -->
+<!-- VISÃO GERAL -->
 <div id="tab-overview" class="tab-panel active">
   <div class="kpi-grid">
     <div class="kpi"><div class="kpi-stripe yellow"></div>
-      <div class="kpi-label">Projetos Ativos</div>
-      <div class="kpi-val">5</div>
-      <div class="kpi-sub">Netflix · Minions · Fini · Hambúrguer · Gamescomm</div>
-    </div>
+      <div class="kpi-label">Projetos Ativos</div><div class="kpi-val">4</div>
+      <div class="kpi-sub">Netflix · Minions · Fini · Hambúrguer</div></div>
     <div class="kpi"><div class="kpi-stripe gray"></div>
-      <div class="kpi-label">Projetos Finalizados</div>
-      <div class="kpi-val gray">6</div>
-      <div class="kpi-sub">No Bread · CB Natal · Reality...</div>
-    </div>
+      <div class="kpi-label">Projetos Finalizados</div><div class="kpi-val gray">7</div>
+      <div class="kpi-sub">No Bread · CB Natal · Gamescomm...</div></div>
     <div class="kpi"><div class="kpi-stripe green"></div>
-      <div class="kpi-label">Melhor P&amp;L Ativo</div>
-      <div class="kpi-val green">+65,77%</div>
-      <div class="kpi-sub">Fini</div>
-    </div>
+      <div class="kpi-label">Melhor P&amp;L Ativo</div><div class="kpi-val green">+65,77%</div>
+      <div class="kpi-sub">Fini</div></div>
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Pior P&amp;L Geral</div>
-      <div class="kpi-val red">-275,30%</div>
-      <div class="kpi-sub">No Bread</div>
-    </div>
+      <div class="kpi-label">Pior P&amp;L Geral</div><div class="kpi-val red">-275,30%</div>
+      <div class="kpi-sub">No Bread</div></div>
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Maior Gap Negativo</div>
-      <div class="kpi-val red">-R$526k</div>
-      <div class="kpi-sub">Netflix</div>
-    </div>
+      <div class="kpi-label">Maior Gap Negativo</div><div class="kpi-val red">-R$526k</div>
+      <div class="kpi-sub">Netflix</div></div>
   </div>
-
   <div class="charts-grid">
     <div class="chart-card">
       <div class="chart-card-title">P&amp;L % por Projeto</div>
@@ -319,7 +179,6 @@ canvas { max-height: 240px; }
       <canvas id="gapChart"></canvas>
     </div>
   </div>
-
   <div class="section-head">
     <div class="section-title">Resultado por Projeto</div>
     <div class="section-pill">11 projetos</div>
@@ -332,80 +191,59 @@ canvas { max-height: 240px; }
   </div>
   <div class="table-wrap">
     <table><thead><tr>
-      <th>Projeto</th><th>Rec. Bruta</th><th>Resultado</th><th>P&amp;L %</th><th>Gap Custo</th><th>Ação</th><th>Status</th>
+      <th>Projeto</th><th>Rec. Bruta</th><th>Receita Final</th><th>P&amp;L %</th><th>Gap Custo</th><th>Ação</th><th>Status</th>
     </tr></thead><tbody id="overview-body"></tbody></table>
   </div>
 </div>
 
-<!-- ══ P&L ══ -->
+<!-- P&L -->
 <div id="tab-pl" class="tab-panel">
   <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi"><div class="kpi-stripe yellow"></div>
-      <div class="kpi-label">Meta P&amp;L</div>
-      <div class="kpi-val yellow">25%</div>
-      <div class="kpi-sub">Target definido pela operação</div>
-    </div>
+      <div class="kpi-label">Meta P&amp;L</div><div class="kpi-val yellow">25%</div>
+      <div class="kpi-sub">Target definido pela operação</div></div>
     <div class="kpi"><div class="kpi-stripe green"></div>
-      <div class="kpi-label">Ativos acima da meta</div>
-      <div class="kpi-val green">3 / 5</div>
-      <div class="kpi-sub">Fini (+65,77%) · Gamescomm (+41,48%) · Hambúrguer (+34,25%)</div>
-    </div>
+      <div class="kpi-label">Ativos acima da meta</div><div class="kpi-val green">2 / 4</div>
+      <div class="kpi-sub">Fini (+65,77%) · Hambúrguer (+34,25%)</div></div>
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Ativos abaixo da meta</div>
-      <div class="kpi-val red">2 / 5</div>
-      <div class="kpi-sub">Netflix (-94,01%) · Minions (-22,65%)</div>
-    </div>
+      <div class="kpi-label">Ativos abaixo da meta</div><div class="kpi-val red">2 / 4</div>
+      <div class="kpi-sub">Netflix (-94,01%) · Minions (-22,65%)</div></div>
     <div class="kpi"><div class="kpi-stripe gray"></div>
-      <div class="kpi-label">Finalizados positivos</div>
-      <div class="kpi-val gray">0 / 6</div>
-      <div class="kpi-sub">Nenhum cobriu o custo real</div>
-    </div>
+      <div class="kpi-label">Finalizados positivos</div><div class="kpi-val gray">1 / 7</div>
+      <div class="kpi-sub">Gamescomm (+41,48%)</div></div>
   </div>
-
   <div class="chart-card" style="margin-bottom:24px">
     <div class="chart-card-title">P&amp;L % por Projeto — linha de meta: 25%</div>
-    <div class="chart-card-sub">🔴 Abaixo de 0% &nbsp;·&nbsp; 🟡 Entre 0% e 25% &nbsp;·&nbsp; 🟢 Acima de 25%</div>
+    <div class="chart-card-sub">🔴 Abaixo de 0% · 🟡 Entre 0% e 25% · 🟢 Acima de 25%</div>
     <canvas id="plDetail" style="max-height:300px"></canvas>
   </div>
-
   <div class="section-head"><div class="section-title">Tabela P&amp;L Detalhada</div></div>
   <div class="table-wrap">
     <table><thead><tr>
-      <th>Projeto</th><th>Rec. Bruta</th><th>Resultado</th><th>P&amp;L %</th><th>Status</th>
+      <th>Projeto</th><th>Rec. Bruta</th><th>Receita Final</th><th>P&amp;L %</th><th>Status</th>
     </tr></thead><tbody id="pl-body"></tbody></table>
   </div>
 </div>
 
-<!-- ══ OVERBURN ══ -->
+<!-- OVERBURN -->
 <div id="tab-overburn" class="tab-panel">
   <div class="kpi-grid">
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Projetos c/ Overburn</div>
-      <div class="kpi-val amber">8 / 11</div>
-      <div class="kpi-sub">Fini, Hambúrguer e Gamescomm abaixo de 100%</div>
-    </div>
+      <div class="kpi-label">Projetos c/ Overburn</div><div class="kpi-val amber">8 / 11</div>
+      <div class="kpi-sub">Fini, Hambúrguer e Gamescomm abaixo de 100%</div></div>
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Maior Overburn Total</div>
-      <div class="kpi-val red">367%</div>
-      <div class="kpi-sub">No Bread</div>
-    </div>
+      <div class="kpi-label">Maior Overburn Total</div><div class="kpi-val red">367%</div>
+      <div class="kpi-sub">No Bread</div></div>
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Depto mais crítico</div>
-      <div class="kpi-val red">Atend.</div>
-      <div class="kpi-sub">Overburn em 9 de 10 projetos</div>
-    </div>
+      <div class="kpi-label">Top Overburn Atend.</div><div class="kpi-val red">1.031%</div>
+      <div class="kpi-sub">No Bread</div></div>
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Pior Atendimento</div>
-      <div class="kpi-val red">1.031%</div>
-      <div class="kpi-sub">No Bread</div>
-    </div>
+      <div class="kpi-label">Top Overburn Criação</div><div class="kpi-val red">926%</div>
+      <div class="kpi-sub">No Bread</div></div>
     <div class="kpi"><div class="kpi-stripe green"></div>
-      <div class="kpi-label">Melhor Controle</div>
-      <div class="kpi-val green">30%</div>
-      <div class="kpi-sub">Fini — total consumido</div>
-    </div>
+      <div class="kpi-label">Melhor Controle</div><div class="kpi-val green">30%</div>
+      <div class="kpi-sub">Fini — total consumido</div></div>
   </div>
-
   <div class="charts-grid">
     <div class="chart-card">
       <div class="chart-card-title">Overburn de Atendimento</div>
@@ -418,13 +256,11 @@ canvas { max-height: 240px; }
       <canvas id="totalChart"></canvas>
     </div>
   </div>
-
   <div class="section-head">
     <div class="section-title">Overburn por Departamento</div>
     <div class="legend" style="margin-left:auto">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--red-bg);border:1px solid var(--red)"></div>Acima de 200%</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--amber-bg);border:1px solid var(--amber)"></div>101–200%</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--green-bg);border:1px solid var(--green)"></div>Até 100%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red-bg);border:1px solid var(--red)"></div>Consumido &gt; Vendido</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green-bg);border:1px solid var(--green)"></div>Consumido ≤ Vendido</div>
     </div>
   </div>
   <div class="table-wrap">
@@ -434,42 +270,30 @@ canvas { max-height: 240px; }
   </div>
 </div>
 
-<!-- ══ CUSTO ══ -->
+<!-- ANÁLISE PROPOSTAS COMERCIAIS -->
 <div id="tab-custo" class="tab-panel">
   <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Com Gap Negativo</div>
-      <div class="kpi-val red">8 / 11</div>
-      <div class="kpi-sub">Fini e Gamescomm cobriram o custo real</div>
-    </div>
+      <div class="kpi-label">Com Gap Negativo</div><div class="kpi-val red">9 / 11</div>
+      <div class="kpi-sub">Fini e Gamescomm cobriram o custo</div></div>
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Maior Gap Negativo</div>
-      <div class="kpi-val red">-R$526k</div>
-      <div class="kpi-sub">Netflix</div>
-    </div>
+      <div class="kpi-label">Maior Gap Negativo</div><div class="kpi-val red">-R$526k</div>
+      <div class="kpi-sub">Netflix</div></div>
     <div class="kpi"><div class="kpi-stripe green"></div>
-      <div class="kpi-label">Único Gap Positivo</div>
-      <div class="kpi-val green">+R$104k</div>
-      <div class="kpi-sub">Fini · Gamescomm (+R$3k)</div>
-    </div>
+      <div class="kpi-label">Maior Gap Positivo</div><div class="kpi-val green">+R$104k</div>
+      <div class="kpi-sub">Fini</div></div>
     <div class="kpi"><div class="kpi-stripe red"></div>
-      <div class="kpi-label">Gap Consolidado</div>
-      <div class="kpi-val red">-R$ 975k</div>
-      <div class="kpi-sub">Soma de todos os 11 projetos</div>
-    </div>
+      <div class="kpi-label">Gap Consolidado</div><div class="kpi-val red">-R$975k</div>
+      <div class="kpi-sub">Soma de todos os 11 projetos</div></div>
   </div>
-
   <div class="chart-card" style="margin-bottom:24px">
     <div class="chart-card-title">Proposta Aprovada vs Proposta Projetada</div>
-    <div class="chart-card-sub">R$ mil — ■ preto = aprovada &nbsp;·&nbsp; ■ amarelo = projetada</div>
+    <div class="chart-card-sub">R$ mil — ■ amarelo = aprovada · ■ verde = projetada abaixo da aprovada · ■ vermelho = projetada acima da aprovada</div>
     <canvas id="custoChart" style="max-height:280px"></canvas>
   </div>
-
   <div class="section-head">
-    <div class="section-title">Análise de Custo por Projeto</div>
-    <span style="font-size:10px;font-weight:600;color:var(--muted);margin-left:auto">
-      Plan R$274,70 · Cri R$227,50 · Mid R$187,50 · Ate R$198,70 · Ope R$205,40
-    </span>
+    <div class="section-title">Análise Propostas Comerciais</div>
+    <span style="font-size:10px;font-weight:600;color:var(--muted);margin-left:auto">Plan R$274,70 · Cri R$227,50 · Mid R$187,50 · Ate R$198,70 · Ope R$205,40</span>
   </div>
   <div class="table-wrap">
     <table><thead><tr>
@@ -479,9 +303,8 @@ canvas { max-height: 240px; }
 </div>
 
 </div>
-
 <div class="content" style="padding-top:0">
-  <div class="footer">Documento gerado com apoio de IA &nbsp;·&nbsp; Ampfy | Bauducco | Maio 2026 &nbsp;·&nbsp; v43</div>
+  <div class="footer">Documento gerado com apoio de IA · Ampfy | Bauducco | Maio 2026 · v43</div>
 </div>
 
 <script>
@@ -490,7 +313,7 @@ const projects = [
   { name:"Minions",          rec:"R$ 74.666",  res:"-R$ 14.504",  pl:-22.65, acao:"ATENCAO", ativo:true,  gap:-48087  },
   { name:"Fini",             rec:"R$ 161.410", res:"+R$ 91.034",  pl:65.77,  acao:"OK",      ativo:true,  gap:103818  },
   { name:"Dia do Hambúrguer",rec:"R$ 15.093",  res:"+R$ 4.433",   pl:34.25,  acao:"ATENCAO", ativo:true,  gap:-1724   },
-  { name:"Gamescomm",        rec:"R$ 30.275",  res:"+R$ 10.769",  pl:41.48,  acao:"OK",      ativo:true,  gap:2977    },
+  { name:"Gamescomm",        rec:"R$ 30.275",  res:"+R$ 10.769",  pl:41.48,  acao:"OK",      ativo:false, gap:2977    },
   { name:"No Bread",         rec:"R$ 30.414",  res:"-R$ 71.800",  pl:-275.30,acao:"CRITICO", ativo:false, gap:-82561  },
   { name:"CB Natal 2025",    rec:"R$ 358.259", res:"-R$ 82.149",  pl:-26.74, acao:"ATENCAO", ativo:false, gap:-203961 },
   { name:"Reality Natal",    rec:"R$ 134.705", res:"-R$ 27.558",  pl:-23.86, acao:"ATENCAO", ativo:false, gap:-47854  },
@@ -498,12 +321,13 @@ const projects = [
   { name:"CB Páscoa",        rec:"R$ 202.488", res:"-R$ 10.324",  pl:-5.95,  acao:"ATENCAO", ativo:false, gap:-39248  },
   { name:"Reality Páscoa",   rec:"R$ 140.084", res:"-R$ 869",     pl:-0.72,  acao:"ATENCAO", ativo:false, gap:-42638  },
 ];
+
 const overburn = [
   { name:"Netflix",          plan:[228,215], cri:[1396,2381], mid:[294,1180], ate:[112,696],  ope:[73,321],  tot:[2103,4793], ativo:true  },
   { name:"Minions",          plan:[52,73],   cri:[216,338],   mid:[92,41],    ate:[24,55],    ope:[24,35],   tot:[408,542],   ativo:true  },
   { name:"Fini",             plan:[94,58],   cri:[504,109],   mid:[100,18],   ate:[70,41],    ope:[72,26],   tot:[840,252],   ativo:true  },
   { name:"Dia do Hambúrguer",plan:[0,0],     cri:[66,67],     mid:[5,2],      ate:[10,5],     ope:[5,1],     tot:[86,75],     ativo:true  },
-  { name:"Gamescomm",        plan:[0,0],     cri:[136,113],   mid:[0,0],      ate:[14,8],     ope:[6,0],     tot:[156,121],   ativo:true  },
+  { name:"Gamescomm",        plan:[0,0],     cri:[136,113],   mid:[0,0],      ate:[14,8],     ope:[6,0],     tot:[156,121],   ativo:false },
   { name:"No Bread",         plan:[0,0],     cri:[34,315],    mid:[79,40],    ate:[16,165],   ope:[14,5],    tot:[143,525],   ativo:false },
   { name:"CB Natal 2025",    plan:[120,153], cri:[1036,1477], mid:[285,594],  ate:[86,263],   ope:[44,100],  tot:[1571,2587], ativo:false },
   { name:"Reality Natal",    plan:[52,0],    cri:[312,369],   mid:[196,236],  ate:[30,133],   ope:[35,136],  tot:[625,874],   ativo:false },
@@ -511,18 +335,19 @@ const overburn = [
   { name:"CB Novo Menu",     plan:[66,102],  cri:[596,585],   mid:[157,349],  ate:[68,242],   ope:[28,64],   tot:[915,1342],  ativo:false },
   { name:"CB Páscoa",        plan:[68,110],  cri:[639,641],   mid:[176,176],  ate:[66,87],    ope:[42,75],   tot:[991,1089],  ativo:false },
 ];
+
 const custo = [
-  { name:"Netflix",          horas:"4.793h", projetada:"R$ 1.026.217", aprovada:"R$ 500.000", gap:-526217, ativo:true,  acao:"CRITICO" },
-  { name:"Minions",          horas:"542h",   projetada:"R$ 122.753",   aprovada:"R$ 74.666",  gap:-48087,  ativo:true,  acao:"ATENCAO" },
-  { name:"Fini",             horas:"252h",   projetada:"R$ 57.592",    aprovada:"R$ 161.410", gap:103818,  ativo:true,  acao:"OK"      },
-  { name:"Dia do Hambúrguer",horas:"75h",    projetada:"R$ 16.816",    aprovada:"R$ 15.093",  gap:-1724,   ativo:true,  acao:"ATENCAO" },
-  { name:"Gamescomm",        horas:"121h",   projetada:"R$ 27.297",    aprovada:"R$ 30.275",  gap:2977,    ativo:true,  acao:"OK"      },
-  { name:"No Bread",         horas:"525h",   projetada:"R$ 112.975",   aprovada:"R$ 30.414",  gap:-82561,  ativo:false, acao:"CRITICO" },
-  { name:"CB Natal 2025",    horas:"2.587h", projetada:"R$ 562.220",   aprovada:"R$ 358.259", gap:-203961, ativo:false, acao:"ATENCAO" },
-  { name:"CB Novo Menu",     horas:"1.342h", projetada:"R$ 287.775",   aprovada:"R$ 198.233", gap:-89542,  ativo:false, acao:"ATENCAO" },
-  { name:"Reality Natal",    horas:"874h",   projetada:"R$ 182.559",   aprovada:"R$ 134.705", gap:-47854,  ativo:false, acao:"ATENCAO" },
-  { name:"Reality Páscoa",   horas:"881h",   projetada:"R$ 182.722",   aprovada:"R$ 140.084", gap:-42638,  ativo:false, acao:"ATENCAO" },
-  { name:"CB Páscoa",        horas:"1.089h", projetada:"R$ 241.736",   aprovada:"R$ 202.488", gap:-39248,  ativo:false, acao:"ATENCAO" },
+  { name:"Netflix",          horas:"4.793h", projetada:"R$ 1.026.217", aprovada:"R$ 500.000", apv:500,   prj:1026.2, gap:-526217, ativo:true,  acao:"CRITICO" },
+  { name:"Minions",          horas:"542h",   projetada:"R$ 122.753",   aprovada:"R$ 74.666",  apv:74.7,  prj:122.8,  gap:-48087,  ativo:true,  acao:"ATENCAO" },
+  { name:"Fini",             horas:"252h",   projetada:"R$ 57.592",    aprovada:"R$ 161.410", apv:161.4, prj:57.6,   gap:103818,  ativo:true,  acao:"OK"      },
+  { name:"Dia do Hambúrguer",horas:"75h",    projetada:"R$ 16.816",    aprovada:"R$ 15.093",  apv:15.1,  prj:16.8,   gap:-1724,   ativo:true,  acao:"ATENCAO" },
+  { name:"Gamescomm",        horas:"121h",   projetada:"R$ 27.297",    aprovada:"R$ 30.275",  apv:30.3,  prj:27.3,   gap:2977,    ativo:false, acao:"OK"      },
+  { name:"No Bread",         horas:"525h",   projetada:"R$ 112.975",   aprovada:"R$ 30.414",  apv:30.4,  prj:113.0,  gap:-82561,  ativo:false, acao:"CRITICO" },
+  { name:"CB Natal 2025",    horas:"2.587h", projetada:"R$ 562.220",   aprovada:"R$ 358.259", apv:358.3, prj:562.2,  gap:-203961, ativo:false, acao:"ATENCAO" },
+  { name:"CB Novo Menu",     horas:"1.342h", projetada:"R$ 287.775",   aprovada:"R$ 198.233", apv:198.2, prj:287.8,  gap:-89542,  ativo:false, acao:"ATENCAO" },
+  { name:"Reality Natal",    horas:"874h",   projetada:"R$ 182.559",   aprovada:"R$ 134.705", apv:134.7, prj:182.6,  gap:-47854,  ativo:false, acao:"ATENCAO" },
+  { name:"Reality Páscoa",   horas:"881h",   projetada:"R$ 182.722",   aprovada:"R$ 140.084", apv:140.1, prj:182.7,  gap:-42638,  ativo:false, acao:"ATENCAO" },
+  { name:"CB Páscoa",        horas:"1.089h", projetada:"R$ 241.736",   aprovada:"R$ 202.488", apv:202.5, prj:241.7,  gap:-39248,  ativo:false, acao:"ATENCAO" },
 ];
 
 const fmt = v => v>=0 ? `+R$ ${(v/1000).toFixed(0)}k` : `-R$ ${(Math.abs(v)/1000).toFixed(0)}k`;
@@ -536,12 +361,14 @@ function statusDot(ativo) {
     ? `<span class="status-dot"><span class="dot dot-active"></span>Em andamento</span>`
     : `<span class="status-dot"><span class="dot dot-done"></span>Finalizado</span>`;
 }
-function obClass(v) {
-  if(v==='n/a') return `<span class="ob-muted">n/a</span>`;
-  const n=parseInt(v);
-  if(n>200) return `<span class="ob-red">${v}</span>`;
-  if(n>100) return `<span class="ob-amber">${v}</span>`;
-  return `<span class="ob-green">${v}</span>`;
+function obHoursCell(arr) {
+  if(!arr||(arr[0]===0&&arr[1]===0)) return `<td><span class="ob-muted">n/a</span></td>`;
+  const [v,c] = arr;
+  const pct = v===0?null:Math.round(c/v*100);
+  const over = v===0?true:c>v;
+  const cls = over?'ob-red':'ob-green';
+  const pctStr = pct!==null?` (${pct}%)`:'';
+  return `<td><span class="ob-black">${v}</span> <span class="ob-sep">/</span> <span class="${cls}">${c}${pctStr}</span></td>`;
 }
 function plClass(v) { return v<0?'val-red':v<25?'val-amber':'val-green'; }
 
@@ -561,9 +388,9 @@ function filterOverview(f,btn) {
 }
 function renderOverview() {
   let data=projects;
-  if(ovFilter==='ativo')     data=projects.filter(p=>p.ativo);
+  if(ovFilter==='ativo')      data=projects.filter(p=>p.ativo);
   if(ovFilter==='finalizado') data=projects.filter(p=>!p.ativo);
-  if(ovFilter==='critico')   data=projects.filter(p=>p.acao==='CRITICO');
+  if(ovFilter==='critico')    data=projects.filter(p=>p.acao==='CRITICO');
   document.getElementById('overview-body').innerHTML=data.map(p=>{
     const ec=plClass(p.pl);
     const gs=p.gap>=0?`<span class="val-green">${fmt(p.gap)}</span>`:`<span class="val-red">${fmt(p.gap)}</span>`;
@@ -578,7 +405,6 @@ function renderPL() {
   const brutas=["R$ 500.000","R$ 74.666","R$ 161.410","R$ 15.093","R$ 30.275","R$ 30.414","R$ 358.259","R$ 134.705","R$ 198.233","R$ 202.488","R$ 140.084"];
   document.getElementById('pl-body').innerHTML=projects.map((p,i)=>{
     const ec=plClass(p.pl);
-    const d=p.pl-25;
     return `<tr><td>${p.name}</td><td class="val-muted">${brutas[i]}</td>
       <td class="${ec}">${p.res}</td>
       <td class="${ec}">${p.pl>0?'+':''}${p.pl.toFixed(2)}%</td>
@@ -586,15 +412,6 @@ function renderPL() {
   }).join('');
 }
 
-function obHoursCell(arr) {
-  if (!arr || (arr[0]===0 && arr[1]===0)) return `<td><span class="ob-muted">n/a</span></td>`;
-  const [v, c] = arr;
-  const pct = v===0 ? null : Math.round(c/v*100);
-  const over = v===0 ? true : c > v;
-  const colorClass = over ? 'ob-red' : 'ob-green';
-  const pctStr = pct !== null ? ` (${pct}%)` : '';
-  return `<td><span class="ob-muted" style="font-size:11px">${v}</span> <span class="ob-sep">/</span> <span class="${colorClass}">${c}${pctStr}</span></td>`;
-}
 function renderOverburn() {
   document.getElementById('overburn-body').innerHTML=overburn.map(p=>
     `<tr><td>${p.name}</td>${[p.plan,p.cri,p.mid,p.ate,p.ope,p.tot].map(v=>`${obHoursCell(v)}`).join('')}<td>${statusDot(p.ativo)}</td></tr>`
@@ -613,15 +430,13 @@ function renderCusto() {
   }).join('');
 }
 
-// ── CHARTS ──
+// CHARTS
 const labels = projects.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
-const co = {
-  responsive:true, maintainAspectRatio:true,
-  plugins:{legend:{display:false}, tooltip:{backgroundColor:'#111',titleFont:{family:'Red Hat Display',weight:'700'},bodyFont:{family:'Red Hat Display'},callbacks:{label:ctx=>` ${ctx.raw}`}}},
-  scales:{
-    x:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'},maxRotation:30},grid:{color:'rgba(0,0,0,0.05)'}},
-    y:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'}},grid:{color:'rgba(0,0,0,0.05)'}}
-  }
+const tooltipPct = { backgroundColor:'#111', titleFont:{family:'Red Hat Display',weight:'700'}, bodyFont:{family:'Red Hat Display'}, callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`} };
+const tooltipBrl = { backgroundColor:'#111', titleFont:{family:'Red Hat Display',weight:'700'}, bodyFont:{family:'Red Hat Display'}, callbacks:{label:ctx=>` R$ ${Math.abs(ctx.raw).toFixed(1)}k`} };
+const scaleBase = {
+  x:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'},maxRotation:30},grid:{color:'rgba(0,0,0,0.05)'}},
+  y:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'}},grid:{color:'rgba(0,0,0,0.05)'}}
 };
 
 const plVals   = projects.map(p=>p.pl);
@@ -629,19 +444,22 @@ const plColors = plVals.map(v=>v>=25?'#15803d':v>=0?'#b45309':'#b91c1c');
 
 new Chart(document.getElementById('plChart'),{type:'bar',
   data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:4}]},
-  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipPct},
+    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const gapVals  = projects.map(p=>p.gap/1000);
 const gapColors= gapVals.map(v=>v>=0?'#15803d':'#b91c1c');
 new Chart(document.getElementById('gapChart'),{type:'bar',
   data:{labels,datasets:[{data:gapVals,backgroundColor:gapColors,borderRadius:4}]},
-  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` R$ ${Math.abs(ctx.raw).toFixed(1)}k`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>'R$'+v+'k'}}}}
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipBrl},
+    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>'R$'+v+'k'}}}}
 });
 
 new Chart(document.getElementById('plDetail'),{type:'bar',
   data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:5}]},
-  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipPct},
+    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const ob2=overburn.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
@@ -649,25 +467,33 @@ const atenVals=overburn.map(p=>p.ate[0]===0?0:Math.round(p.ate[1]/p.ate[0]*100))
 const atenCol =atenVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
 new Chart(document.getElementById('atenChart'),{type:'bar',
   data:{labels:ob2,datasets:[{data:atenVals,backgroundColor:atenCol,borderRadius:4}]},
-  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipPct},
+    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const totVals=overburn.map(p=>p.tot[0]===0?0:Math.round(p.tot[1]/p.tot[0]*100));
 const totCol =totVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
 new Chart(document.getElementById('totalChart'),{type:'bar',
   data:{labels:ob2,datasets:[{data:totVals,backgroundColor:totCol,borderRadius:4}]},
-  options:{...co,plugins:{...co.plugins,tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}}},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipPct},
+    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>v+'%'}}}}
 });
 
-const custoLabels=custo.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+// Custo chart — aprovada amarelo, projetada verde/vermelho por projeto
+const custoLabels = custo.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+const aprovVals = custo.map(r=>r.apv);
+const projVals  = custo.map(r=>r.prj);
+const projColors= custo.map(r=>r.prj<=r.apv?'#15803d':'#b91c1c');
+const tooltipCusto = { backgroundColor:'#111', titleFont:{family:'Red Hat Display',weight:'700'}, bodyFont:{family:'Red Hat Display'},
+  callbacks:{label:ctx=>` R$ ${ctx.raw.toFixed(1)}k`} };
 new Chart(document.getElementById('custoChart'),{type:'bar',
   data:{labels:custoLabels,datasets:[
-    {label:'Proposta Aprovada', data:[500,74.7,161.4,15.1,30.3,30.4,358.3,198.2,134.7,140.1,202.5], backgroundColor:'#111111',borderRadius:3},
-    {label:'Proposta Projetada',data:[1026.2,122.8,57.6,16.8,27.3,113,562.2,287.8,182.6,182.7,241.7], backgroundColor:'#f5c800',borderRadius:3},
+    {label:'Proposta Aprovada',  data:aprovVals, backgroundColor:'#f5c800', borderRadius:3},
+    {label:'Proposta Projetada', data:projVals,  backgroundColor:projColors, borderRadius:3},
   ]},
-  options:{...co,
-    plugins:{...co.plugins,legend:{display:true,labels:{color:'#555',font:{family:'Red Hat Display',size:11,weight:'700'}}},tooltip:{...co.plugins.tooltip,callbacks:{label:ctx=>` R$ ${ctx.raw.toFixed(1)}k`}}},
-    scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>'R$'+v+'k'}}}
+  options:{responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{display:true,labels:{color:'#555',font:{family:'Red Hat Display',size:11,weight:'700'}}},tooltip:tooltipCusto},
+    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>'R$'+v+'k'}}}
   }
 });
 
