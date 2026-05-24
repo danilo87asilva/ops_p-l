@@ -199,6 +199,7 @@ tr:hover td { background: #fffde7 !important; }
 .ob-amber { background: var(--amber-bg); color: var(--amber); font-size: 11px; font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; }
 .ob-green { background: var(--green-bg); color: var(--green); font-size: 11px; font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; }
 .ob-muted { color: var(--light); font-size: 11px; }
+.ob-sep { color: var(--border); font-size: 11px; margin: 0 2px; }
 
 /* ── CHARTS ── */
 .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
@@ -497,16 +498,16 @@ const projects = [
   { name:"Reality Páscoa",   rec:"R$ 140.084", res:"-R$ 869",     pl:-0.72,  acao:"ATENCAO", ativo:false, gap:-42638  },
 ];
 const overburn = [
-  { name:"Netflix",          plan:"94%",  cri:"171%", mid:"401%", ate:"621%",  ope:"440%", tot:"228%", ativo:true  },
-  { name:"Minions",          plan:"140%", cri:"156%", mid:"45%",  ate:"229%",  ope:"146%", tot:"133%", ativo:true  },
-  { name:"Fini",             plan:"62%",  cri:"22%",  mid:"18%",  ate:"59%",   ope:"36%",  tot:"30%",  ativo:true  },
-  { name:"Dia do Hambúrguer",plan:"n/a",  cri:"102%", mid:"40%",  ate:"50%",   ope:"20%",  tot:"87%",  ativo:true  },
-  { name:"No Bread",         plan:"n/a",  cri:"926%", mid:"51%",  ate:"1031%", ope:"36%",  tot:"367%", ativo:false },
-  { name:"CB Natal 2025",    plan:"127%", cri:"143%", mid:"208%", ate:"306%",  ope:"227%", tot:"165%", ativo:false },
-  { name:"Reality Natal",    plan:"0%",   cri:"118%", mid:"120%", ate:"443%",  ope:"389%", tot:"140%", ativo:false },
-  { name:"Reality Páscoa",   plan:"0%",   cri:"121%", mid:"125%", ate:"639%",  ope:"145%", tot:"149%", ativo:false },
-  { name:"CB Novo Menu",     plan:"155%", cri:"98%",  mid:"222%", ate:"356%",  ope:"229%", tot:"147%", ativo:false },
-  { name:"CB Páscoa",        plan:"162%", cri:"100%", mid:"100%", ate:"132%",  ope:"179%", tot:"110%", ativo:false },
+  { name:"Netflix",          plan:[228,215], cri:[1396,2381], mid:[294,1180], ate:[112,696],  ope:[73,321],  tot:[2103,4793], ativo:true  },
+  { name:"Minions",          plan:[52,73],   cri:[216,338],   mid:[92,41],    ate:[24,55],    ope:[24,35],   tot:[408,542],   ativo:true  },
+  { name:"Fini",             plan:[94,58],   cri:[504,109],   mid:[100,18],   ate:[70,41],    ope:[72,26],   tot:[840,252],   ativo:true  },
+  { name:"Dia do Hambúrguer",plan:[0,0],     cri:[66,67],     mid:[5,2],      ate:[10,5],     ope:[5,1],     tot:[86,75],     ativo:true  },
+  { name:"No Bread",         plan:[0,0],     cri:[34,315],    mid:[79,40],    ate:[16,165],   ope:[14,5],    tot:[143,525],   ativo:false },
+  { name:"CB Natal 2025",    plan:[120,153], cri:[1036,1477], mid:[285,594],  ate:[86,263],   ope:[44,100],  tot:[1571,2587], ativo:false },
+  { name:"Reality Natal",    plan:[52,0],    cri:[312,369],   mid:[196,236],  ate:[30,133],   ope:[35,136],  tot:[625,874],   ativo:false },
+  { name:"Reality Páscoa",   plan:[32,0],    cri:[288,348],   mid:[196,245],  ate:[36,230],   ope:[40,58],   tot:[592,881],   ativo:false },
+  { name:"CB Novo Menu",     plan:[66,102],  cri:[596,585],   mid:[157,349],  ate:[68,242],   ope:[28,64],   tot:[915,1342],  ativo:false },
+  { name:"CB Páscoa",        plan:[68,110],  cri:[639,641],   mid:[176,176],  ate:[66,87],    ope:[42,75],   tot:[991,1089],  ativo:false },
 ];
 const custo = [
   { name:"Netflix",          horas:"4.793h", projetada:"R$ 1.026.217", aprovada:"R$ 500.000", gap:-526217, ativo:true,  acao:"CRITICO" },
@@ -582,9 +583,18 @@ function renderPL() {
   }).join('');
 }
 
+function obHoursCell(arr) {
+  if (!arr || (arr[0]===0 && arr[1]===0)) return `<td><span class="ob-muted">n/a</span></td>`;
+  const [v, c] = arr;
+  const pct = v===0 ? null : Math.round(c/v*100);
+  const over = v===0 ? true : c > v;
+  const colorClass = over ? 'ob-red' : 'ob-green';
+  const pctStr = pct !== null ? ` (${pct}%)` : '';
+  return `<td><span class="ob-muted" style="font-size:11px">${v}</span> <span class="ob-sep">/</span> <span class="${colorClass}">${c}${pctStr}</span></td>`;
+}
 function renderOverburn() {
   document.getElementById('overburn-body').innerHTML=overburn.map(p=>
-    `<tr><td>${p.name}</td>${[p.plan,p.cri,p.mid,p.ate,p.ope,p.tot].map(v=>`<td>${obClass(v)}</td>`).join('')}<td>${statusDot(p.ativo)}</td></tr>`
+    `<tr><td>${p.name}</td>${[p.plan,p.cri,p.mid,p.ate,p.ope,p.tot].map(v=>`${obHoursCell(v)}`).join('')}<td>${statusDot(p.ativo)}</td></tr>`
   ).join('');
 }
 
@@ -602,6 +612,8 @@ function renderCusto() {
 
 // ── CHARTS ──
 const labels = projects.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+const tooltipPct = { callbacks: { label: ctx => ` ${ctx.raw.toFixed(2)}%` } };
+const tooltipBrl = { callbacks: { label: ctx => ` R$ ${Math.abs(ctx.raw).toFixed(0)}k` } };
 const co = {
   responsive:true, maintainAspectRatio:true,
   plugins:{legend:{display:false}, tooltip:{backgroundColor:'#111',titleFont:{family:'Red Hat Display',weight:'700'},bodyFont:{family:'Red Hat Display'}}},
@@ -616,34 +628,34 @@ const plColors = plVals.map(v=>v>=25?'#15803d':v>=0?'#b45309':'#b91c1c');
 
 new Chart(document.getElementById('plChart'),{type:'bar',
   data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:4}]},
-  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{...co,plugins:{...co.plugins,...tooltipPct},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const gapVals  = projects.map(p=>p.gap/1000);
 const gapColors= gapVals.map(v=>v>=0?'#15803d':'#b91c1c');
 new Chart(document.getElementById('gapChart'),{type:'bar',
   data:{labels,datasets:[{data:gapVals,backgroundColor:gapColors,borderRadius:4}]},
-  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>'R$'+v+'k'}}}}
+  options:{...co,plugins:{...co.plugins,...tooltipBrl},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>'R$'+v+'k'}}}}
 });
 
 new Chart(document.getElementById('plDetail'),{type:'bar',
   data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:5}]},
-  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{...co,plugins:{...co.plugins,...tooltipPct},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const ob2=overburn.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
-const atenVals=overburn.map(p=>parseInt(p.ate)||0);
+const atenVals=overburn.map(p=>p.ate[0]===0?0:Math.round(p.ate[1]/p.ate[0]*100));
 const atenCol =atenVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
 new Chart(document.getElementById('atenChart'),{type:'bar',
   data:{labels:ob2,datasets:[{data:atenVals,backgroundColor:atenCol,borderRadius:4}]},
-  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{...co,plugins:{...co.plugins,...tooltipPct},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
-const totVals=overburn.map(p=>parseInt(p.tot)||0);
+const totVals=overburn.map(p=>p.tot[0]===0?0:Math.round(p.tot[1]/p.tot[0]*100));
 const totCol =totVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
 new Chart(document.getElementById('totalChart'),{type:'bar',
   data:{labels:ob2,datasets:[{data:totVals,backgroundColor:totCol,borderRadius:4}]},
-  options:{...co,scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
+  options:{...co,plugins:{...co.plugins,...tooltipPct},scales:{...co.scales,y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>v+'%'}}}}
 });
 
 const custoLabels=custo.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
