@@ -268,7 +268,7 @@ canvas { max-height:240px; }
   </div>
   <div class="charts-grid">
     <div class="chart-card">
-      <div class="chart-card-title">Overburn de Atendimento</div>
+      <div class="chart-card-title">Overburn de Criação</div>
       <div class="legend-row">
         <div class="legend-item"><span>🔴</span> Acima de 200%</div>
         <div class="legend-item"><span>🟡</span> Entre 100% e 200%</div>
@@ -320,7 +320,7 @@ canvas { max-height:240px; }
   <div class="chart-card" style="margin-bottom:24px">
     <div class="chart-card-title">Proposta Aprovada vs Proposta Projetada</div>
     <div class="legend-row">
-      <div class="legend-item"><span>🟡</span> Proposta Aprovada</div>
+      <div class="legend-item"><span>⚫</span> Proposta Aprovada</div>
       <div class="legend-item"><span>🟢</span> Proposta Projetada ≤ Aprovada</div>
       <div class="legend-item"><span>🔴</span> Proposta Projetada &gt; Aprovada</div>
     </div>
@@ -504,21 +504,23 @@ new Chart(document.getElementById('plDetail'),{type:'bar',
 const ob2=overburn.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
 const atenVals=overburn.map(p=>p.ate[0]===0?0:Math.round(p.ate[1]/p.ate[0]*100));
 const totVals =overburn.map(p=>p.tot[0]===0?0:Math.round(p.tot[1]/p.tot[0]*100));
-const obColor = v => v>200?'#b91c1c':v>100?'#b45309':'#15803d';
+const obColor = v => v>200?'#b91c1c':v>100?'#f5c800':'#15803d';
+
+const criVals=overburn.map(p=>p.cri[0]===0?0:Math.round(p.cri[1]/p.cri[0]*100));
 
 new Chart(document.getElementById('atenChart'),{type:'bar',
-  data:{labels:ob2,datasets:[{data:atenVals,backgroundColor:atenVals.map(obColor),borderRadius:4}]},
+  data:{labels:ob2,datasets:[{data:totVals,backgroundColor:totVals.map(obColor),borderRadius:4}]},
   options:{...base,plugins:{...base.plugins,tooltip:ttPct},scales:scPct}});
 
 new Chart(document.getElementById('totalChart'),{type:'bar',
-  data:{labels:ob2,datasets:[{data:totVals,backgroundColor:totVals.map(obColor),borderRadius:4}]},
+  data:{labels:ob2,datasets:[{data:criVals,backgroundColor:criVals.map(obColor),borderRadius:4}]},
   options:{...base,plugins:{...base.plugins,tooltip:ttPct},scales:scPct}});
 
 const custoLabels=custo.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
 const ttCusto={backgroundColor:'#111',titleFont:{family:'Red Hat Display',weight:'700'},bodyFont:{family:'Red Hat Display'},callbacks:{label:ctx=>` R$ ${ctx.raw.toFixed(1)}k`}};
 new Chart(document.getElementById('custoChart'),{type:'bar',
   data:{labels:custoLabels,datasets:[
-    {label:'Proposta Aprovada',  data:custo.map(r=>r.apv), backgroundColor:'#f5c800', borderRadius:3},
+    {label:'Proposta Aprovada',  data:custo.map(r=>r.apv), backgroundColor:'#888888', borderRadius:3},
     {label:'Proposta Projetada', data:custo.map(r=>r.prj), backgroundColor:custo.map(r=>r.prj<=r.apv?'#15803d':'#b91c1c'), borderRadius:3},
   ]},
   options:{...base,plugins:{legend:{display:false},tooltip:ttCusto},scales:scBrl}
