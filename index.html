@@ -26,8 +26,7 @@ body { font-family:'Red Hat Display',sans-serif; background:var(--bg); color:var
 .header-title { font-size:32px; font-weight:900; color:#fff; letter-spacing:-0.5px; line-height:1.1; }
 .header-title em { color:var(--yellow); font-style:normal; }
 .header-sub { font-size:13px; color:#888; margin-top:8px; }
-.header-meta { text-align:right; font-size:11px; font-weight:500; color:#666; line-height:2; white-space:nowrap; }
-.header-meta strong { color:var(--yellow); }
+.header-meta { text-align:right; font-size:12px; font-weight:700; line-height:2; white-space:nowrap; color:var(--yellow); }
 
 .nav { display:flex; border-bottom:2px solid var(--border); padding:0 52px; background:var(--bg); position:sticky; top:0; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow-x:auto; }
 .nav-btn { padding:16px 22px; font-family:'Red Hat Display',sans-serif; font-size:13px; font-weight:700; color:var(--muted); background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; transition:all .15s; margin-bottom:-2px; white-space:nowrap; }
@@ -43,17 +42,16 @@ body { font-family:'Red Hat Display',sans-serif; background:var(--bg); color:var
 .kpi:hover { box-shadow:0 4px 16px rgba(0,0,0,0.08); transform:translateY(-1px); }
 .kpi-stripe { position:absolute; top:0; left:0; right:0; height:4px; }
 .kpi-stripe.yellow { background:var(--yellow); }
-.kpi-stripe.black  { background:var(--black); }
 .kpi-stripe.red    { background:var(--red); }
 .kpi-stripe.green  { background:var(--green); }
 .kpi-stripe.gray   { background:#999; }
 .kpi-label { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
 .kpi-val { font-size:28px; font-weight:900; line-height:1; letter-spacing:-1px; color:var(--black); }
-.kpi-val.red   { color:var(--red); }
-.kpi-val.green { color:var(--green); }
-.kpi-val.amber { color:var(--amber); }
+.kpi-val.red    { color:var(--red); }
+.kpi-val.green  { color:var(--green); }
+.kpi-val.amber  { color:var(--amber); }
 .kpi-val.yellow { color:var(--yellow-d); }
-.kpi-val.gray  { color:var(--gray); }
+.kpi-val.gray   { color:var(--gray); }
 .kpi-sub { font-size:11px; font-weight:500; color:var(--muted); margin-top:8px; line-height:1.4; }
 
 .section-head { display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid var(--black); flex-wrap:wrap; }
@@ -101,10 +99,11 @@ canvas { max-height:240px; }
 .dot-active { background:var(--yellow); box-shadow:0 0 0 2px rgba(245,200,0,0.3); }
 .dot-done   { background:var(--light); }
 
-.legend { display:flex; gap:16px; flex-wrap:wrap; }
-.legend-item { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:var(--muted); }
+.legend-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:14px; align-items:center; }
+.legend-item { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:var(--muted); }
 .legend-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
-.footer { margin-top:40px; padding-top:20px; border-top:2px solid var(--black); text-align:center; font-size:11px; font-weight:600; color:var(--light); letter-spacing:0.5px; }
+
+.footer { margin-top:40px; padding-top:20px; border-top:2px solid var(--black); text-align:center; font-size:11px; font-weight:700; color:var(--muted); letter-spacing:0.5px; }
 
 @media (max-width:768px) {
   .header { padding:24px 20px 20px; }
@@ -135,7 +134,10 @@ canvas { max-height:240px; }
       <div class="header-title">P&amp;L <em>Dashboard</em></div>
       <div class="header-sub">Análise de Resultados, Rentabilidade e Aprendizados</div>
     </div>
-    <div class="header-meta">Ampfy | Bauducco<br>Atualização: 24/05/2026<br><strong>v43</strong></div>
+    <div class="header-meta">
+      Ampfy | Bauducco<br>
+      Atualização: 24/05/2026
+    </div>
   </div>
 </div>
 
@@ -148,7 +150,7 @@ canvas { max-height:240px; }
 
 <div class="content">
 
-<!-- VISÃO GERAL -->
+<!-- ══ VISÃO GERAL ══ -->
 <div id="tab-overview" class="tab-panel active">
   <div class="kpi-grid">
     <div class="kpi"><div class="kpi-stripe yellow"></div>
@@ -170,12 +172,21 @@ canvas { max-height:240px; }
   <div class="charts-grid">
     <div class="chart-card">
       <div class="chart-card-title">P&amp;L % por Projeto</div>
-      <div class="chart-card-sub">P&amp;L% = Receita Final / (Receita Bruta × 85,75%) — meta: 25%</div>
+      <div class="chart-card-sub">P&amp;L% = Receita Final / (Receita Bruta × 85,75%)</div>
+      <div class="legend-row">
+        <div class="legend-item"><span>🔴</span> Abaixo de 0%</div>
+        <div class="legend-item"><span>🟡</span> Entre 0% e 25%</div>
+        <div class="legend-item"><span>🟢</span> Acima de 25%</div>
+      </div>
       <canvas id="plChart"></canvas>
     </div>
     <div class="chart-card">
       <div class="chart-card-title">Gap: Aprovada vs Projetada</div>
-      <div class="chart-card-sub">R$ mil — positivo = cobriu o custo real</div>
+      <div class="chart-card-sub">R$ mil por projeto</div>
+      <div class="legend-row">
+        <div class="legend-item"><span>🟢</span> Gap positivo</div>
+        <div class="legend-item"><span>🔴</span> Gap negativo</div>
+      </div>
       <canvas id="gapChart"></canvas>
     </div>
   </div>
@@ -183,20 +194,20 @@ canvas { max-height:240px; }
     <div class="section-title">Resultado por Projeto</div>
     <div class="section-pill">11 projetos</div>
     <div class="filters">
-      <button class="filter-btn active" onclick="filterOverview('todos',this)">Todos</button>
-      <button class="filter-btn" onclick="filterOverview('ativo',this)">🔄 Ativos</button>
-      <button class="filter-btn" onclick="filterOverview('finalizado',this)">✅ Finalizados</button>
-      <button class="filter-btn" onclick="filterOverview('critico',this)">Críticos</button>
+      <button class="filter-btn active" onclick="filterTable('overview','todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filterTable('overview','ativo',this)">🔄 Ativos</button>
+      <button class="filter-btn" onclick="filterTable('overview','finalizado',this)">✅ Finalizados</button>
+      <button class="filter-btn" onclick="filterTable('overview','critico',this)">Críticos</button>
     </div>
   </div>
   <div class="table-wrap">
     <table><thead><tr>
-      <th>Projeto</th><th>Rec. Bruta</th><th>Receita Final</th><th>P&amp;L %</th><th>Gap Custo</th><th>Ação</th><th>Status</th>
+      <th>Projeto</th><th>Receita Bruta</th><th>Receita Final</th><th>P&amp;L %</th><th>Gap: Aprovada vs Projetada</th><th>Ação</th><th>Status</th>
     </tr></thead><tbody id="overview-body"></tbody></table>
   </div>
 </div>
 
-<!-- P&L -->
+<!-- ══ P&L ══ -->
 <div id="tab-pl" class="tab-panel">
   <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi"><div class="kpi-stripe yellow"></div>
@@ -214,18 +225,29 @@ canvas { max-height:240px; }
   </div>
   <div class="chart-card" style="margin-bottom:24px">
     <div class="chart-card-title">P&amp;L % por Projeto — linha de meta: 25%</div>
-    <div class="chart-card-sub">🔴 Abaixo de 0% · 🟡 Entre 0% e 25% · 🟢 Acima de 25%</div>
+    <div class="legend-row">
+      <div class="legend-item"><span>🔴</span> Abaixo de 0%</div>
+      <div class="legend-item"><span>🟡</span> Entre 0% e 25%</div>
+      <div class="legend-item"><span>🟢</span> Acima de 25%</div>
+    </div>
     <canvas id="plDetail" style="max-height:300px"></canvas>
   </div>
-  <div class="section-head"><div class="section-title">Tabela P&amp;L Detalhada</div></div>
+  <div class="section-head">
+    <div class="section-title">Tabela P&amp;L Detalhada</div>
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterTable('pl','todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filterTable('pl','ativo',this)">🔄 Ativos</button>
+      <button class="filter-btn" onclick="filterTable('pl','finalizado',this)">✅ Finalizados</button>
+    </div>
+  </div>
   <div class="table-wrap">
     <table><thead><tr>
-      <th>Projeto</th><th>Rec. Bruta</th><th>Receita Final</th><th>P&amp;L %</th><th>Status</th>
+      <th>Projeto</th><th>Receita Bruta</th><th>Receita Final</th><th>P&amp;L %</th><th>Status</th>
     </tr></thead><tbody id="pl-body"></tbody></table>
   </div>
 </div>
 
-<!-- OVERBURN -->
+<!-- ══ OVERBURN ══ -->
 <div id="tab-overburn" class="tab-panel">
   <div class="kpi-grid">
     <div class="kpi"><div class="kpi-stripe red"></div>
@@ -247,20 +269,29 @@ canvas { max-height:240px; }
   <div class="charts-grid">
     <div class="chart-card">
       <div class="chart-card-title">Overburn de Atendimento</div>
-      <div class="chart-card-sub">Departamento mais crítico — % do vendido</div>
+      <div class="legend-row">
+        <div class="legend-item"><span>🔴</span> Acima de 200%</div>
+        <div class="legend-item"><span>🟡</span> Entre 100% e 200%</div>
+        <div class="legend-item"><span>🟢</span> Até 100%</div>
+      </div>
       <canvas id="atenChart"></canvas>
     </div>
     <div class="chart-card">
       <div class="chart-card-title">Overburn Total por Projeto</div>
-      <div class="chart-card-sub">Horas consumidas / horas vendidas (%)</div>
+      <div class="legend-row">
+        <div class="legend-item"><span>🔴</span> Acima de 200%</div>
+        <div class="legend-item"><span>🟡</span> Entre 100% e 200%</div>
+        <div class="legend-item"><span>🟢</span> Até 100%</div>
+      </div>
       <canvas id="totalChart"></canvas>
     </div>
   </div>
   <div class="section-head">
     <div class="section-title">Overburn por Departamento</div>
-    <div class="legend" style="margin-left:auto">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--red-bg);border:1px solid var(--red)"></div>Consumido &gt; Vendido</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--green-bg);border:1px solid var(--green)"></div>Consumido ≤ Vendido</div>
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterTable('overburn','todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filterTable('overburn','ativo',this)">🔄 Ativos</button>
+      <button class="filter-btn" onclick="filterTable('overburn','finalizado',this)">✅ Finalizados</button>
     </div>
   </div>
   <div class="table-wrap">
@@ -270,7 +301,7 @@ canvas { max-height:240px; }
   </div>
 </div>
 
-<!-- ANÁLISE PROPOSTAS COMERCIAIS -->
+<!-- ══ ANÁLISE PROPOSTAS COMERCIAIS ══ -->
 <div id="tab-custo" class="tab-panel">
   <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi"><div class="kpi-stripe red"></div>
@@ -288,23 +319,32 @@ canvas { max-height:240px; }
   </div>
   <div class="chart-card" style="margin-bottom:24px">
     <div class="chart-card-title">Proposta Aprovada vs Proposta Projetada</div>
-    <div class="chart-card-sub">R$ mil — ■ amarelo = aprovada · ■ verde = projetada abaixo da aprovada · ■ vermelho = projetada acima da aprovada</div>
+    <div class="legend-row">
+      <div class="legend-item"><span>🟡</span> Proposta Aprovada</div>
+      <div class="legend-item"><span>🟢</span> Proposta Projetada ≤ Aprovada</div>
+      <div class="legend-item"><span>🔴</span> Proposta Projetada &gt; Aprovada</div>
+    </div>
     <canvas id="custoChart" style="max-height:280px"></canvas>
   </div>
   <div class="section-head">
     <div class="section-title">Análise Propostas Comerciais</div>
-    <span style="font-size:10px;font-weight:600;color:var(--muted);margin-left:auto">Plan R$274,70 · Cri R$227,50 · Mid R$187,50 · Ate R$198,70 · Ope R$205,40</span>
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterTable('custo','todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filterTable('custo','ativo',this)">🔄 Ativos</button>
+      <button class="filter-btn" onclick="filterTable('custo','finalizado',this)">✅ Finalizados</button>
+      <button class="filter-btn" onclick="filterTable('custo','critico',this)">Críticos</button>
+    </div>
   </div>
   <div class="table-wrap">
     <table><thead><tr>
-      <th>Projeto</th><th>Proposta Aprovada</th><th>Horas Consumidas</th><th>Proposta Projetada</th><th>Gap</th><th>Ação</th><th>Status</th>
+      <th>Projeto</th><th>Proposta Aprovada</th><th>Horas Consumidas</th><th>Proposta Projetada</th><th>Gap: Aprovada vs Projetada</th><th>Ação</th><th>Status</th>
     </tr></thead><tbody id="custo-body"></tbody></table>
   </div>
 </div>
 
 </div>
 <div class="content" style="padding-top:0">
-  <div class="footer">Documento gerado com apoio de IA · Ampfy | Bauducco | Maio 2026 · v43</div>
+  <div class="footer">Ampfy | Bauducco | Maio 2026</div>
 </div>
 
 <script>
@@ -321,7 +361,6 @@ const projects = [
   { name:"CB Páscoa",        rec:"R$ 202.488", res:"-R$ 10.324",  pl:-5.95,  acao:"ATENCAO", ativo:false, gap:-39248  },
   { name:"Reality Páscoa",   rec:"R$ 140.084", res:"-R$ 869",     pl:-0.72,  acao:"ATENCAO", ativo:false, gap:-42638  },
 ];
-
 const overburn = [
   { name:"Netflix",          plan:[228,215], cri:[1396,2381], mid:[294,1180], ate:[112,696],  ope:[73,321],  tot:[2103,4793], ativo:true  },
   { name:"Minions",          plan:[52,73],   cri:[216,338],   mid:[92,41],    ate:[24,55],    ope:[24,35],   tot:[408,542],   ativo:true  },
@@ -335,7 +374,6 @@ const overburn = [
   { name:"CB Novo Menu",     plan:[66,102],  cri:[596,585],   mid:[157,349],  ate:[68,242],   ope:[28,64],   tot:[915,1342],  ativo:false },
   { name:"CB Páscoa",        plan:[68,110],  cri:[639,641],   mid:[176,176],  ate:[66,87],    ope:[42,75],   tot:[991,1089],  ativo:false },
 ];
-
 const custo = [
   { name:"Netflix",          horas:"4.793h", projetada:"R$ 1.026.217", aprovada:"R$ 500.000", apv:500,   prj:1026.2, gap:-526217, ativo:true,  acao:"CRITICO" },
   { name:"Minions",          horas:"542h",   projetada:"R$ 122.753",   aprovada:"R$ 74.666",  apv:74.7,  prj:122.8,  gap:-48087,  ativo:true,  acao:"ATENCAO" },
@@ -349,9 +387,9 @@ const custo = [
   { name:"Reality Páscoa",   horas:"881h",   projetada:"R$ 182.722",   aprovada:"R$ 140.084", apv:140.1, prj:182.7,  gap:-42638,  ativo:false, acao:"ATENCAO" },
   { name:"CB Páscoa",        horas:"1.089h", projetada:"R$ 241.736",   aprovada:"R$ 202.488", apv:202.5, prj:241.7,  gap:-39248,  ativo:false, acao:"ATENCAO" },
 ];
+const brutas = ["R$ 500.000","R$ 74.666","R$ 161.410","R$ 15.093","R$ 30.275","R$ 30.414","R$ 358.259","R$ 134.705","R$ 198.233","R$ 202.488","R$ 140.084"];
 
 const fmt = v => v>=0 ? `+R$ ${(v/1000).toFixed(0)}k` : `-R$ ${(Math.abs(v)/1000).toFixed(0)}k`;
-
 function acaoBadge(a) {
   const m={CRITICO:['red','CRÍTICO'],ATENCAO:['amber','ATENÇÃO'],OK:['green','OK']};
   return `<span class="badge badge-${m[a][0]}">${m[a][1]}</span>`;
@@ -363,12 +401,12 @@ function statusDot(ativo) {
 }
 function obHoursCell(arr) {
   if(!arr||(arr[0]===0&&arr[1]===0)) return `<td><span class="ob-muted">n/a</span></td>`;
-  const [v,c] = arr;
-  const pct = v===0?null:Math.round(c/v*100);
-  const over = v===0?true:c>v;
-  const cls = over?'ob-red':'ob-green';
-  const pctStr = pct!==null?` (${pct}%)`:'';
-  return `<td><span class="ob-black">${v}</span> <span class="ob-sep">/</span> <span class="${cls}">${c}${pctStr}</span></td>`;
+  const [v,c]=arr;
+  const pct=v===0?null:Math.round(c/v*100);
+  const over=v===0?true:c>v;
+  const cls=over?'ob-red':'ob-green';
+  const pctStr=pct!==null?` (${pct}%)`:'';
+  return `<td><span class="ob-black">${v}</span><span class="ob-sep"> / </span><span class="${cls}">${c}${pctStr}</span></td>`;
 }
 function plClass(v) { return v<0?'val-red':v<25?'val-amber':'val-green'; }
 
@@ -379,19 +417,27 @@ function showTab(id,btn) {
   btn.classList.add('active');
 }
 
-let ovFilter='todos';
-function filterOverview(f,btn) {
-  ovFilter=f;
-  document.querySelectorAll('#tab-overview .filter-btn').forEach(b=>b.classList.remove('active'));
+const filters = { overview:'todos', pl:'todos', overburn:'todos', custo:'todos' };
+function filterTable(tab, f, btn) {
+  filters[tab]=f;
+  const btns=btn.closest('.section-head, .tab-panel').querySelectorAll('.filter-btn');
+  btns.forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  renderOverview();
+  if(tab==='overview') renderOverview();
+  if(tab==='pl')       renderPL();
+  if(tab==='overburn') renderOverburn();
+  if(tab==='custo')    renderCusto();
 }
+
+function applyFilter(data, f) {
+  if(f==='ativo')      return data.filter(p=>p.ativo);
+  if(f==='finalizado') return data.filter(p=>!p.ativo);
+  if(f==='critico')    return data.filter(p=>p.acao==='CRITICO');
+  return data;
+}
+
 function renderOverview() {
-  let data=projects;
-  if(ovFilter==='ativo')      data=projects.filter(p=>p.ativo);
-  if(ovFilter==='finalizado') data=projects.filter(p=>!p.ativo);
-  if(ovFilter==='critico')    data=projects.filter(p=>p.acao==='CRITICO');
-  document.getElementById('overview-body').innerHTML=data.map(p=>{
+  document.getElementById('overview-body').innerHTML=applyFilter(projects,filters.overview).map(p=>{
     const ec=plClass(p.pl);
     const gs=p.gap>=0?`<span class="val-green">${fmt(p.gap)}</span>`:`<span class="val-red">${fmt(p.gap)}</span>`;
     return `<tr><td>${p.name}</td><td class="val-muted">${p.rec}</td>
@@ -400,10 +446,9 @@ function renderOverview() {
       <td>${gs}</td><td>${acaoBadge(p.acao)}</td><td>${statusDot(p.ativo)}</td></tr>`;
   }).join('');
 }
-
 function renderPL() {
-  const brutas=["R$ 500.000","R$ 74.666","R$ 161.410","R$ 15.093","R$ 30.275","R$ 30.414","R$ 358.259","R$ 134.705","R$ 198.233","R$ 202.488","R$ 140.084"];
-  document.getElementById('pl-body').innerHTML=projects.map((p,i)=>{
+  document.getElementById('pl-body').innerHTML=applyFilter(projects,filters.pl).map((p,_,arr)=>{
+    const i=projects.indexOf(p);
     const ec=plClass(p.pl);
     return `<tr><td>${p.name}</td><td class="val-muted">${brutas[i]}</td>
       <td class="${ec}">${p.res}</td>
@@ -411,15 +456,13 @@ function renderPL() {
       <td>${statusDot(p.ativo)}</td></tr>`;
   }).join('');
 }
-
 function renderOverburn() {
-  document.getElementById('overburn-body').innerHTML=overburn.map(p=>
-    `<tr><td>${p.name}</td>${[p.plan,p.cri,p.mid,p.ate,p.ope,p.tot].map(v=>`${obHoursCell(v)}`).join('')}<td>${statusDot(p.ativo)}</td></tr>`
+  document.getElementById('overburn-body').innerHTML=applyFilter(overburn,filters.overburn).map(p=>
+    `<tr><td>${p.name}</td>${[p.plan,p.cri,p.mid,p.ate,p.ope,p.tot].map(v=>obHoursCell(v)).join('')}<td>${statusDot(p.ativo)}</td></tr>`
   ).join('');
 }
-
 function renderCusto() {
-  document.getElementById('custo-body').innerHTML=custo.map(r=>{
+  document.getElementById('custo-body').innerHTML=applyFilter(custo,filters.custo).map(r=>{
     const gs=r.gap>=0
       ?`<span class="val-green">+R$ ${r.gap.toLocaleString('pt-BR')}</span>`
       :`<span class="val-red">-R$ ${Math.abs(r.gap).toLocaleString('pt-BR')}</span>`;
@@ -431,70 +474,54 @@ function renderCusto() {
 }
 
 // CHARTS
-const labels = projects.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
-const tooltipPct = { backgroundColor:'#111', titleFont:{family:'Red Hat Display',weight:'700'}, bodyFont:{family:'Red Hat Display'}, callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`} };
-const tooltipBrl = { backgroundColor:'#111', titleFont:{family:'Red Hat Display',weight:'700'}, bodyFont:{family:'Red Hat Display'}, callbacks:{label:ctx=>` R$ ${Math.abs(ctx.raw).toFixed(1)}k`} };
-const scaleBase = {
+const labels=projects.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+const ttPct = {backgroundColor:'#111',titleFont:{family:'Red Hat Display',weight:'700'},bodyFont:{family:'Red Hat Display'},callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}};
+const ttBrl = {backgroundColor:'#111',titleFont:{family:'Red Hat Display',weight:'700'},bodyFont:{family:'Red Hat Display'},callbacks:{label:ctx=>` R$ ${Math.abs(ctx.raw).toFixed(1)}k`}};
+const sc = {
   x:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'},maxRotation:30},grid:{color:'rgba(0,0,0,0.05)'}},
   y:{ticks:{color:'#888',font:{size:10,family:'Red Hat Display'}},grid:{color:'rgba(0,0,0,0.05)'}}
 };
+const scPct = {...sc, y:{...sc.y, ticks:{...sc.y.ticks, callback:v=>v+'%'}}};
+const scBrl = {...sc, y:{...sc.y, ticks:{...sc.y.ticks, callback:v=>'R$'+v+'k'}}};
+const base = {responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}}};
 
 const plVals   = projects.map(p=>p.pl);
 const plColors = plVals.map(v=>v>=25?'#15803d':v>=0?'#b45309':'#b91c1c');
 
 new Chart(document.getElementById('plChart'),{type:'bar',
   data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:4}]},
-  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipPct},
-    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>v+'%'}}}}
-});
+  options:{...base,plugins:{...base.plugins,tooltip:ttPct},scales:scPct}});
 
 const gapVals  = projects.map(p=>p.gap/1000);
-const gapColors= gapVals.map(v=>v>=0?'#15803d':'#b91c1c');
 new Chart(document.getElementById('gapChart'),{type:'bar',
-  data:{labels,datasets:[{data:gapVals,backgroundColor:gapColors,borderRadius:4}]},
-  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipBrl},
-    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>'R$'+v+'k'}}}}
-});
+  data:{labels,datasets:[{data:gapVals,backgroundColor:gapVals.map(v=>v>=0?'#15803d':'#b91c1c'),borderRadius:4}]},
+  options:{...base,plugins:{...base.plugins,tooltip:ttBrl},scales:scBrl}});
 
 new Chart(document.getElementById('plDetail'),{type:'bar',
   data:{labels,datasets:[{data:plVals,backgroundColor:plColors,borderRadius:5}]},
-  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipPct},
-    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>v+'%'}}}}
-});
+  options:{...base,plugins:{...base.plugins,tooltip:ttPct},scales:scPct}});
 
 const ob2=overburn.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
 const atenVals=overburn.map(p=>p.ate[0]===0?0:Math.round(p.ate[1]/p.ate[0]*100));
-const atenCol =atenVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
+const totVals =overburn.map(p=>p.tot[0]===0?0:Math.round(p.tot[1]/p.tot[0]*100));
+const obColor = v => v>200?'#b91c1c':v>100?'#b45309':'#15803d';
+
 new Chart(document.getElementById('atenChart'),{type:'bar',
-  data:{labels:ob2,datasets:[{data:atenVals,backgroundColor:atenCol,borderRadius:4}]},
-  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipPct},
-    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>v+'%'}}}}
-});
+  data:{labels:ob2,datasets:[{data:atenVals,backgroundColor:atenVals.map(obColor),borderRadius:4}]},
+  options:{...base,plugins:{...base.plugins,tooltip:ttPct},scales:scPct}});
 
-const totVals=overburn.map(p=>p.tot[0]===0?0:Math.round(p.tot[1]/p.tot[0]*100));
-const totCol =totVals.map(v=>v>200?'#b91c1c':v>100?'#b45309':'#15803d');
 new Chart(document.getElementById('totalChart'),{type:'bar',
-  data:{labels:ob2,datasets:[{data:totVals,backgroundColor:totCol,borderRadius:4}]},
-  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:tooltipPct},
-    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>v+'%'}}}}
-});
+  data:{labels:ob2,datasets:[{data:totVals,backgroundColor:totVals.map(obColor),borderRadius:4}]},
+  options:{...base,plugins:{...base.plugins,tooltip:ttPct},scales:scPct}});
 
-// Custo chart — aprovada amarelo, projetada verde/vermelho por projeto
-const custoLabels = custo.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
-const aprovVals = custo.map(r=>r.apv);
-const projVals  = custo.map(r=>r.prj);
-const projColors= custo.map(r=>r.prj<=r.apv?'#15803d':'#b91c1c');
-const tooltipCusto = { backgroundColor:'#111', titleFont:{family:'Red Hat Display',weight:'700'}, bodyFont:{family:'Red Hat Display'},
-  callbacks:{label:ctx=>` R$ ${ctx.raw.toFixed(1)}k`} };
+const custoLabels=custo.map(p=>p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R.'));
+const ttCusto={backgroundColor:'#111',titleFont:{family:'Red Hat Display',weight:'700'},bodyFont:{family:'Red Hat Display'},callbacks:{label:ctx=>` R$ ${ctx.raw.toFixed(1)}k`}};
 new Chart(document.getElementById('custoChart'),{type:'bar',
   data:{labels:custoLabels,datasets:[
-    {label:'Proposta Aprovada',  data:aprovVals, backgroundColor:'#f5c800', borderRadius:3},
-    {label:'Proposta Projetada', data:projVals,  backgroundColor:projColors, borderRadius:3},
+    {label:'Proposta Aprovada',  data:custo.map(r=>r.apv), backgroundColor:'#f5c800', borderRadius:3},
+    {label:'Proposta Projetada', data:custo.map(r=>r.prj), backgroundColor:custo.map(r=>r.prj<=r.apv?'#15803d':'#b91c1c'), borderRadius:3},
   ]},
-  options:{responsive:true,maintainAspectRatio:true,
-    plugins:{legend:{display:true,labels:{color:'#555',font:{family:'Red Hat Display',size:11,weight:'700'}}},tooltip:tooltipCusto},
-    scales:{...scaleBase,y:{...scaleBase.y,ticks:{...scaleBase.y.ticks,callback:v=>'R$'+v+'k'}}}
-  }
+  options:{...base,plugins:{legend:{display:false},tooltip:ttCusto},scales:scBrl}
 });
 
 renderOverview(); renderPL(); renderOverburn(); renderCusto();
