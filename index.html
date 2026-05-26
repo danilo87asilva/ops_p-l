@@ -532,7 +532,7 @@ const custoLabels = custo.map(r =>
 );
 
 const sc = {
-  x: { ticks:{color:'#888',font:{size:10,family:'Red Hat Display'},maxRotation:30}, grid:{color:'rgba(0,0,0,0.05)'} },
+  x: { ticks:{color:'#888',font:{size:9,family:'Red Hat Display'},maxRotation:75,minRotation:0,autoSkip:false}, grid:{color:'rgba(0,0,0,0.05)'} },
   y: { ticks:{color:'#888',font:{size:10,family:'Red Hat Display'}}, grid:{color:'rgba(0,0,0,0.05)'} }
 };
 const scPct = {...sc, y:{...sc.y, ticks:{...sc.y.ticks, callback:v=>v+'%'}}};
