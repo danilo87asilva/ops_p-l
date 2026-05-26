@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P&L Dashboard — Núcleo Mano &amp; Dan</title>
+  <title>☕ P&L Dashboard — Núcleo Mano &amp; Dan</title>
   <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
@@ -190,7 +190,7 @@
         <button class="filter-btn active" onclick="filterTable('overview','todos',this)">Todos</button>
         <button class="filter-btn" onclick="filterTable('overview','ativo',this)">🔄 Ativos</button>
         <button class="filter-btn" onclick="filterTable('overview','finalizado',this)">✅ Finalizados</button>
-        <button class="filter-btn" onclick="filterTable('overview','critico',this)">Críticos</button>
+        <button class="filter-btn" onclick="filterTable('overview','critico',this)">⚠️ Críticos</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -248,7 +248,7 @@
       <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Maior Overburn Total</div><div class="kpi-val red">367%</div><div class="kpi-sub">No Bread</div></div>
       <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Top Overburn Atend.</div><div class="kpi-val red">1.030%</div><div class="kpi-sub">No Bread</div></div>
       <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Top Overburn Criação</div><div class="kpi-val red">926%</div><div class="kpi-sub">No Bread</div></div>
-      <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Melhor Controle</div><div class="kpi-val green">31%</div><div class="kpi-sub">Gamescomm</div></div>
+      <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Melhor Controle</div><div class="kpi-val green" id="kpi-melhor-controle-val">—</div><div class="kpi-sub" id="kpi-melhor-controle-sub">—</div></div>
     </div>
 
     <div class="charts-grid">
@@ -326,7 +326,7 @@
         <button class="filter-btn active" onclick="filterTable('custo','todos',this)">Todos</button>
         <button class="filter-btn" onclick="filterTable('custo','ativo',this)">🔄 Ativos</button>
         <button class="filter-btn" onclick="filterTable('custo','finalizado',this)">✅ Finalizados</button>
-        <button class="filter-btn" onclick="filterTable('custo','critico',this)">Críticos</button>
+        <button class="filter-btn" onclick="filterTable('custo','critico',this)">⚠️ Críticos</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -617,6 +617,18 @@ new Chart(document.getElementById('plDetail'), {
 const totVals = overburn.map(p => p.tot[0]===0 ? 0 : Math.round(p.tot[1]/p.tot[0]*100));
 const obColor = v => v > 200 ? '#b91c1c' : v > 100 ? '#f5c800' : '#15803d';
 const obLabels = overburn.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R. ').replace('Bisnaguinha ',''));
+
+// KPI Melhor Controle — calculado dinamicamente a partir de totVals
+(function() {
+  const candidatos = overburn
+    .map((p, i) => ({ name: p.name, val: totVals[i] }))
+    .filter(x => x.val > 0);
+  if (candidatos.length > 0) {
+    const best = candidatos.reduce((a, b) => a.val <= b.val ? a : b);
+    document.getElementById('kpi-melhor-controle-val').textContent = best.val + '%';
+    document.getElementById('kpi-melhor-controle-sub').textContent = best.name;
+  }
+})();
 
 new Chart(document.getElementById('atenChart'), {
   type:'bar',
