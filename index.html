@@ -333,7 +333,7 @@
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>Cliente</th><th>Projeto</th><th>Proposta Aprovada</th><th>Horas Consumidas</th><th>Proposta Projetada</th><th>Gap: Aprovada vs Projetada</th><th>Ação</th><th>Status</th>
+          <th>Cliente</th><th>Projeto</th><th>Proposta Aprovada</th><th>Hrs Vendidas vs Hrs Consumidas</th><th>Proposta Projetada</th><th>Gap: Aprovada vs Projetada</th><th>Ação</th><th>Status</th>
         </tr></thead>
         <tbody id="custo-body"></tbody>
       </table>
@@ -505,6 +505,7 @@ function renderOverburn() {
 function renderCusto() {
   const data = applyFilter(custo, filters.custo);
   document.getElementById('custo-body').innerHTML = data.map(r => {
+    const ob = overburn.find(p => p.name === r.name);
     const gapPositivo = r.gap >= 0;
     const gapStr = gapPositivo
       ? `<span class="val-green">+R$ ${r.gap.toLocaleString('pt-BR')}</span>`
@@ -513,7 +514,7 @@ function renderCusto() {
       <td>${r.cliente}</td>
       <td>${r.name}</td>
       <td>${r.aprovada}</td>
-      <td>${r.horas}</td>
+      ${obHoursCell(ob ? ob.tot : null)}
       <td class="${r.prj <= r.apv ? 'val-green' : 'val-red'}">${r.projetada}</td>
       <td>${gapStr}</td>
       <td>${acaoBadge(r.acao)}</td>
