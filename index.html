@@ -245,7 +245,7 @@
   <!-- ABA: OVERBURN -->
   <div id="tab-overburn" class="tab-panel">
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Projetos c/ Overburn</div><div class="kpi-val red">8 / 11</div><div class="kpi-sub">Total consumido &gt; vendido</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Projetos c/ Overburn</div><div class="kpi-val red">7 / 11</div><div class="kpi-sub">Total consumido &gt; vendido</div></div>
       <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Maior Overburn Total</div><div class="kpi-val red">367%</div><div class="kpi-sub">No Bread</div></div>
       <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Top Overburn Atend.</div><div class="kpi-val red">1.030%</div><div class="kpi-sub">No Bread</div></div>
       <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Top Overburn Criação</div><div class="kpi-val red">926%</div><div class="kpi-sub">No Bread</div></div>
@@ -353,7 +353,7 @@
 
 const projects = [
   { cliente:'Bauducco',      name:'Netflix',            rec:'R$ 500.000', res:'-R$ 403.089', pl:-94.01,  acao:'CRITICO', ativo:true,  gap:-526100 },
-  { cliente:'Bauducco',      name:'Bisnaguinha Minions',rec:'R$ 74.666',  res:'-R$ 14.504',  pl:-22.65,  acao:'CRITICO', ativo:true,  gap:-47775  },
+  { cliente:'Bauducco',      name:'Bisnaguinha Minions',rec:'R$ 104.852', res:'+R$ 11.381',  pl:12.66,   acao:'OK',      ativo:true,  gap:-17589  },
   { cliente:'Bauducco',      name:'Dia do Hambúrguer',  rec:'R$ 15.093',  res:'+R$ 5.628',   pl:43.49,   acao:'OK',      ativo:true,  gap:-525    },
   { cliente:'Bauducco',      name:'Fini',               rec:'R$ 161.405', res:'+R$ 91.034',  pl:65.77,   acao:'OK',      ativo:true,  gap:103861  },
   { cliente:'Bauducco',      name:'No Bread',           rec:'R$ 30.414',  res:'-R$ 71.800',  pl:-275.30, acao:'CRITICO', ativo:false, gap:-82515  },
@@ -366,14 +366,14 @@ const projects = [
 ];
 
 const brutas = [
-  'R$ 500.000','R$ 74.666','R$ 15.093','R$ 161.405','R$ 30.414',
+  'R$ 500.000','R$ 104.852','R$ 15.093','R$ 161.405','R$ 30.414',
   'R$ 358.259','R$ 134.705','R$ 198.233','R$ 202.488','R$ 140.084','R$ 30.275'
 ];
 
 // overburn: [vendido, consumido] por departamento
 const overburn = [
   { cliente:'Bauducco',      name:'Netflix',            plan:[228,215],  cri:[1396,2381], mid:[294,1180], ate:[112,696],  ope:[73,321],   tot:[2103,4792], ativo:true  },
-  { cliente:'Bauducco',      name:'Bisnaguinha Minions',plan:[52,73],    cri:[216,338],   mid:[92,41],    ate:[24,55],    ope:[24,35],    tot:[408,541],   ativo:true  },
+  { cliente:'Bauducco',      name:'Bisnaguinha Minions',plan:[52,73],    cri:[300,338],   mid:[154,41],   ate:[44,55],    ope:[44,35],    tot:[594,541],   ativo:true  },
   { cliente:'Bauducco',      name:'Dia do Hambúrguer',  plan:[0,0],      cri:[66,67],     mid:[5,2],      ate:[10,0],     ope:[5,0],      tot:[86,69],     ativo:true  },
   { cliente:'Bauducco',      name:'Fini',               plan:[94,58],    cri:[504,109],   mid:[100,18],   ate:[70,41],    ope:[72,26],    tot:[840,252],   ativo:true  },
   { cliente:'Bauducco',      name:'No Bread',           plan:[0,0],      cri:[34,315],    mid:[79,40],    ate:[16,165],   ope:[14,5],     tot:[143,525],   ativo:false },
@@ -388,7 +388,7 @@ const overburn = [
 // custo: apv e prj em R$ mil (para gráficos), gap em R$ inteiros (para tabelas)
 const custo = [
   { cliente:'Bauducco',      name:'Netflix',            horas:'4.792h',  aprovada:'R$ 500.000',   projetada:'R$ 1.026.100', apv:500.0,  prj:1026.1, gap:-526100, ativo:true,  acao:'CRITICO' },
-  { cliente:'Bauducco',      name:'Bisnaguinha Minions',horas:'541h',    aprovada:'R$ 74.666',    projetada:'R$ 122.441',   apv:74.7,   prj:122.4,  gap:-47775,  ativo:true,  acao:'CRITICO' },
+  { cliente:'Bauducco',      name:'Bisnaguinha Minions',horas:'541h',    aprovada:'R$ 104.852',   projetada:'R$ 122.441',   apv:104.9,  prj:122.4,  gap:-17589,  ativo:true,  acao:'OK'      },
   { cliente:'Bauducco',      name:'Dia do Hambúrguer',  horas:'69h',     aprovada:'R$ 15.093',    projetada:'R$ 15.618',    apv:15.1,   prj:15.6,   gap:-525,    ativo:true,  acao:'OK'      },
   { cliente:'Bauducco',      name:'Fini',               horas:'252h',    aprovada:'R$ 161.405',   projetada:'R$ 57.544',    apv:161.4,  prj:57.5,   gap:103861,  ativo:true,  acao:'OK'      },
   { cliente:'Bauducco',      name:'No Bread',           horas:'525h',    aprovada:'R$ 30.414',    projetada:'R$ 112.930',   apv:30.4,   prj:112.9,  gap:-82515,  ativo:false, acao:'CRITICO' },
