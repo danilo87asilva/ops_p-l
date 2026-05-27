@@ -63,6 +63,9 @@
     .filter-btn { padding:5px 14px; border-radius:4px; border:1.5px solid var(--border); background:var(--bg); color:var(--muted); font-family:'Red Hat Display',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:all .15s; }
     .filter-btn:hover { border-color:var(--black); color:var(--black); }
     .filter-btn.active { background:var(--black); border-color:var(--black); color:#fff; }
+    .filter-area { display:flex; flex-direction:row; gap:12px; align-items:center; margin-left:auto; flex-wrap:wrap; justify-content:flex-end; }
+    .filter-group { display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+    .filter-group-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--light); }
 
     /* Tabelas */
     .table-wrap { border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:32px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
@@ -103,6 +106,11 @@
     .legend-row  { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:14px; align-items:center; }
     .legend-item { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:var(--muted); }
     .legend-dot  { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+
+    /* Linha de total */
+    tr.total-row td { background:#e2e2e2 !important; color:var(--black) !important; border-top:2px solid var(--black); border-bottom:none !important; font-weight:800; font-size:12px; }
+    tr.total-row:hover td { background:#e2e2e2 !important; }
+    tr.total-row td:first-child { font-weight:900; }
 
     /* Footer */
     .footer { margin-top:40px; padding-top:20px; border-top:2px solid var(--black); text-align:center; font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.5px; }
@@ -187,11 +195,20 @@
     <div class="section-head">
       <div class="section-title">Resultado por Projeto</div>
       <div class="section-pill">11 projetos</div>
-      <div class="filters">
-        <button class="filter-btn active" onclick="filterTable('overview','todos',this)">Todos</button>
-        <button class="filter-btn" onclick="filterTable('overview','ativo',this)">🔄 Ativos</button>
-        <button class="filter-btn" onclick="filterTable('overview','finalizado',this)">✅ Finalizados</button>
-        <button class="filter-btn" onclick="filterTable('overview','critico',this)">⚠️ Críticos</button>
+      <div class="filter-area">
+        <div class="filter-group">
+          <span class="filter-group-label">Cliente</span>
+          <button class="filter-btn active" onclick="filterClient('overview','todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filterClient('overview','Bauducco',this)">Bauducco</button>
+          <button class="filter-btn" onclick="filterClient('overview','Casa Bauducco',this)">Casa Bauducco</button>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Status</span>
+          <button class="filter-btn active" onclick="filterTable('overview','todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filterTable('overview','ativo',this)">🔄 Ativos</button>
+          <button class="filter-btn" onclick="filterTable('overview','finalizado',this)">✅ Finalizados</button>
+          <button class="filter-btn" onclick="filterTable('overview','critico',this)">⚠️ Críticos</button>
+        </div>
       </div>
     </div>
     <div class="table-wrap">
@@ -226,10 +243,20 @@
 
     <div class="section-head">
       <div class="section-title">P&amp;L por Projeto</div>
-      <div class="filters">
-        <button class="filter-btn active" onclick="filterTable('pl','todos',this)">Todos</button>
-        <button class="filter-btn" onclick="filterTable('pl','ativo',this)">🔄 Ativos</button>
-        <button class="filter-btn" onclick="filterTable('pl','finalizado',this)">✅ Finalizados</button>
+      <div class="filter-area">
+        <div class="filter-group">
+          <span class="filter-group-label">Cliente</span>
+          <button class="filter-btn active" onclick="filterClient('pl','todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filterClient('pl','Bauducco',this)">Bauducco</button>
+          <button class="filter-btn" onclick="filterClient('pl','Casa Bauducco',this)">Casa Bauducco</button>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Status</span>
+          <button class="filter-btn active" onclick="filterTable('pl','todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filterTable('pl','ativo',this)">🔄 Ativos</button>
+          <button class="filter-btn" onclick="filterTable('pl','finalizado',this)">✅ Finalizados</button>
+          <button class="filter-btn" onclick="filterTable('pl','critico',this)">⚠️ Críticos</button>
+        </div>
       </div>
     </div>
     <div class="table-wrap">
@@ -252,43 +279,41 @@
       <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Melhor Controle</div><div class="kpi-val green" id="kpi-melhor-controle-val">—</div><div class="kpi-sub" id="kpi-melhor-controle-sub">—</div></div>
     </div>
 
-    <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-card-title">Overburn Total por Projeto</div>
-        <div class="chart-card-sub">Total horas consumidas / total horas vendidas × 100</div>
-        <div class="legend-row">
-          <div class="legend-item"><span>🔴</span> Acima de 200%</div>
-          <div class="legend-item"><span>🟡</span> Entre 100% e 200%</div>
-          <div class="legend-item"><span>🟢</span> Até 100%</div>
-        </div>
-        <canvas id="atenChart"></canvas>
+    <div class="chart-card" style="margin-bottom:32px">
+      <div class="chart-card-title">Overburn por Áreas</div>
+      <div class="chart-card-sub" id="totalChart-sub">Total horas consumidas / vendidas × 100</div>
+      <div class="filters" style="margin-bottom:10px;flex-wrap:wrap;">
+        <button class="filter-btn active" onclick="switchObDept('tot',this)">Total</button>
+        <button class="filter-btn" onclick="switchObDept('cri',this)">Criação</button>
+        <button class="filter-btn" onclick="switchObDept('ate',this)">Atendimento</button>
+        <button class="filter-btn" onclick="switchObDept('plan',this)">Planej.</button>
+        <button class="filter-btn" onclick="switchObDept('mid',this)">Mídia/BI</button>
+        <button class="filter-btn" onclick="switchObDept('ope',this)">Operações</button>
       </div>
-      <div class="chart-card">
-        <div class="chart-card-title" id="totalChart-title">Overburn de Criação</div>
-        <div class="chart-card-sub" id="totalChart-sub">Horas Criação consumidas / vendidas × 100</div>
-        <div class="filters" style="margin-bottom:10px;flex-wrap:wrap;">
-          <button class="filter-btn active" onclick="switchObDept('cri',this)">Criação</button>
-          <button class="filter-btn" onclick="switchObDept('ate',this)">Atendimento</button>
-          <button class="filter-btn" onclick="switchObDept('plan',this)">Planej.</button>
-          <button class="filter-btn" onclick="switchObDept('mid',this)">Mídia/BI</button>
-          <button class="filter-btn" onclick="switchObDept('ope',this)">Operações</button>
-          <button class="filter-btn" onclick="switchObDept('tot',this)">Total</button>
-        </div>
-        <div class="legend-row">
-          <div class="legend-item"><span>🔴</span> Acima de 200%</div>
-          <div class="legend-item"><span>🟡</span> Entre 100% e 200%</div>
-          <div class="legend-item"><span>🟢</span> Até 100%</div>
-        </div>
-        <canvas id="totalChart"></canvas>
+      <div class="legend-row">
+        <div class="legend-item"><span>🔴</span> Acima de 200%</div>
+        <div class="legend-item"><span>🟡</span> Entre 100% e 200%</div>
+        <div class="legend-item"><span>🟢</span> Até 100%</div>
       </div>
+      <canvas id="totalChart" style="max-height:280px"></canvas>
     </div>
 
     <div class="section-head">
       <div class="section-title">Overburn por Departamento</div>
-      <div class="filters">
-        <button class="filter-btn active" onclick="filterTable('overburn','todos',this)">Todos</button>
-        <button class="filter-btn" onclick="filterTable('overburn','ativo',this)">🔄 Ativos</button>
-        <button class="filter-btn" onclick="filterTable('overburn','finalizado',this)">✅ Finalizados</button>
+      <div class="filter-area">
+        <div class="filter-group">
+          <span class="filter-group-label">Cliente</span>
+          <button class="filter-btn active" onclick="filterClient('overburn','todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filterClient('overburn','Bauducco',this)">Bauducco</button>
+          <button class="filter-btn" onclick="filterClient('overburn','Casa Bauducco',this)">Casa Bauducco</button>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Status</span>
+          <button class="filter-btn active" onclick="filterTable('overburn','todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filterTable('overburn','ativo',this)">🔄 Ativos</button>
+          <button class="filter-btn" onclick="filterTable('overburn','finalizado',this)">✅ Finalizados</button>
+          <button class="filter-btn" onclick="filterTable('overburn','critico',this)">⚠️ Críticos</button>
+        </div>
       </div>
     </div>
     <div class="table-wrap">
@@ -323,11 +348,20 @@
 
     <div class="section-head">
       <div class="section-title">Análise Propostas Comerciais</div>
-      <div class="filters">
-        <button class="filter-btn active" onclick="filterTable('custo','todos',this)">Todos</button>
-        <button class="filter-btn" onclick="filterTable('custo','ativo',this)">🔄 Ativos</button>
-        <button class="filter-btn" onclick="filterTable('custo','finalizado',this)">✅ Finalizados</button>
-        <button class="filter-btn" onclick="filterTable('custo','critico',this)">⚠️ Críticos</button>
+      <div class="filter-area">
+        <div class="filter-group">
+          <span class="filter-group-label">Cliente</span>
+          <button class="filter-btn active" onclick="filterClient('custo','todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filterClient('custo','Bauducco',this)">Bauducco</button>
+          <button class="filter-btn" onclick="filterClient('custo','Casa Bauducco',this)">Casa Bauducco</button>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Status</span>
+          <button class="filter-btn active" onclick="filterTable('custo','todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filterTable('custo','ativo',this)">🔄 Ativos</button>
+          <button class="filter-btn" onclick="filterTable('custo','finalizado',this)">✅ Finalizados</button>
+          <button class="filter-btn" onclick="filterTable('custo','critico',this)">⚠️ Críticos</button>
+        </div>
       </div>
     </div>
     <div class="table-wrap">
@@ -401,6 +435,24 @@ const custo = [
 ];
 
 // ─── 2. FUNÇÕES UTILITÁRIAS ───────────────────────────────────────────────────
+function parseBRL(s) {
+  if (!s) return 0;
+  const neg = s.includes('-');
+  const n = parseInt(s.replace(/[^0-9]/g, ''), 10);
+  return neg ? -n : n;
+}
+function fmtTotalBRL(v, showSign = true) {
+  const abs = Math.abs(v);
+  const str = abs >= 1000000 ? `R$ ${(abs/1000000).toFixed(1)}M` : `R$ ${(abs/1000).toFixed(0)}k`;
+  if (!showSign) return str;
+  return v >= 0 ? `+${str}` : `-${str}`;
+}
+function obHoursCellTotal(arr) {
+  if (!arr || (arr[0]===0 && arr[1]===0)) return `<td>n/a</td>`;
+  const [v, c] = arr;
+  const pct = v === 0 ? '—' : Math.round(c/v*100) + '%';
+  return `<td>${v} / ${c} (${pct})</td>`;
+}
 const fmtK  = v => v >= 0 ? `+R$ ${(v/1000).toFixed(0)}k` : `-R$ ${(Math.abs(v)/1000).toFixed(0)}k`;
 const fmtFull = v => v >= 0
   ? `<span class="val-green">+R$ ${v.toLocaleString('pt-BR')}</span>`
@@ -437,31 +489,42 @@ function showTab(id, btn) {
 }
 
 // ─── 4. SISTEMA DE FILTROS ────────────────────────────────────────────────────
-const filters = { overview:'todos', pl:'todos', overburn:'todos', custo:'todos' };
+const filters       = { overview:'todos', pl:'todos', overburn:'todos', custo:'todos' };
+const clientFilters = { overview:'todos', pl:'todos', overburn:'todos', custo:'todos' };
 const renders = { overview:()=>renderOverview(), pl:()=>renderPL(), overburn:()=>renderOverburn(), custo:()=>renderCusto() };
 
 function filterTable(tab, f, btn) {
   filters[tab] = f;
-  btn.closest('.section-head, .tab-panel').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.closest('.filter-group').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renders[tab]();
 }
 
-function applyFilter(data, f) {
-  if (f === 'ativo')      return data.filter(p => p.ativo);
-  if (f === 'finalizado') return data.filter(p => !p.ativo);
-  if (f === 'critico')    return data.filter(p => p.acao === 'CRITICO');
-  return data;
+function filterClient(tab, client, btn) {
+  clientFilters[tab] = client;
+  btn.closest('.filter-group').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renders[tab]();
+}
+
+function applyFilter(data, statusF, clientF) {
+  let result = clientF && clientF !== 'todos' ? data.filter(p => p.cliente === clientF) : data;
+  if (statusF === 'ativo')      result = result.filter(p => p.ativo);
+  if (statusF === 'finalizado') result = result.filter(p => !p.ativo);
+  if (statusF === 'critico')    result = result.filter(p => {
+    if (p.acao !== undefined) return p.acao === 'CRITICO';
+    const proj = projects.find(pr => pr.name === p.name);
+    return proj && proj.acao === 'CRITICO';
+  });
+  return result;
 }
 
 // ─── 5. FUNÇÕES DE RENDER ─────────────────────────────────────────────────────
 function renderOverview() {
-  const data = applyFilter(projects, filters.overview);
-  document.getElementById('overview-body').innerHTML = data.map(p => {
+  const data = applyFilter(projects, filters.overview, clientFilters.overview);
+  const rows = data.map(p => {
     const gapColor = p.gap >= 0 ? 'val-green' : 'val-red';
-    const gapSinal = p.gap >= 0 ? '+' : '-';
-    const gapAbs = Math.abs(p.gap);
-    const gapK = `${gapSinal}R$ ${(gapAbs/1000).toFixed(0)}k`;
+    const gapK = fmtK(p.gap);
     return `<tr>
       <td>${p.cliente}</td>
       <td>${p.name}</td>
@@ -473,11 +536,27 @@ function renderOverview() {
       <td>${statusDot(p.ativo)}</td>
     </tr>`;
   }).join('');
+  let totalRow = '';
+  if (data.length > 0) {
+    const recBruta = data.reduce((s,p) => s + parseBRL(brutas[projects.indexOf(p)]), 0);
+    const recFinal = data.reduce((s,p) => s + parseBRL(p.res), 0);
+    const pl = (recFinal / (recBruta * 0.8575)) * 100;
+    const gap = data.reduce((s,p) => s + p.gap, 0);
+    totalRow = `<tr class="total-row">
+      <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
+      <td>${fmtTotalBRL(recBruta, false)}</td>
+      <td>${fmtTotalBRL(recFinal)}</td>
+      <td>${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
+      <td>${fmtTotalBRL(gap)}</td>
+      <td>—</td><td>—</td>
+    </tr>`;
+  }
+  document.getElementById('overview-body').innerHTML = rows + totalRow;
 }
 
 function renderPL() {
-  const data = applyFilter(projects, filters.pl);
-  document.getElementById('pl-body').innerHTML = data.map(p => `<tr>
+  const data = applyFilter(projects, filters.pl, clientFilters.pl);
+  const rows = data.map(p => `<tr>
     <td>${p.cliente}</td>
     <td>${p.name}</td>
     <td>${brutas[projects.indexOf(p)]}</td>
@@ -485,11 +564,25 @@ function renderPL() {
     <td class="${plClass(p.pl)}">${p.pl > 0 ? '+' : ''}${p.pl.toFixed(2)}%</td>
     <td>${statusDot(p.ativo)}</td>
   </tr>`).join('');
+  let totalRow = '';
+  if (data.length > 0) {
+    const recBruta = data.reduce((s,p) => s + parseBRL(brutas[projects.indexOf(p)]), 0);
+    const recFinal = data.reduce((s,p) => s + parseBRL(p.res), 0);
+    const pl = (recFinal / (recBruta * 0.8575)) * 100;
+    totalRow = `<tr class="total-row">
+      <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
+      <td>${fmtTotalBRL(recBruta, false)}</td>
+      <td>${fmtTotalBRL(recFinal)}</td>
+      <td>${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
+      <td>—</td>
+    </tr>`;
+  }
+  document.getElementById('pl-body').innerHTML = rows + totalRow;
 }
 
 function renderOverburn() {
-  const data = applyFilter(overburn, filters.overburn);
-  document.getElementById('overburn-body').innerHTML = data.map(p => `<tr>
+  const data = applyFilter(overburn, filters.overburn, clientFilters.overburn);
+  const rows = data.map(p => `<tr>
     <td>${p.cliente}</td>
     <td>${p.name}</td>
     ${obHoursCell(p.plan)}
@@ -500,14 +593,31 @@ function renderOverburn() {
     ${obHoursCell(p.tot)}
     <td>${statusDot(p.ativo)}</td>
   </tr>`).join('');
+  let totalRow = '';
+  if (data.length > 0) {
+    const sumDept = key => [
+      data.reduce((s,p) => s + p[key][0], 0),
+      data.reduce((s,p) => s + p[key][1], 0)
+    ];
+    totalRow = `<tr class="total-row">
+      <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
+      ${obHoursCellTotal(sumDept('plan'))}
+      ${obHoursCellTotal(sumDept('cri'))}
+      ${obHoursCellTotal(sumDept('mid'))}
+      ${obHoursCellTotal(sumDept('ate'))}
+      ${obHoursCellTotal(sumDept('ope'))}
+      ${obHoursCellTotal(sumDept('tot'))}
+      <td>—</td>
+    </tr>`;
+  }
+  document.getElementById('overburn-body').innerHTML = rows + totalRow;
 }
 
 function renderCusto() {
-  const data = applyFilter(custo, filters.custo);
-  document.getElementById('custo-body').innerHTML = data.map(r => {
+  const data = applyFilter(custo, filters.custo, clientFilters.custo);
+  const rows = data.map(r => {
     const ob = overburn.find(p => p.name === r.name);
-    const gapPositivo = r.gap >= 0;
-    const gapStr = gapPositivo
+    const gapStr = r.gap >= 0
       ? `<span class="val-green">+R$ ${r.gap.toLocaleString('pt-BR')}</span>`
       : `<span class="val-red">-R$ ${Math.abs(r.gap).toLocaleString('pt-BR')}</span>`;
     return `<tr>
@@ -521,6 +631,23 @@ function renderCusto() {
       <td>${statusDot(r.ativo)}</td>
     </tr>`;
   }).join('');
+  let totalRow = '';
+  if (data.length > 0) {
+    const apvTotal = data.reduce((s,r) => s + r.apv, 0);
+    const prjTotal = data.reduce((s,r) => s + r.prj, 0);
+    const gapTotal = data.reduce((s,r) => s + r.gap, 0);
+    const hrsV = data.reduce((s,r) => { const ob = overburn.find(p=>p.name===r.name); return s + (ob?ob.tot[0]:0); }, 0);
+    const hrsC = data.reduce((s,r) => { const ob = overburn.find(p=>p.name===r.name); return s + (ob?ob.tot[1]:0); }, 0);
+    totalRow = `<tr class="total-row">
+      <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
+      <td>${fmtTotalBRL(apvTotal*1000, false)}</td>
+      ${obHoursCellTotal([hrsV, hrsC])}
+      <td>${fmtTotalBRL(prjTotal*1000, false)}</td>
+      <td>${fmtTotalBRL(gapTotal)}</td>
+      <td>—</td><td>—</td>
+    </tr>`;
+  }
+  document.getElementById('custo-body').innerHTML = rows + totalRow;
 }
 
 // ─── 6. CONFIGURAÇÕES CHART.JS ────────────────────────────────────────────────
@@ -615,7 +742,7 @@ new Chart(document.getElementById('plDetail'), {
   }
 });
 
-// atenChart — Overburn TOTAL por Projeto (aba Overburn, ESQUERDA)
+// totVals — base para totalChart (Total, padrão)
 const totVals = overburn.map(p => p.tot[0]===0 ? 0 : Math.round(p.tot[1]/p.tot[0]*100));
 const obColor = v => v > 200 ? '#b91c1c' : v > 100 ? '#f5c800' : '#15803d';
 const obLabels = overburn.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R. ').replace('Bisnaguinha ',''));
@@ -632,13 +759,7 @@ const obLabels = overburn.map(p => p.name.replace('Dia do ','').replace(' 2025',
   }
 })();
 
-new Chart(document.getElementById('atenChart'), {
-  type:'bar',
-  data:{ labels:obLabels, datasets:[{ data:totVals, backgroundColor:totVals.map(obColor), borderRadius:4 }] },
-  options:{ ...base, plugins:{ ...base.plugins, tooltip:ttPct }, scales:scPct }
-});
-
-// totalChart — Overburn por Departamento (aba Overburn, DIREITA) — dinâmico
+// totalChart — Overburn por Áreas (aba Overburn) — dinâmico
 const obDepts = {
   plan: { label:'Planejamento', sub:'Horas Planej. consumidas / vendidas × 100' },
   cri:  { label:'Criação',      sub:'Horas Criação consumidas / vendidas × 100' },
@@ -653,10 +774,9 @@ function obDeptVals(key) {
     return (v===0 && c===0) ? 0 : v===0 ? 0 : Math.round(c/v*100);
   });
 }
-const criVals = obDeptVals('cri');
 const totalChartInst = new Chart(document.getElementById('totalChart'), {
   type:'bar',
-  data:{ labels:obLabels, datasets:[{ data:criVals, backgroundColor:criVals.map(obColor), borderRadius:4 }] },
+  data:{ labels:obLabels, datasets:[{ data:totVals, backgroundColor:totVals.map(obColor), borderRadius:4 }] },
   options:{ ...base, plugins:{ ...base.plugins, tooltip:ttPct }, scales:scPct }
 });
 function switchObDept(key, btn) {
@@ -664,7 +784,6 @@ function switchObDept(key, btn) {
   totalChartInst.data.datasets[0].data = vals;
   totalChartInst.data.datasets[0].backgroundColor = vals.map(obColor);
   totalChartInst.update();
-  document.getElementById('totalChart-title').textContent = 'Overburn de ' + obDepts[key].label;
   document.getElementById('totalChart-sub').textContent = obDepts[key].sub;
   document.querySelectorAll('#totalChart').forEach(() => {});
   btn.closest('.chart-card').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
