@@ -111,6 +111,8 @@
     tr.total-row td { background:#e2e2e2 !important; color:var(--black) !important; border-top:2px solid var(--black); border-bottom:none !important; font-weight:800; font-size:12px; }
     tr.total-row:hover td { background:#e2e2e2 !important; }
     tr.total-row td:first-child { font-weight:900; }
+    tr.total-row td.val-red   { color:var(--red)   !important; }
+    tr.total-row td.val-green { color:var(--green)  !important; }
 
     /* Footer */
     .footer { margin-top:40px; padding-top:20px; border-top:2px solid var(--black); text-align:center; font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.5px; }
@@ -450,8 +452,10 @@ function fmtTotalBRL(v, showSign = true) {
 function obHoursCellTotal(arr) {
   if (!arr || (arr[0]===0 && arr[1]===0)) return `<td>n/a</td>`;
   const [v, c] = arr;
-  const pct = v === 0 ? '—' : Math.round(c/v*100) + '%';
-  return `<td>${v} / ${c} (${pct})</td>`;
+  const pct = v === 0 ? null : Math.round(c/v*100);
+  const pctStr = pct !== null ? ` (${pct}%)` : '';
+  const color = pct === null ? '' : pct > 100 ? 'color:var(--red)' : 'color:var(--green)';
+  return `<td style="${color}">${v} / ${c}${pctStr}</td>`;
 }
 const fmtK  = v => v >= 0 ? `+R$ ${(v/1000).toFixed(0)}k` : `-R$ ${(Math.abs(v)/1000).toFixed(0)}k`;
 const fmtFull = v => v >= 0
@@ -545,9 +549,9 @@ function renderOverview() {
     totalRow = `<tr class="total-row">
       <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
       <td>${fmtTotalBRL(recBruta, false)}</td>
-      <td>${fmtTotalBRL(recFinal)}</td>
-      <td>${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
-      <td>${fmtTotalBRL(gap)}</td>
+      <td class="${recFinal>=0?'val-green':'val-red'}">${fmtTotalBRL(recFinal)}</td>
+      <td class="${pl>=0?'val-green':'val-red'}">${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
+      <td class="${gap>=0?'val-green':'val-red'}">${fmtTotalBRL(gap)}</td>
       <td>—</td><td>—</td>
     </tr>`;
   }
@@ -572,8 +576,8 @@ function renderPL() {
     totalRow = `<tr class="total-row">
       <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
       <td>${fmtTotalBRL(recBruta, false)}</td>
-      <td>${fmtTotalBRL(recFinal)}</td>
-      <td>${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
+      <td class="${recFinal>=0?'val-green':'val-red'}">${fmtTotalBRL(recFinal)}</td>
+      <td class="${pl>=0?'val-green':'val-red'}">${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
       <td>—</td>
     </tr>`;
   }
@@ -642,8 +646,8 @@ function renderCusto() {
       <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
       <td>${fmtTotalBRL(apvTotal*1000, false)}</td>
       ${obHoursCellTotal([hrsV, hrsC])}
-      <td>${fmtTotalBRL(prjTotal*1000, false)}</td>
-      <td>${fmtTotalBRL(gapTotal)}</td>
+      <td class="${prjTotal<=apvTotal?'val-green':'val-red'}">${fmtTotalBRL(prjTotal*1000, false)}</td>
+      <td class="${gapTotal>=0?'val-green':'val-red'}">${fmtTotalBRL(gapTotal)}</td>
       <td>—</td><td>—</td>
     </tr>`;
   }
