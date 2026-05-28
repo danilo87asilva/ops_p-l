@@ -305,10 +305,10 @@
     <div class="logo-box">ID</div>
     <div>
       <div class="header-title">ID/TBWA — Dashboard Executivo de Negócios</div>
-      <div class="header-sub">Diretoria de Negócios · Versão 2025</div>
+      <div class="header-sub">Diretoria de Negócios · Versão <span class="yr">2025</span></div>
     </div>
   </div>
-  <div class="header-badge">2025</div>
+  <div class="header-badge"><span class="yr">2025</span></div>
 </header>
 
 <!-- NAV -->
@@ -494,7 +494,7 @@
 
   <!-- Receita por UN -->
   <div class="table-wrap">
-    <div class="table-header-bar">Receita por Unidade de Negócio × Meta 2025</div>
+    <div class="table-header-bar">Receita por Unidade de Negócio × Meta <span class="yr">2025</span></div>
     <div class="table-scroll">
       <table>
         <thead>
@@ -553,7 +553,7 @@
      METAS
 ════════════════════════════════════════════ -->
 <section class="section" id="tab-metas">
-  <div class="section-title">🎯 <span>Metas 2025</span> — Núcleos & Unidades</div>
+  <div class="section-title">🎯 <span>Metas <span class="yr">2025</span></span> — Núcleos & Unidades</div>
 
   <div class="grid-2">
     <!-- Núcleos -->
@@ -698,7 +698,7 @@
      RECEITA
 ════════════════════════════════════════════ -->
 <section class="section" id="tab-receita">
-  <div class="section-title">💰 <span>Receita Consolidada 2025</span> — Meta vs Realizado</div>
+  <div class="section-title">💰 <span>Receita Consolidada <span class="yr">2025</span></span> — Meta vs Realizado</div>
 
   <div class="table-wrap">
     <div class="table-header-bar">Receita Total por Mês — Unidades de Negócio</div>
@@ -886,7 +886,7 @@
      NEW BUSINESS
 ════════════════════════════════════════════ -->
 <section class="section" id="tab-newbiz">
-  <div class="section-title">🚀 <span>New Business</span> — Pipeline Comercial 2025</div>
+  <div class="section-title">🚀 <span>New Business</span> — Pipeline Comercial <span class="yr">2025</span></div>
   <div class="table-wrap">
     <div class="table-header-bar">Pipeline New Business</div>
     <div class="table-scroll">
@@ -1073,6 +1073,10 @@
 </main>
 
 <script>
+  const CY = new Date().getFullYear();
+  document.querySelectorAll('.yr').forEach(el => el.textContent = CY);
+  document.title = document.title.replace(/\d{4}/, CY);
+
   function showTab(id) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
