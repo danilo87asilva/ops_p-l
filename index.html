@@ -153,7 +153,7 @@
     </div>
     <div class="header-meta">
       Ampfy<br>
-      <span style="color:#ffffff;font-weight:500">Atualização: 28/05/2026 16:31</span>
+      <span style="color:#ffffff;font-weight:500">Atualização: 28/05/2026 19:28</span>
     </div>
   </div>
 </div>
@@ -366,7 +366,7 @@ const projects = [
   { cliente:'Casa Bauducco', name:'Natal 2025',         rec:'R$ 358.259', res:'-R$ 82.149',  pl:-26.74,  acao:'CRITICO', ativo:false, gap:-203787, dtIni:2025, dtFim:2025 },
   { cliente:'Bauducco',      name:'Reality Natal 2025', rec:'R$ 134.705', res:'-R$ 27.558',  pl:-23.86,  acao:'CRITICO', ativo:false, gap:-47769,  dtIni:2025, dtFim:2025 },
   { cliente:'Casa Bauducco', name:'Novo Menu',          rec:'R$ 198.233', res:'-R$ 24.164',  pl:-14.22,  acao:'CRITICO', ativo:false, gap:-89328,  dtIni:2025, dtFim:2026 },
-  { cliente:'Casa Bauducco', name:'Páscoa 2026',        rec:'R$ 202.488', res:'-R$ 10.324',  pl:-5.95,   acao:'CRITICO', ativo:false, gap:-39058,  dtIni:2026, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Páscoa 2026',        rec:'R$ 202.488', res:'-R$ 10.324',  pl:-5.95,   acao:'CRITICO', ativo:false, gap:-39058,  dtIni:2025, dtFim:2026 },
   { cliente:'Bauducco',      name:'Reality Páscoa 2026',rec:'R$ 140.084', res:'-R$ 869',     pl:-0.72,   acao:'CRITICO', ativo:false, gap:-42545,  dtIni:2026, dtFim:2026 },
   { cliente:'Bauducco',      name:'Gamescomm',          rec:'R$ 30.275',  res:'+R$ 10.769',  pl:41.48,   acao:'OK',      ativo:false, gap:3076,    dtIni:2026, dtFim:2026 }
 ];
@@ -473,7 +473,7 @@ function getFiltered() {
   const y = gFilter.year, c = gFilter.client, s = gFilter.status;
   const fn = data => {
     let r = [...data];
-    if (y !== 'todos') { const yr = parseInt(y); r = r.filter(p => p.dtIni <= yr && p.dtFim >= yr); }
+    if (y !== 'todos') { const yr = parseInt(y); r = r.filter(p => p.dtIni === yr); }
     if (c !== 'todos') r = r.filter(p => p.cliente === c);
     if (s === 'ativo')      r = r.filter(p => p.ativo);
     if (s === 'finalizado') r = r.filter(p => !p.ativo);
