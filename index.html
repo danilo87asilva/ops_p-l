@@ -70,8 +70,9 @@
     /* Filtros globais */
     .global-filters { display:flex; flex-direction:row; gap:16px; align-items:center; padding:10px 52px; background:var(--bg2); border-bottom:1px solid var(--border); flex-wrap:wrap; position:sticky; top:52px; z-index:9; box-shadow:0 2px 6px rgba(0,0,0,.04); }
     .global-filter-group { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+    .global-filter-group.year-group { padding-right:16px; border-right:1.5px solid var(--border); margin-right:4px; }
     .global-filter-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); white-space:nowrap; }
-    @media (max-width:768px) { .global-filters { padding:10px 16px; gap:10px; } }
+    @media (max-width:768px) { .global-filters { padding:10px 16px; gap:10px; } .global-filter-group.year-group { padding-right:10px; } }
 
     /* Tabelas */
     .table-wrap { border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:32px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
@@ -152,7 +153,7 @@
     </div>
     <div class="header-meta">
       Ampfy<br>
-      <span style="color:#ffffff;font-weight:500">Atualização: 28/05/2026 01:28</span>
+      <span style="color:#ffffff;font-weight:500">Atualização: 28/05/2026 02:00</span>
     </div>
   </div>
 </div>
@@ -167,6 +168,12 @@
 
 <!-- GLOBAL FILTERS -->
 <div class="global-filters">
+  <div class="global-filter-group year-group">
+    <span class="global-filter-label">Ano</span>
+    <button class="filter-btn active" onclick="setGlobalFilter('year','todos',this)">Todos</button>
+    <button class="filter-btn" onclick="setGlobalFilter('year','2025',this)">2025</button>
+    <button class="filter-btn" onclick="setGlobalFilter('year','2026',this)">2026</button>
+  </div>
   <div class="global-filter-group">
     <span class="global-filter-label">Cliente</span>
     <button class="filter-btn active" onclick="setGlobalFilter('client','todos',this)">Todos</button>
@@ -351,17 +358,17 @@
 // Ordem: Ativo+CRÍTICO → Ativo+OK → Finalizado+CRÍTICO → Finalizado+OK
 
 const projects = [
-  { cliente:'Bauducco',      name:'Netflix',            rec:'R$ 500.000', res:'-R$ 403.089', pl:-94.01,  acao:'CRITICO', ativo:true,  gap:-526100 },
-  { cliente:'Bauducco',      name:'Bisnaguinha Minions',rec:'R$ 104.852', res:'+R$ 11.381',  pl:12.66,   acao:'OK',      ativo:true,  gap:-17589  },
-  { cliente:'Bauducco',      name:'Dia do Hambúrguer',  rec:'R$ 15.093',  res:'+R$ 5.628',   pl:43.49,   acao:'OK',      ativo:true,  gap:-525    },
-  { cliente:'Bauducco',      name:'Fini',               rec:'R$ 161.405', res:'+R$ 91.034',  pl:65.77,   acao:'OK',      ativo:true,  gap:103861  },
-  { cliente:'Bauducco',      name:'No Bread',           rec:'R$ 30.414',  res:'-R$ 71.800',  pl:-275.30, acao:'CRITICO', ativo:false, gap:-82515  },
-  { cliente:'Casa Bauducco', name:'Natal 2025',      rec:'R$ 358.259', res:'-R$ 82.149',  pl:-26.74,  acao:'CRITICO', ativo:false, gap:-203787 },
-  { cliente:'Bauducco',      name:'Reality Natal 2025', rec:'R$ 134.705', res:'-R$ 27.558',  pl:-23.86,  acao:'CRITICO', ativo:false, gap:-47769  },
-  { cliente:'Casa Bauducco', name:'Novo Menu',       rec:'R$ 198.233', res:'-R$ 24.164',  pl:-14.22,  acao:'CRITICO', ativo:false, gap:-89328  },
-  { cliente:'Casa Bauducco', name:'Páscoa 2026',          rec:'R$ 202.488', res:'-R$ 10.324',  pl:-5.95,   acao:'CRITICO', ativo:false, gap:-39058  },
-  { cliente:'Bauducco',      name:'Reality Páscoa 2026',     rec:'R$ 140.084', res:'-R$ 869',     pl:-0.72,   acao:'CRITICO', ativo:false, gap:-42545  },
-  { cliente:'Bauducco',      name:'Gamescomm',          rec:'R$ 30.275',  res:'+R$ 10.769',  pl:41.48,   acao:'OK',      ativo:false, gap:3076    }
+  { cliente:'Bauducco',      name:'Netflix',            rec:'R$ 500.000', res:'-R$ 403.089', pl:-94.01,  acao:'CRITICO', ativo:true,  gap:-526100, dtIni:2025, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Bisnaguinha Minions',rec:'R$ 104.852', res:'+R$ 11.381',  pl:12.66,   acao:'OK',      ativo:true,  gap:-17589,  dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Dia do Hambúrguer',  rec:'R$ 15.093',  res:'+R$ 5.628',   pl:43.49,   acao:'OK',      ativo:true,  gap:-525,    dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Fini',               rec:'R$ 161.405', res:'+R$ 91.034',  pl:65.77,   acao:'OK',      ativo:true,  gap:103861,  dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'No Bread',           rec:'R$ 30.414',  res:'-R$ 71.800',  pl:-275.30, acao:'CRITICO', ativo:false, gap:-82515,  dtIni:2026, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Natal 2025',         rec:'R$ 358.259', res:'-R$ 82.149',  pl:-26.74,  acao:'CRITICO', ativo:false, gap:-203787, dtIni:2025, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Reality Natal 2025', rec:'R$ 134.705', res:'-R$ 27.558',  pl:-23.86,  acao:'CRITICO', ativo:false, gap:-47769,  dtIni:2025, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Novo Menu',          rec:'R$ 198.233', res:'-R$ 24.164',  pl:-14.22,  acao:'CRITICO', ativo:false, gap:-89328,  dtIni:2025, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Páscoa 2026',        rec:'R$ 202.488', res:'-R$ 10.324',  pl:-5.95,   acao:'CRITICO', ativo:false, gap:-39058,  dtIni:2025, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Reality Páscoa 2026',rec:'R$ 140.084', res:'-R$ 869',     pl:-0.72,   acao:'CRITICO', ativo:false, gap:-42545,  dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Gamescomm',          rec:'R$ 30.275',  res:'+R$ 10.769',  pl:41.48,   acao:'OK',      ativo:false, gap:3076,    dtIni:2026, dtFim:2026 }
 ];
 
 const brutas = [
@@ -371,32 +378,32 @@ const brutas = [
 
 // overburn: [vendido, consumido] por departamento
 const overburn = [
-  { cliente:'Bauducco',      name:'Netflix',            plan:[228,215],  cri:[1396,2381], mid:[294,1180], ate:[112,696],  ope:[73,321],   tot:[2103,4792], ativo:true  },
-  { cliente:'Bauducco',      name:'Bisnaguinha Minions',plan:[52,73],    cri:[300,338],   mid:[154,41],   ate:[44,55],    ope:[44,35],    tot:[594,541],   ativo:true  },
-  { cliente:'Bauducco',      name:'Dia do Hambúrguer',  plan:[0,0],      cri:[66,67],     mid:[5,2],      ate:[10,0],     ope:[5,0],      tot:[86,69],     ativo:true  },
-  { cliente:'Bauducco',      name:'Fini',               plan:[94,58],    cri:[504,109],   mid:[100,18],   ate:[70,41],    ope:[72,26],    tot:[840,252],   ativo:true  },
-  { cliente:'Bauducco',      name:'No Bread',           plan:[0,0],      cri:[34,315],    mid:[79,40],    ate:[16,165],   ope:[14,5],     tot:[143,525],   ativo:false },
-  { cliente:'Casa Bauducco', name:'Natal 2025',      plan:[120,153],  cri:[1036,1477], mid:[285,594],  ate:[86,263],   ope:[44,100],   tot:[1571,2586], ativo:false },
-  { cliente:'Bauducco',      name:'Reality Natal 2025', plan:[52,0],     cri:[312,369],   mid:[196,236],  ate:[30,133],   ope:[35,136],   tot:[625,874],   ativo:false },
-  { cliente:'Casa Bauducco', name:'Novo Menu',       plan:[66,102],   cri:[596,585],   mid:[157,349],  ate:[68,242],   ope:[28,64],    tot:[915,1341],  ativo:false },
-  { cliente:'Casa Bauducco', name:'Páscoa 2026',          plan:[68,110],   cri:[639,641],   mid:[176,176],  ate:[66,87],    ope:[42,75],    tot:[991,1088],  ativo:false },
-  { cliente:'Bauducco',      name:'Reality Páscoa 2026',     plan:[32,0],     cri:[288,348],   mid:[196,245],  ate:[36,230],   ope:[40,58],    tot:[592,881],   ativo:false },
-  { cliente:'Bauducco',      name:'Gamescomm',          plan:[0,0],      cri:[136,113],   mid:[0,0],      ate:[14,8],     ope:[6,0],      tot:[156,121],   ativo:false }
+  { cliente:'Bauducco',      name:'Netflix',            plan:[228,215],  cri:[1396,2381], mid:[294,1180], ate:[112,696],  ope:[73,321],   tot:[2103,4792], ativo:true,  dtIni:2025, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Bisnaguinha Minions',plan:[52,73],    cri:[300,338],   mid:[154,41],   ate:[44,55],    ope:[44,35],    tot:[594,541],   ativo:true,  dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Dia do Hambúrguer',  plan:[0,0],      cri:[66,67],     mid:[5,2],      ate:[10,0],     ope:[5,0],      tot:[86,69],     ativo:true,  dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Fini',               plan:[94,58],    cri:[504,109],   mid:[100,18],   ate:[70,41],    ope:[72,26],    tot:[840,252],   ativo:true,  dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'No Bread',           plan:[0,0],      cri:[34,315],    mid:[79,40],    ate:[16,165],   ope:[14,5],     tot:[143,525],   ativo:false, dtIni:2026, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Natal 2025',         plan:[120,153],  cri:[1036,1477], mid:[285,594],  ate:[86,263],   ope:[44,100],   tot:[1571,2586], ativo:false, dtIni:2025, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Reality Natal 2025', plan:[52,0],     cri:[312,369],   mid:[196,236],  ate:[30,133],   ope:[35,136],   tot:[625,874],   ativo:false, dtIni:2025, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Novo Menu',          plan:[66,102],   cri:[596,585],   mid:[157,349],  ate:[68,242],   ope:[28,64],    tot:[915,1341],  ativo:false, dtIni:2025, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Páscoa 2026',        plan:[68,110],   cri:[639,641],   mid:[176,176],  ate:[66,87],    ope:[42,75],    tot:[991,1088],  ativo:false, dtIni:2025, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Reality Páscoa 2026',plan:[32,0],     cri:[288,348],   mid:[196,245],  ate:[36,230],   ope:[40,58],    tot:[592,881],   ativo:false, dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Gamescomm',          plan:[0,0],      cri:[136,113],   mid:[0,0],      ate:[14,8],     ope:[6,0],      tot:[156,121],   ativo:false, dtIni:2026, dtFim:2026 }
 ];
 
 // custo: apv e prj em R$ mil (para gráficos), gap em R$ inteiros (para tabelas)
 const custo = [
-  { cliente:'Bauducco',      name:'Netflix',            horas:'4.792h',  aprovada:'R$ 500.000',   projetada:'R$ 1.026.100', apv:500.0,  prj:1026.1, gap:-526100, ativo:true,  acao:'CRITICO' },
-  { cliente:'Bauducco',      name:'Bisnaguinha Minions',horas:'541h',    aprovada:'R$ 104.852',   projetada:'R$ 122.441',   apv:104.9,  prj:122.4,  gap:-17589,  ativo:true,  acao:'OK'      },
-  { cliente:'Bauducco',      name:'Dia do Hambúrguer',  horas:'69h',     aprovada:'R$ 15.093',    projetada:'R$ 15.618',    apv:15.1,   prj:15.6,   gap:-525,    ativo:true,  acao:'OK'      },
-  { cliente:'Bauducco',      name:'Fini',               horas:'252h',    aprovada:'R$ 161.405',   projetada:'R$ 57.544',    apv:161.4,  prj:57.5,   gap:103861,  ativo:true,  acao:'OK'      },
-  { cliente:'Bauducco',      name:'No Bread',           horas:'525h',    aprovada:'R$ 30.414',    projetada:'R$ 112.930',   apv:30.4,   prj:112.9,  gap:-82515,  ativo:false, acao:'CRITICO' },
-  { cliente:'Casa Bauducco', name:'Natal 2025',      horas:'2.586h',  aprovada:'R$ 358.259',   projetada:'R$ 562.046',   apv:358.3,  prj:562.0,  gap:-203787, ativo:false, acao:'CRITICO' },
-  { cliente:'Bauducco',      name:'Reality Natal 2025', horas:'874h',    aprovada:'R$ 134.705',   projetada:'R$ 182.474',   apv:134.7,  prj:182.5,  gap:-47769,  ativo:false, acao:'CRITICO' },
-  { cliente:'Casa Bauducco', name:'Novo Menu',       horas:'1.341h',  aprovada:'R$ 198.233',   projetada:'R$ 287.561',   apv:198.2,  prj:287.6,  gap:-89328,  ativo:false, acao:'CRITICO' },
-  { cliente:'Casa Bauducco', name:'Páscoa 2026',          horas:'1.088h',  aprovada:'R$ 202.488',   projetada:'R$ 241.546',   apv:202.5,  prj:241.5,  gap:-39058,  ativo:false, acao:'CRITICO' },
-  { cliente:'Bauducco',      name:'Reality Páscoa 2026',     horas:'881h',    aprovada:'R$ 140.084',   projetada:'R$ 182.629',   apv:140.1,  prj:182.6,  gap:-42545,  ativo:false, acao:'CRITICO' },
-  { cliente:'Bauducco',      name:'Gamescomm',          horas:'121h',    aprovada:'R$ 30.275',    projetada:'R$ 27.199',    apv:30.3,   prj:27.2,   gap:3076,    ativo:false, acao:'OK'      }
+  { cliente:'Bauducco',      name:'Netflix',            horas:'4.792h',  aprovada:'R$ 500.000',   projetada:'R$ 1.026.100', apv:500.0,  prj:1026.1, gap:-526100, ativo:true,  acao:'CRITICO', dtIni:2025, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Bisnaguinha Minions',horas:'541h',    aprovada:'R$ 104.852',   projetada:'R$ 122.441',   apv:104.9,  prj:122.4,  gap:-17589,  ativo:true,  acao:'OK',      dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Dia do Hambúrguer',  horas:'69h',     aprovada:'R$ 15.093',    projetada:'R$ 15.618',    apv:15.1,   prj:15.6,   gap:-525,    ativo:true,  acao:'OK',      dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Fini',               horas:'252h',    aprovada:'R$ 161.405',   projetada:'R$ 57.544',    apv:161.4,  prj:57.5,   gap:103861,  ativo:true,  acao:'OK',      dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'No Bread',           horas:'525h',    aprovada:'R$ 30.414',    projetada:'R$ 112.930',   apv:30.4,   prj:112.9,  gap:-82515,  ativo:false, acao:'CRITICO', dtIni:2026, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Natal 2025',         horas:'2.586h',  aprovada:'R$ 358.259',   projetada:'R$ 562.046',   apv:358.3,  prj:562.0,  gap:-203787, ativo:false, acao:'CRITICO', dtIni:2025, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Reality Natal 2025', horas:'874h',    aprovada:'R$ 134.705',   projetada:'R$ 182.474',   apv:134.7,  prj:182.5,  gap:-47769,  ativo:false, acao:'CRITICO', dtIni:2025, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Novo Menu',          horas:'1.341h',  aprovada:'R$ 198.233',   projetada:'R$ 287.561',   apv:198.2,  prj:287.6,  gap:-89328,  ativo:false, acao:'CRITICO', dtIni:2025, dtFim:2026 },
+  { cliente:'Casa Bauducco', name:'Páscoa 2026',        horas:'1.088h',  aprovada:'R$ 202.488',   projetada:'R$ 241.546',   apv:202.5,  prj:241.5,  gap:-39058,  ativo:false, acao:'CRITICO', dtIni:2025, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Reality Páscoa 2026',horas:'881h',    aprovada:'R$ 140.084',   projetada:'R$ 182.629',   apv:140.1,  prj:182.6,  gap:-42545,  ativo:false, acao:'CRITICO', dtIni:2026, dtFim:2026 },
+  { cliente:'Bauducco',      name:'Gamescomm',          horas:'121h',    aprovada:'R$ 30.275',    projetada:'R$ 27.199',    apv:30.3,   prj:27.2,   gap:3076,    ativo:false, acao:'OK',      dtIni:2026, dtFim:2026 }
 ];
 
 // ─── 2. FUNÇÕES UTILITÁRIAS ───────────────────────────────────────────────────
@@ -456,7 +463,7 @@ function showTab(id, btn) {
 }
 
 // ─── 4. FILTROS GLOBAIS ───────────────────────────────────────────────────────
-const gFilter = { client:'todos', status:'todos' };
+const gFilter = { year:'todos', client:'todos', status:'todos' };
 
 function setGlobalFilter(type, value, btn) {
   gFilter[type] = value;
@@ -466,9 +473,11 @@ function setGlobalFilter(type, value, btn) {
 }
 
 function getFiltered() {
-  const c = gFilter.client, s = gFilter.status;
+  const y = gFilter.year, c = gFilter.client, s = gFilter.status;
   const fn = data => {
-    let r = c !== 'todos' ? data.filter(p => p.cliente === c) : [...data];
+    let r = [...data];
+    if (y !== 'todos') { const yr = parseInt(y); r = r.filter(p => p.dtIni <= yr && p.dtFim >= yr); }
+    if (c !== 'todos') r = r.filter(p => p.cliente === c);
     if (s === 'ativo')      r = r.filter(p => p.ativo);
     if (s === 'finalizado') r = r.filter(p => !p.ativo);
     if (s === 'critico')    r = r.filter(p => {
