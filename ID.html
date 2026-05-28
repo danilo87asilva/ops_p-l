@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ID TBWA | Dashboard Executivo de Negócios 2025</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FFD600'/%3E%3Ctext x='16' y='23' font-family='Helvetica Neue,Arial,sans-serif' font-size='16' font-weight='900' fill='%230a0a0a' text-anchor='middle' letter-spacing='-1'%3EID%3C/text%3E%3C/svg%3E">
 <style>
   :root {
     --id-black: #0a0a0a;
@@ -313,7 +314,6 @@
 <!-- NAV -->
 <nav class="nav-tabs">
   <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
-  <button class="tab-btn" onclick="showTab('instrucoes')">📋 Instruções</button>
   <button class="tab-btn" onclick="showTab('metas')">🎯 Metas</button>
   <button class="tab-btn" onclick="showTab('lancamentos')">📥 Lançamentos</button>
   <button class="tab-btn" onclick="showTab('receita')">💰 Receita</button>
@@ -547,65 +547,6 @@
     </div>
   </div>
 
-</section>
-
-<!-- ═══════════════════════════════════════════
-     INSTRUÇÕES
-════════════════════════════════════════════ -->
-<section class="section" id="tab-instrucoes">
-  <div class="section-title">📋 <span>Sistema de Controle</span> — Guia de Uso</div>
-
-  <div class="form-note">
-    <strong>✅ Regra de ouro:</strong> O time de negócios preenche <strong>apenas a aba 📥 Lançamentos</strong>.<br>
-    Todo o restante (metas, consolidados, dashboards) é calculado automaticamente a partir dos lançamentos.<br>
-    <strong>⚠️ Metas</strong> são configuradas na aba 🎯 Metas — apenas uma vez por ano. Não alterar fórmulas nas abas de consolidação.
-  </div>
-
-  <div class="instr-card">
-    <h3>CAMPOS OBRIGATÓRIOS NO LANÇAMENTO</h3>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 16px;">
-      <span class="badge badge-yellow">Cliente</span>
-      <span class="badge badge-yellow">Projeto</span>
-      <span class="badge badge-yellow">Valor</span>
-      <span class="badge badge-yellow">Mês</span>
-      <span class="badge badge-yellow">Tipo</span>
-      <span class="badge badge-yellow">Unidade</span>
-      <span class="badge badge-yellow">Núcleo</span>
-    </div>
-    <h3 style="margin-top:8px;">ABAS DO SISTEMA</h3>
-    <div class="instr-row">
-      <div class="instr-tab">📊 Dashboard</div>
-      <div class="instr-desc">Visão consolidada: meta vs realizado, por mês/quarter/ano, unidade e núcleo</div>
-    </div>
-    <div class="instr-row">
-      <div class="instr-tab">📥 Lançamentos ⭐</div>
-      <div class="instr-desc">Área de preenchimento — insira aqui novos projetos e fees (único ponto de entrada de dados)</div>
-    </div>
-    <div class="instr-row">
-      <div class="instr-tab">🎯 Metas</div>
-      <div class="instr-desc">Metas anuais por núcleo e unidade — preenchimento único no início do ano</div>
-    </div>
-    <div class="instr-row">
-      <div class="instr-tab">💰 Receita</div>
-      <div class="instr-desc">Consolidado de receita: fee × projeto × comissão de mídia</div>
-    </div>
-    <div class="instr-row">
-      <div class="instr-tab">🏆 Upsell</div>
-      <div class="instr-desc">Controle de upsell e expansão de carteira por cliente</div>
-    </div>
-    <div class="instr-row">
-      <div class="instr-tab">🚀 New Business</div>
-      <div class="instr-desc">Pipeline comercial: prospecção, proposta, negociação, resultado</div>
-    </div>
-    <div class="instr-row">
-      <div class="instr-tab">❌ Perdas</div>
-      <div class="instr-desc">Registro e análise de propostas perdidas com motivo e valor</div>
-    </div>
-    <div class="instr-row">
-      <div class="instr-tab">📈 Performance</div>
-      <div class="instr-desc">Ranking de performance por núcleo e unidade de negócio</div>
-    </div>
-  </div>
 </section>
 
 <!-- ═══════════════════════════════════════════
