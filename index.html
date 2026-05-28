@@ -67,6 +67,12 @@
     .filter-group { display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
     .filter-group-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--light); }
 
+    /* Filtros globais */
+    .global-filters { display:flex; flex-direction:row; gap:16px; align-items:center; padding:10px 52px; background:var(--bg2); border-bottom:1px solid var(--border); flex-wrap:wrap; position:sticky; top:52px; z-index:9; box-shadow:0 2px 6px rgba(0,0,0,.04); }
+    .global-filter-group { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+    .global-filter-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); white-space:nowrap; }
+    @media (max-width:768px) { .global-filters { padding:10px 16px; gap:10px; } }
+
     /* Tabelas */
     .table-wrap { border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:32px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
     table { width:100%; border-collapse:collapse; min-width:600px; }
@@ -146,7 +152,7 @@
     </div>
     <div class="header-meta">
       Ampfy<br>
-      <span style="color:#ffffff;font-weight:500">Atualização: 27/05/2026</span>
+      <span style="color:#ffffff;font-weight:500">Atualização: 28/05/2026 01:28</span>
     </div>
   </div>
 </div>
@@ -159,17 +165,34 @@
   <button class="nav-btn" onclick="showTab('custo',this)">Análise Propostas Comerciais</button>
 </div>
 
+<!-- GLOBAL FILTERS -->
+<div class="global-filters">
+  <div class="global-filter-group">
+    <span class="global-filter-label">Cliente</span>
+    <button class="filter-btn active" onclick="setGlobalFilter('client','todos',this)">Todos</button>
+    <button class="filter-btn" onclick="setGlobalFilter('client','Bauducco',this)">Bauducco</button>
+    <button class="filter-btn" onclick="setGlobalFilter('client','Casa Bauducco',this)">Casa Bauducco</button>
+  </div>
+  <div class="global-filter-group">
+    <span class="global-filter-label">Status</span>
+    <button class="filter-btn active" onclick="setGlobalFilter('status','todos',this)">Todos</button>
+    <button class="filter-btn" onclick="setGlobalFilter('status','ativo',this)">🔄 Ativos</button>
+    <button class="filter-btn" onclick="setGlobalFilter('status','finalizado',this)">✅ Finalizados</button>
+    <button class="filter-btn" onclick="setGlobalFilter('status','critico',this)">⚠️ Críticos</button>
+  </div>
+</div>
+
 <!-- CONTENT -->
 <div class="content">
 
   <!-- ABA: VISÃO GERAL -->
   <div id="tab-overview" class="tab-panel active">
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-stripe yellow"></div><div class="kpi-label">Projetos Ativos</div><div class="kpi-val">4</div><div class="kpi-sub">Em andamento</div></div>
-      <div class="kpi"><div class="kpi-stripe gray"></div><div class="kpi-label">Finalizados</div><div class="kpi-val gray">7</div><div class="kpi-sub">Encerrados no período</div></div>
-      <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Melhor P&amp;L Ativo</div><div class="kpi-val green">+65,77%</div><div class="kpi-sub">Fini</div></div>
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Pior P&amp;L Geral</div><div class="kpi-val red">-275,30%</div><div class="kpi-sub">No Bread</div></div>
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Maior Gap Negativo</div><div class="kpi-val red">-R$526k</div><div class="kpi-sub">Netflix</div></div>
+      <div class="kpi"><div class="kpi-stripe yellow"></div><div class="kpi-label">Projetos Ativos</div><div class="kpi-val" id="kpi-vg-ativos-val">4</div><div class="kpi-sub">Em andamento</div></div>
+      <div class="kpi"><div class="kpi-stripe gray"></div><div class="kpi-label">Finalizados</div><div class="kpi-val gray" id="kpi-vg-fin-val">7</div><div class="kpi-sub">Encerrados no período</div></div>
+      <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Melhor P&amp;L Ativo</div><div class="kpi-val green" id="kpi-vg-best-pl-val">+65,77%</div><div class="kpi-sub" id="kpi-vg-best-pl-sub">Fini</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Pior P&amp;L Geral</div><div class="kpi-val red" id="kpi-vg-worst-pl-val">-275,30%</div><div class="kpi-sub" id="kpi-vg-worst-pl-sub">No Bread</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Maior Gap Negativo</div><div class="kpi-val red" id="kpi-vg-gap-val">-R$526k</div><div class="kpi-sub" id="kpi-vg-gap-sub">Netflix</div></div>
     </div>
 
     <div class="charts-grid">
@@ -196,22 +219,7 @@
 
     <div class="section-head">
       <div class="section-title">Resultado por Projeto</div>
-      <div class="section-pill">11 projetos</div>
-      <div class="filter-area">
-        <div class="filter-group">
-          <span class="filter-group-label">Cliente</span>
-          <button class="filter-btn active" onclick="filterClient('overview','todos',this)">Todos</button>
-          <button class="filter-btn" onclick="filterClient('overview','Bauducco',this)">Bauducco</button>
-          <button class="filter-btn" onclick="filterClient('overview','Casa Bauducco',this)">Casa Bauducco</button>
-        </div>
-        <div class="filter-group">
-          <span class="filter-group-label">Status</span>
-          <button class="filter-btn active" onclick="filterTable('overview','todos',this)">Todos</button>
-          <button class="filter-btn" onclick="filterTable('overview','ativo',this)">🔄 Ativos</button>
-          <button class="filter-btn" onclick="filterTable('overview','finalizado',this)">✅ Finalizados</button>
-          <button class="filter-btn" onclick="filterTable('overview','critico',this)">⚠️ Críticos</button>
-        </div>
-      </div>
+      <div class="section-pill" id="overview-pill">11 projetos</div>
     </div>
     <div class="table-wrap">
       <table>
@@ -227,9 +235,9 @@
   <div id="tab-pl" class="tab-panel">
     <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
       <div class="kpi"><div class="kpi-stripe yellow"></div><div class="kpi-label">Meta P&amp;L</div><div class="kpi-val yellow">25%</div><div class="kpi-sub">Referência interna de operação</div></div>
-      <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Ativos Acima da Meta</div><div class="kpi-val green">2 / 4</div><div class="kpi-sub">Fini e Dia do Hambúrguer</div></div>
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Ativos Abaixo da Meta</div><div class="kpi-val red">2 / 4</div><div class="kpi-sub">Netflix e Minions</div></div>
-      <div class="kpi"><div class="kpi-stripe gray"></div><div class="kpi-label">Finalizados Positivos</div><div class="kpi-val gray">1 / 7</div><div class="kpi-sub">Apenas Gamescomm</div></div>
+      <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Ativos Acima da Meta</div><div class="kpi-val green" id="kpi-pl-acima-val">2 / 4</div><div class="kpi-sub" id="kpi-pl-acima-sub">Fini e Dia do Hambúrguer</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Ativos Abaixo da Meta</div><div class="kpi-val red" id="kpi-pl-abaixo-val">2 / 4</div><div class="kpi-sub" id="kpi-pl-abaixo-sub">Netflix e Minions</div></div>
+      <div class="kpi"><div class="kpi-stripe gray"></div><div class="kpi-label">Finalizados Positivos</div><div class="kpi-val gray" id="kpi-pl-fin-val">1 / 7</div><div class="kpi-sub" id="kpi-pl-fin-sub">Apenas Gamescomm</div></div>
     </div>
 
     <div class="chart-card" style="margin-bottom:32px">
@@ -245,21 +253,6 @@
 
     <div class="section-head">
       <div class="section-title">P&amp;L por Projeto</div>
-      <div class="filter-area">
-        <div class="filter-group">
-          <span class="filter-group-label">Cliente</span>
-          <button class="filter-btn active" onclick="filterClient('pl','todos',this)">Todos</button>
-          <button class="filter-btn" onclick="filterClient('pl','Bauducco',this)">Bauducco</button>
-          <button class="filter-btn" onclick="filterClient('pl','Casa Bauducco',this)">Casa Bauducco</button>
-        </div>
-        <div class="filter-group">
-          <span class="filter-group-label">Status</span>
-          <button class="filter-btn active" onclick="filterTable('pl','todos',this)">Todos</button>
-          <button class="filter-btn" onclick="filterTable('pl','ativo',this)">🔄 Ativos</button>
-          <button class="filter-btn" onclick="filterTable('pl','finalizado',this)">✅ Finalizados</button>
-          <button class="filter-btn" onclick="filterTable('pl','critico',this)">⚠️ Críticos</button>
-        </div>
-      </div>
     </div>
     <div class="table-wrap">
       <table>
@@ -274,10 +267,10 @@
   <!-- ABA: OVERBURN -->
   <div id="tab-overburn" class="tab-panel">
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Projetos c/ Overburn</div><div class="kpi-val red">7 / 11</div><div class="kpi-sub">Total consumido &gt; vendido</div></div>
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Maior Overburn Total</div><div class="kpi-val red">367%</div><div class="kpi-sub">No Bread</div></div>
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Top Overburn Atend.</div><div class="kpi-val red">1.030%</div><div class="kpi-sub">No Bread</div></div>
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Top Overburn Criação</div><div class="kpi-val red">926%</div><div class="kpi-sub">No Bread</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Projetos c/ Overburn</div><div class="kpi-val red" id="kpi-ob-count-val">7 / 11</div><div class="kpi-sub" id="kpi-ob-count-sub">Total consumido &gt; vendido</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Maior Overburn Total</div><div class="kpi-val red" id="kpi-ob-total-val">367%</div><div class="kpi-sub" id="kpi-ob-total-sub">No Bread</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Top Overburn Atend.</div><div class="kpi-val red" id="kpi-ob-ate-val">1.030%</div><div class="kpi-sub" id="kpi-ob-ate-sub">No Bread</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Top Overburn Criação</div><div class="kpi-val red" id="kpi-ob-cri-val">926%</div><div class="kpi-sub" id="kpi-ob-cri-sub">No Bread</div></div>
       <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Melhor Controle</div><div class="kpi-val green" id="kpi-melhor-controle-val">—</div><div class="kpi-sub" id="kpi-melhor-controle-sub">—</div></div>
     </div>
 
@@ -302,21 +295,6 @@
 
     <div class="section-head">
       <div class="section-title">Overburn por Departamento</div>
-      <div class="filter-area">
-        <div class="filter-group">
-          <span class="filter-group-label">Cliente</span>
-          <button class="filter-btn active" onclick="filterClient('overburn','todos',this)">Todos</button>
-          <button class="filter-btn" onclick="filterClient('overburn','Bauducco',this)">Bauducco</button>
-          <button class="filter-btn" onclick="filterClient('overburn','Casa Bauducco',this)">Casa Bauducco</button>
-        </div>
-        <div class="filter-group">
-          <span class="filter-group-label">Status</span>
-          <button class="filter-btn active" onclick="filterTable('overburn','todos',this)">Todos</button>
-          <button class="filter-btn" onclick="filterTable('overburn','ativo',this)">🔄 Ativos</button>
-          <button class="filter-btn" onclick="filterTable('overburn','finalizado',this)">✅ Finalizados</button>
-          <button class="filter-btn" onclick="filterTable('overburn','critico',this)">⚠️ Críticos</button>
-        </div>
-      </div>
     </div>
     <div class="table-wrap">
       <table>
@@ -331,10 +309,10 @@
   <!-- ABA: ANÁLISE PROPOSTAS COMERCIAIS -->
   <div id="tab-custo" class="tab-panel">
     <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Com Gap Negativo</div><div class="kpi-val red">9 / 11</div><div class="kpi-sub">Custo superou o aprovado</div></div>
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Maior Gap Negativo</div><div class="kpi-val red">-R$526k</div><div class="kpi-sub">Netflix</div></div>
-      <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Maior Gap Positivo</div><div class="kpi-val green">+R$104k</div><div class="kpi-sub">Fini</div></div>
-      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Gap Consolidado</div><div class="kpi-val red">-R$972k</div><div class="kpi-sub">11 projetos — saldo total</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Com Gap Negativo</div><div class="kpi-val red" id="kpi-custo-neg-val">9 / 11</div><div class="kpi-sub" id="kpi-custo-neg-sub">Custo superou o aprovado</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Maior Gap Negativo</div><div class="kpi-val red" id="kpi-custo-gap-neg-val">-R$526k</div><div class="kpi-sub" id="kpi-custo-gap-neg-sub">Netflix</div></div>
+      <div class="kpi"><div class="kpi-stripe green"></div><div class="kpi-label">Maior Gap Positivo</div><div class="kpi-val green" id="kpi-custo-gap-pos-val">+R$104k</div><div class="kpi-sub" id="kpi-custo-gap-pos-sub">Fini</div></div>
+      <div class="kpi"><div class="kpi-stripe red"></div><div class="kpi-label">Gap Consolidado</div><div class="kpi-val red" id="kpi-custo-total-val">-R$972k</div><div class="kpi-sub" id="kpi-custo-total-sub">11 projetos — saldo total</div></div>
     </div>
 
     <div class="chart-card" style="margin-bottom:32px">
@@ -350,21 +328,6 @@
 
     <div class="section-head">
       <div class="section-title">Análise Propostas Comerciais</div>
-      <div class="filter-area">
-        <div class="filter-group">
-          <span class="filter-group-label">Cliente</span>
-          <button class="filter-btn active" onclick="filterClient('custo','todos',this)">Todos</button>
-          <button class="filter-btn" onclick="filterClient('custo','Bauducco',this)">Bauducco</button>
-          <button class="filter-btn" onclick="filterClient('custo','Casa Bauducco',this)">Casa Bauducco</button>
-        </div>
-        <div class="filter-group">
-          <span class="filter-group-label">Status</span>
-          <button class="filter-btn active" onclick="filterTable('custo','todos',this)">Todos</button>
-          <button class="filter-btn" onclick="filterTable('custo','ativo',this)">🔄 Ativos</button>
-          <button class="filter-btn" onclick="filterTable('custo','finalizado',this)">✅ Finalizados</button>
-          <button class="filter-btn" onclick="filterTable('custo','critico',this)">⚠️ Críticos</button>
-        </div>
-      </div>
     </div>
     <div class="table-wrap">
       <table>
@@ -380,7 +343,7 @@
 
 <!-- FOOTER -->
 <div class="content" style="padding-top:0">
-  <div class="footer">Ampfy | Bauducco | Maio 2026</div>
+  <div class="footer">Ampfy | Maio 2026</div>
 </div>
 
 <script>
@@ -492,75 +455,76 @@ function showTab(id, btn) {
   btn.classList.add('active');
 }
 
-// ─── 4. SISTEMA DE FILTROS ────────────────────────────────────────────────────
-const filters       = { overview:'todos', pl:'todos', overburn:'todos', custo:'todos' };
-const clientFilters = { overview:'todos', pl:'todos', overburn:'todos', custo:'todos' };
-const renders = { overview:()=>renderOverview(), pl:()=>renderPL(), overburn:()=>renderOverburn(), custo:()=>renderCusto() };
+// ─── 4. FILTROS GLOBAIS ───────────────────────────────────────────────────────
+const gFilter = { client:'todos', status:'todos' };
 
-function filterTable(tab, f, btn) {
-  filters[tab] = f;
-  btn.closest('.filter-group').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+function setGlobalFilter(type, value, btn) {
+  gFilter[type] = value;
+  btn.closest('.global-filter-group').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renders[tab]();
+  renderAll();
 }
 
-function filterClient(tab, client, btn) {
-  clientFilters[tab] = client;
-  btn.closest('.filter-group').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renders[tab]();
+function getFiltered() {
+  const c = gFilter.client, s = gFilter.status;
+  const fn = data => {
+    let r = c !== 'todos' ? data.filter(p => p.cliente === c) : [...data];
+    if (s === 'ativo')      r = r.filter(p => p.ativo);
+    if (s === 'finalizado') r = r.filter(p => !p.ativo);
+    if (s === 'critico')    r = r.filter(p => {
+      if (p.acao !== undefined) return p.acao === 'CRITICO';
+      const pr = projects.find(x => x.name === p.name);
+      return pr && pr.acao === 'CRITICO';
+    });
+    return r;
+  };
+  return { proj: fn(projects), ob: fn(overburn), cst: fn(custo) };
 }
 
-function applyFilter(data, statusF, clientF) {
-  let result = clientF && clientF !== 'todos' ? data.filter(p => p.cliente === clientF) : data;
-  if (statusF === 'ativo')      result = result.filter(p => p.ativo);
-  if (statusF === 'finalizado') result = result.filter(p => !p.ativo);
-  if (statusF === 'critico')    result = result.filter(p => {
-    if (p.acao !== undefined) return p.acao === 'CRITICO';
-    const proj = projects.find(pr => pr.name === p.name);
-    return proj && proj.acao === 'CRITICO';
-  });
-  return result;
+// ─── 5. RENDER GLOBAL ─────────────────────────────────────────────────────────
+function renderAll() {
+  const { proj, ob, cst } = getFiltered();
+  renderOverview(proj);
+  renderPL(proj);
+  renderOverburn(ob);
+  renderCusto(cst);
+  updateKPIs(proj, ob, cst);
+  updateCharts(proj, ob, cst);
+  const pill = document.getElementById('overview-pill');
+  if (pill) pill.textContent = `${proj.length} projeto${proj.length !== 1 ? 's' : ''}`;
 }
 
-// ─── 5. FUNÇÕES DE RENDER ─────────────────────────────────────────────────────
-function renderOverview() {
-  const data = applyFilter(projects, filters.overview, clientFilters.overview);
-  const rows = data.map(p => {
-    const gapColor = p.gap >= 0 ? 'val-green' : 'val-red';
-    const gapK = fmtK(p.gap);
-    return `<tr>
-      <td>${p.cliente}</td>
-      <td>${p.name}</td>
-      <td>${brutas[projects.indexOf(p)]}</td>
-      <td class="${p.res.startsWith('-') ? 'val-red' : 'val-green'}">${p.res}</td>
-      <td class="${plClass(p.pl)}">${p.pl > 0 ? '+' : ''}${p.pl.toFixed(2)}%</td>
-      <td class="${gapColor}">${gapK}</td>
-      <td>${acaoBadge(p.acao)}</td>
-      <td>${statusDot(p.ativo)}</td>
-    </tr>`;
-  }).join('');
+function renderOverview(proj) {
+  const rows = proj.map(p => `<tr>
+    <td>${p.cliente}</td>
+    <td>${p.name}</td>
+    <td>${brutas[projects.indexOf(p)]}</td>
+    <td class="${p.res.startsWith('-') ? 'val-red' : 'val-green'}">${p.res}</td>
+    <td class="${plClass(p.pl)}">${p.pl > 0 ? '+' : ''}${p.pl.toFixed(2)}%</td>
+    <td class="${p.gap >= 0 ? 'val-green' : 'val-red'}">${fmtK(p.gap)}</td>
+    <td>${acaoBadge(p.acao)}</td>
+    <td>${statusDot(p.ativo)}</td>
+  </tr>`).join('');
   let totalRow = '';
-  if (data.length > 0) {
-    const recBruta = data.reduce((s,p) => s + parseBRL(brutas[projects.indexOf(p)]), 0);
-    const recFinal = data.reduce((s,p) => s + parseBRL(p.res), 0);
+  if (proj.length > 0) {
+    const recBruta = proj.reduce((s,p) => s + parseBRL(brutas[projects.indexOf(p)]), 0);
+    const recFinal = proj.reduce((s,p) => s + parseBRL(p.res), 0);
     const pl = (recFinal / (recBruta * 0.8575)) * 100;
-    const gap = data.reduce((s,p) => s + p.gap, 0);
+    const gap = proj.reduce((s,p) => s + p.gap, 0);
     totalRow = `<tr class="total-row">
-      <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
+      <td colspan="2">TOTAL — ${proj.length} projeto${proj.length > 1 ? 's' : ''}</td>
       <td>${fmtTotalBRL(recBruta, false)}</td>
-      <td class="${recFinal>=0?'val-green':'val-red'}">${fmtTotalBRL(recFinal)}</td>
-      <td class="${pl>=0?'val-green':'val-red'}">${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
-      <td class="${gap>=0?'val-green':'val-red'}">${fmtTotalBRL(gap)}</td>
+      <td class="${recFinal >= 0 ? 'val-green' : 'val-red'}">${fmtTotalBRL(recFinal)}</td>
+      <td class="${pl >= 0 ? 'val-green' : 'val-red'}">${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
+      <td class="${gap >= 0 ? 'val-green' : 'val-red'}">${fmtTotalBRL(gap)}</td>
       <td>—</td><td>—</td>
     </tr>`;
   }
   document.getElementById('overview-body').innerHTML = rows + totalRow;
 }
 
-function renderPL() {
-  const data = applyFilter(projects, filters.pl, clientFilters.pl);
-  const rows = data.map(p => `<tr>
+function renderPL(proj) {
+  const rows = proj.map(p => `<tr>
     <td>${p.cliente}</td>
     <td>${p.name}</td>
     <td>${brutas[projects.indexOf(p)]}</td>
@@ -569,24 +533,23 @@ function renderPL() {
     <td>${statusDot(p.ativo)}</td>
   </tr>`).join('');
   let totalRow = '';
-  if (data.length > 0) {
-    const recBruta = data.reduce((s,p) => s + parseBRL(brutas[projects.indexOf(p)]), 0);
-    const recFinal = data.reduce((s,p) => s + parseBRL(p.res), 0);
+  if (proj.length > 0) {
+    const recBruta = proj.reduce((s,p) => s + parseBRL(brutas[projects.indexOf(p)]), 0);
+    const recFinal = proj.reduce((s,p) => s + parseBRL(p.res), 0);
     const pl = (recFinal / (recBruta * 0.8575)) * 100;
     totalRow = `<tr class="total-row">
-      <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
+      <td colspan="2">TOTAL — ${proj.length} projeto${proj.length > 1 ? 's' : ''}</td>
       <td>${fmtTotalBRL(recBruta, false)}</td>
-      <td class="${recFinal>=0?'val-green':'val-red'}">${fmtTotalBRL(recFinal)}</td>
-      <td class="${pl>=0?'val-green':'val-red'}">${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
+      <td class="${recFinal >= 0 ? 'val-green' : 'val-red'}">${fmtTotalBRL(recFinal)}</td>
+      <td class="${pl >= 0 ? 'val-green' : 'val-red'}">${pl > 0 ? '+' : ''}${pl.toFixed(2)}%</td>
       <td>—</td>
     </tr>`;
   }
   document.getElementById('pl-body').innerHTML = rows + totalRow;
 }
 
-function renderOverburn() {
-  const data = applyFilter(overburn, filters.overburn, clientFilters.overburn);
-  const rows = data.map(p => `<tr>
+function renderOverburn(ob) {
+  const rows = ob.map(p => `<tr>
     <td>${p.cliente}</td>
     <td>${p.name}</td>
     ${obHoursCell(p.plan)}
@@ -598,13 +561,10 @@ function renderOverburn() {
     <td>${statusDot(p.ativo)}</td>
   </tr>`).join('');
   let totalRow = '';
-  if (data.length > 0) {
-    const sumDept = key => [
-      data.reduce((s,p) => s + p[key][0], 0),
-      data.reduce((s,p) => s + p[key][1], 0)
-    ];
+  if (ob.length > 0) {
+    const sumDept = key => [ob.reduce((s,p)=>s+p[key][0],0), ob.reduce((s,p)=>s+p[key][1],0)];
     totalRow = `<tr class="total-row">
-      <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
+      <td colspan="2">TOTAL — ${ob.length} projeto${ob.length > 1 ? 's' : ''}</td>
       ${obHoursCellTotal(sumDept('plan'))}
       ${obHoursCellTotal(sumDept('cri'))}
       ${obHoursCellTotal(sumDept('mid'))}
@@ -617,9 +577,8 @@ function renderOverburn() {
   document.getElementById('overburn-body').innerHTML = rows + totalRow;
 }
 
-function renderCusto() {
-  const data = applyFilter(custo, filters.custo, clientFilters.custo);
-  const rows = data.map(r => {
+function renderCusto(cst) {
+  const rows = cst.map(r => {
     const ob = overburn.find(p => p.name === r.name);
     const gapStr = r.gap >= 0
       ? `<span class="val-green">+R$ ${r.gap.toLocaleString('pt-BR')}</span>`
@@ -636,31 +595,106 @@ function renderCusto() {
     </tr>`;
   }).join('');
   let totalRow = '';
-  if (data.length > 0) {
-    const apvTotal = data.reduce((s,r) => s + r.apv, 0);
-    const prjTotal = data.reduce((s,r) => s + r.prj, 0);
-    const gapTotal = data.reduce((s,r) => s + r.gap, 0);
-    const hrsV = data.reduce((s,r) => { const ob = overburn.find(p=>p.name===r.name); return s + (ob?ob.tot[0]:0); }, 0);
-    const hrsC = data.reduce((s,r) => { const ob = overburn.find(p=>p.name===r.name); return s + (ob?ob.tot[1]:0); }, 0);
+  if (cst.length > 0) {
+    const apvTotal = cst.reduce((s,r) => s + r.apv, 0);
+    const prjTotal = cst.reduce((s,r) => s + r.prj, 0);
+    const gapTotal = cst.reduce((s,r) => s + r.gap, 0);
+    const hrsV = cst.reduce((s,r) => { const ob=overburn.find(p=>p.name===r.name); return s+(ob?ob.tot[0]:0); }, 0);
+    const hrsC = cst.reduce((s,r) => { const ob=overburn.find(p=>p.name===r.name); return s+(ob?ob.tot[1]:0); }, 0);
     totalRow = `<tr class="total-row">
-      <td colspan="2">TOTAL — ${data.length} projeto${data.length>1?'s':''}</td>
-      <td>${fmtTotalBRL(apvTotal*1000, false)}</td>
+      <td colspan="2">TOTAL — ${cst.length} projeto${cst.length > 1 ? 's' : ''}</td>
+      <td>${fmtTotalBRL(apvTotal * 1000, false)}</td>
       ${obHoursCellTotal([hrsV, hrsC])}
-      <td class="${prjTotal<=apvTotal?'val-green':'val-red'}">${fmtTotalBRL(prjTotal*1000, false)}</td>
-      <td class="${gapTotal>=0?'val-green':'val-red'}">${fmtTotalBRL(gapTotal)}</td>
+      <td class="${prjTotal <= apvTotal ? 'val-green' : 'val-red'}">${fmtTotalBRL(prjTotal * 1000, false)}</td>
+      <td class="${gapTotal >= 0 ? 'val-green' : 'val-red'}">${fmtTotalBRL(gapTotal)}</td>
       <td>—</td><td>—</td>
     </tr>`;
   }
   document.getElementById('custo-body').innerHTML = rows + totalRow;
 }
 
-// ─── 6. CONFIGURAÇÕES CHART.JS ────────────────────────────────────────────────
-const labels = projects.map(p =>
-  p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R. ').replace('Bisnaguinha ','')
-);
-const custoLabels = custo.map(r =>
-  r.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R. ').replace('Bisnaguinha ','')
-);
+// ─── 6. ATUALIZAÇÃO DE KPIs ───────────────────────────────────────────────────
+function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
+function updateKPIs(proj, ob, cst) {
+  const ativos      = proj.filter(p => p.ativo);
+  const finalizados = proj.filter(p => !p.ativo);
+
+  // ── Visão Geral ──
+  setText('kpi-vg-ativos-val', ativos.length);
+  setText('kpi-vg-fin-val', finalizados.length);
+  if (ativos.length > 0) {
+    const best = ativos.reduce((a,b) => a.pl > b.pl ? a : b);
+    setText('kpi-vg-best-pl-val', `${best.pl > 0 ? '+' : ''}${best.pl.toFixed(2)}%`);
+    setText('kpi-vg-best-pl-sub', best.name);
+  } else {
+    setText('kpi-vg-best-pl-val', '—'); setText('kpi-vg-best-pl-sub', 'Sem ativos');
+  }
+  if (proj.length > 0) {
+    const worst = proj.reduce((a,b) => a.pl < b.pl ? a : b);
+    setText('kpi-vg-worst-pl-val', `${worst.pl > 0 ? '+' : ''}${worst.pl.toFixed(2)}%`);
+    setText('kpi-vg-worst-pl-sub', worst.name);
+    const negGaps = proj.filter(p => p.gap < 0);
+    if (negGaps.length > 0) {
+      const bn = negGaps.reduce((a,b) => a.gap < b.gap ? a : b);
+      setText('kpi-vg-gap-val', fmtK(bn.gap)); setText('kpi-vg-gap-sub', bn.name);
+    } else {
+      setText('kpi-vg-gap-val', '—'); setText('kpi-vg-gap-sub', 'Sem gaps negativos');
+    }
+  } else {
+    setText('kpi-vg-worst-pl-val','—'); setText('kpi-vg-best-pl-val','—'); setText('kpi-vg-gap-val','—');
+  }
+
+  // ── P&L ──
+  const ativosAcima  = ativos.filter(p => p.pl >= 25);
+  const ativosAbaixo = ativos.filter(p => p.pl < 25);
+  const finPos       = finalizados.filter(p => p.pl >= 0);
+  setText('kpi-pl-acima-val',  `${ativosAcima.length} / ${ativos.length}`);
+  setText('kpi-pl-acima-sub',  ativosAcima.map(p => p.name).join(', ') || 'Nenhum');
+  setText('kpi-pl-abaixo-val', `${ativosAbaixo.length} / ${ativos.length}`);
+  setText('kpi-pl-abaixo-sub', ativosAbaixo.map(p => p.name).join(', ') || 'Nenhum');
+  setText('kpi-pl-fin-val',    `${finPos.length} / ${finalizados.length}`);
+  setText('kpi-pl-fin-sub',    finPos.length === 1 ? `Apenas ${finPos[0].name}` : finPos.length > 1 ? finPos.map(p => p.name).join(', ') : 'Nenhum');
+
+  // ── Overburn ──
+  const obTotals = ob.map(p => p.tot[0] === 0 ? 0 : Math.round(p.tot[1] / p.tot[0] * 100));
+  const obAtes   = ob.map(p => p.ate[0] === 0 ? 0 : Math.round(p.ate[1] / p.ate[0] * 100));
+  const obCris   = ob.map(p => p.cri[0] === 0 ? 0 : Math.round(p.cri[1] / p.cri[0] * 100));
+  const withOB   = ob.filter((_,i) => obTotals[i] > 100).length;
+  setText('kpi-ob-count-val', `${withOB} / ${ob.length}`);
+  setText('kpi-ob-count-sub', 'Total consumido > vendido');
+  if (ob.length > 0) {
+    const maxT = Math.max(...obTotals); setText('kpi-ob-total-val', `${maxT}%`); setText('kpi-ob-total-sub', ob[obTotals.indexOf(maxT)]?.name || '—');
+    const maxA = Math.max(...obAtes);   setText('kpi-ob-ate-val',   `${maxA}%`); setText('kpi-ob-ate-sub',   ob[obAtes.indexOf(maxA)]?.name   || '—');
+    const maxC = Math.max(...obCris);   setText('kpi-ob-cri-val',   `${maxC}%`); setText('kpi-ob-cri-sub',   ob[obCris.indexOf(maxC)]?.name   || '—');
+    const cand = ob.map((p,i) => ({ name:p.name, val:obTotals[i] })).filter(x => x.val > 0);
+    if (cand.length > 0) {
+      const best = cand.reduce((a,b) => a.val <= b.val ? a : b);
+      setText('kpi-melhor-controle-val', best.val + '%'); setText('kpi-melhor-controle-sub', best.name);
+    } else {
+      setText('kpi-melhor-controle-val', '—'); setText('kpi-melhor-controle-sub', '—');
+    }
+  } else {
+    ['kpi-ob-total-val','kpi-ob-ate-val','kpi-ob-cri-val','kpi-melhor-controle-val'].forEach(id => setText(id, '—'));
+  }
+
+  // ── Custo ──
+  const negCst  = cst.filter(r => r.gap < 0);
+  const posCst  = cst.filter(r => r.gap > 0);
+  const gapCons = cst.reduce((s,r) => s + r.gap, 0);
+  setText('kpi-custo-neg-val', `${negCst.length} / ${cst.length}`);
+  setText('kpi-custo-neg-sub', 'Custo superou o aprovado');
+  if (negCst.length > 0) { const bn = negCst.reduce((a,b) => a.gap < b.gap ? a : b); setText('kpi-custo-gap-neg-val', fmtK(bn.gap)); setText('kpi-custo-gap-neg-sub', bn.name); }
+  else { setText('kpi-custo-gap-neg-val', '—'); setText('kpi-custo-gap-neg-sub', 'Sem gaps negativos'); }
+  if (posCst.length > 0) { const bp = posCst.reduce((a,b) => a.gap > b.gap ? a : b); setText('kpi-custo-gap-pos-val', fmtK(bp.gap)); setText('kpi-custo-gap-pos-sub', bp.name); }
+  else { setText('kpi-custo-gap-pos-val', '—'); setText('kpi-custo-gap-pos-sub', 'Sem gaps positivos'); }
+  const elTotal = document.getElementById('kpi-custo-total-val');
+  if (elTotal) { elTotal.textContent = fmtK(gapCons); elTotal.className = `kpi-val ${gapCons >= 0 ? 'green' : 'red'}`; }
+  setText('kpi-custo-total-sub', `${cst.length} projeto${cst.length !== 1 ? 's' : ''} — saldo total`);
+}
+
+// ─── 7. CONFIGURAÇÕES CHART.JS ────────────────────────────────────────────────
+const abbr = n => n.replace('Dia do ','').replace(' 2025','').replace('Reality ','R. ').replace('Bisnaguinha ','');
 
 const sc = {
   x: { ticks:{color:'#888',font:{size:9,family:'Red Hat Display'},maxRotation:75,minRotation:0,autoSkip:false}, grid:{color:'rgba(0,0,0,0.05)'} },
@@ -669,153 +703,125 @@ const sc = {
 const scPct = {...sc, y:{...sc.y, ticks:{...sc.y.ticks, callback:v=>v+'%'}}};
 const scBrl = {...sc, y:{...sc.y, ticks:{...sc.y.ticks, callback:v=>'R$'+v+'k'}}};
 const base  = { responsive:true, maintainAspectRatio:true, plugins:{legend:{display:false}} };
+const ttPct = { backgroundColor:'#111', titleFont:{family:'Red Hat Display',weight:'700'}, bodyFont:{family:'Red Hat Display'}, callbacks:{ label: ctx => ` ${ctx.raw.toFixed(1)}%` } };
+const ttBrl = { backgroundColor:'#111', titleFont:{family:'Red Hat Display',weight:'700'}, bodyFont:{family:'Red Hat Display'}, callbacks:{ label: ctx => ` R$ ${Math.abs(ctx.raw).toFixed(1)}k` } };
 
-const ttPct = {
-  backgroundColor:'#111',
-  titleFont:{family:'Red Hat Display',weight:'700'},
-  bodyFont:{family:'Red Hat Display'},
-  callbacks:{ label: ctx => ` ${ctx.raw.toFixed(1)}%` }
-};
-const ttBrl = {
-  backgroundColor:'#111',
-  titleFont:{family:'Red Hat Display',weight:'700'},
-  bodyFont:{family:'Red Hat Display'},
-  callbacks:{ label: ctx => ` R$ ${Math.abs(ctx.raw).toFixed(1)}k` }
-};
-const ttCusto = {
-  backgroundColor:'#111',
-  titleFont:{family:'Red Hat Display',weight:'700'},
-  bodyFont:{family:'Red Hat Display'},
-  callbacks:{ label: ctx => ` R$ ${Math.abs(ctx.raw).toFixed(1)}k` }
-};
+// ─── 8. INSTÂNCIAS DOS GRÁFICOS ───────────────────────────────────────────────
+const plColor  = v => v >= 25 ? '#15803d' : v >= 0 ? '#b45309' : '#b91c1c';
+const obColor  = v => v > 200 ? '#b91c1c' : v > 100 ? '#f5c800' : '#15803d';
 
-// ─── 7. INSTÂNCIAS DOS GRÁFICOS ───────────────────────────────────────────────
-
-// plChart — P&L% (Visão Geral)
-const plVals = projects.map(p => p.pl);
-const plColors = plVals.map(v => v >= 25 ? '#15803d' : v >= 0 ? '#b45309' : '#b91c1c');
-
-new Chart(document.getElementById('plChart'), {
+// plChart
+const plChartInst = new Chart(document.getElementById('plChart'), {
   type:'bar',
-  data:{ labels, datasets:[{ data:plVals, backgroundColor:plColors, borderRadius:4 }] },
-  options:{ ...base, plugins:{ ...base.plugins, tooltip:ttPct }, scales:scPct }
+  data:{ labels:projects.map(p=>abbr(p.name)), datasets:[{ data:projects.map(p=>p.pl), backgroundColor:projects.map(p=>plColor(p.pl)), borderRadius:4 }] },
+  options:{ ...base, plugins:{...base.plugins, tooltip:ttPct}, scales:scPct }
 });
 
-// gapChart — Gap (Visão Geral)
-const gapVals = projects.map(p => p.gap/1000);
-
-new Chart(document.getElementById('gapChart'), {
+// gapChart
+const gapChartInst = new Chart(document.getElementById('gapChart'), {
   type:'bar',
-  data:{ labels, datasets:[{ data:gapVals, backgroundColor:gapVals.map(v=>v>=0?'#15803d':'#b91c1c'), borderRadius:4 }] },
-  options:{ ...base, plugins:{ ...base.plugins, tooltip:ttBrl }, scales:scBrl }
+  data:{ labels:projects.map(p=>abbr(p.name)), datasets:[{ data:projects.map(p=>p.gap/1000), backgroundColor:projects.map(p=>p.gap>=0?'#15803d':'#b91c1c'), borderRadius:4 }] },
+  options:{ ...base, plugins:{...base.plugins, tooltip:ttBrl}, scales:scBrl }
 });
 
-// plDetail — P&L% detalhado (aba P&L) com linha de meta 25%
-// Plugin: linha horizontal de meta, de ponta a ponta do chart area
+// plDetail
 const metaLinePlugin = {
-  id: 'metaLine',
+  id:'metaLine',
   afterDraw(chart) {
     const mv = chart.config.options.metaValue;
     if (mv == null) return;
-    const { ctx, chartArea: { left, right }, scales: { y } } = chart;
+    const { ctx, chartArea:{ left, right }, scales:{ y } } = chart;
     const yPx = y.getPixelForValue(mv);
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(left, yPx);
-    ctx.lineTo(right, yPx);
-    ctx.strokeStyle = '#f5c800';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([6, 3]);
-    ctx.stroke();
-    ctx.restore();
+    ctx.save(); ctx.beginPath(); ctx.moveTo(left, yPx); ctx.lineTo(right, yPx);
+    ctx.strokeStyle='#f5c800'; ctx.lineWidth=2; ctx.setLineDash([6,3]); ctx.stroke(); ctx.restore();
   }
 };
 Chart.register(metaLinePlugin);
 
-new Chart(document.getElementById('plDetail'), {
+const plDetailInst = new Chart(document.getElementById('plDetail'), {
   type:'bar',
-  data:{
-    labels,
-    datasets:[{ data:plVals, backgroundColor:plColors, borderRadius:5 }]
-  },
-  options:{
-    ...base,
-    metaValue: 25,
-    plugins:{ legend:{display:false}, tooltip:{ ...ttPct, callbacks:{ label: ctx => ` ${ctx.raw.toFixed(1)}%` } } },
-    scales:scPct
-  }
+  data:{ labels:projects.map(p=>abbr(p.name)), datasets:[{ data:projects.map(p=>p.pl), backgroundColor:projects.map(p=>plColor(p.pl)), borderRadius:5 }] },
+  options:{ ...base, metaValue:25, plugins:{ legend:{display:false}, tooltip:{...ttPct} }, scales:scPct }
 });
 
-// totVals — base para totalChart (Total, padrão)
-const totVals = overburn.map(p => p.tot[0]===0 ? 0 : Math.round(p.tot[1]/p.tot[0]*100));
-const obColor = v => v > 200 ? '#b91c1c' : v > 100 ? '#f5c800' : '#15803d';
-const obLabels = overburn.map(p => p.name.replace('Dia do ','').replace(' 2025','').replace('Reality ','R. ').replace('Bisnaguinha ',''));
-
-// KPI Melhor Controle — calculado dinamicamente a partir de totVals
-(function() {
-  const candidatos = overburn
-    .map((p, i) => ({ name: p.name, val: totVals[i] }))
-    .filter(x => x.val > 0);
-  if (candidatos.length > 0) {
-    const best = candidatos.reduce((a, b) => a.val <= b.val ? a : b);
-    document.getElementById('kpi-melhor-controle-val').textContent = best.val + '%';
-    document.getElementById('kpi-melhor-controle-sub').textContent = best.name;
-  }
-})();
-
-// totalChart — Overburn por Áreas (aba Overburn) — dinâmico
+// totalChart — Overburn (default: Total)
 const obDepts = {
-  plan: { label:'Planejamento', sub:'Horas Planej. consumidas / vendidas × 100' },
-  cri:  { label:'Criação',      sub:'Horas Criação consumidas / vendidas × 100' },
-  mid:  { label:'Mídia/BI',     sub:'Horas Mídia/BI consumidas / vendidas × 100' },
-  ate:  { label:'Atendimento',  sub:'Horas Atendimento consumidas / vendidas × 100' },
-  ope:  { label:'Operações',    sub:'Horas Operações consumidas / vendidas × 100' },
-  tot:  { label:'Total',        sub:'Total horas consumidas / vendidas × 100' }
+  plan:{ label:'Planejamento', sub:'Horas Planej. consumidas / vendidas × 100' },
+  cri: { label:'Criação',      sub:'Horas Criação consumidas / vendidas × 100' },
+  mid: { label:'Mídia/BI',     sub:'Horas Mídia/BI consumidas / vendidas × 100' },
+  ate: { label:'Atendimento',  sub:'Horas Atendimento consumidas / vendidas × 100' },
+  ope: { label:'Operações',    sub:'Horas Operações consumidas / vendidas × 100' },
+  tot: { label:'Total',        sub:'Total horas consumidas / vendidas × 100' }
 };
-function obDeptVals(key) {
-  return overburn.map(p => {
-    const [v,c] = p[key];
-    return (v===0 && c===0) ? 0 : v===0 ? 0 : Math.round(c/v*100);
-  });
+let currentObDept = 'tot';
+function obDeptVals(key, data) {
+  return data.map(p => { const [v,c] = p[key]; return (v===0 && c===0) ? 0 : v===0 ? 0 : Math.round(c/v*100); });
 }
+const initTotVals = obDeptVals('tot', overburn);
 const totalChartInst = new Chart(document.getElementById('totalChart'), {
   type:'bar',
-  data:{ labels:obLabels, datasets:[{ data:totVals, backgroundColor:totVals.map(obColor), borderRadius:4 }] },
-  options:{ ...base, plugins:{ ...base.plugins, tooltip:ttPct }, scales:scPct }
+  data:{ labels:overburn.map(p=>abbr(p.name)), datasets:[{ data:initTotVals, backgroundColor:initTotVals.map(obColor), borderRadius:4 }] },
+  options:{ ...base, plugins:{...base.plugins, tooltip:ttPct}, scales:scPct }
 });
 function switchObDept(key, btn) {
-  const vals = obDeptVals(key);
+  currentObDept = key;
+  const { ob } = getFiltered();
+  const vals = obDeptVals(key, ob);
+  totalChartInst.data.labels = ob.map(p => abbr(p.name));
   totalChartInst.data.datasets[0].data = vals;
   totalChartInst.data.datasets[0].backgroundColor = vals.map(obColor);
   totalChartInst.update();
   document.getElementById('totalChart-sub').textContent = obDepts[key].sub;
-  document.querySelectorAll('#totalChart').forEach(() => {});
   btn.closest('.chart-card').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 }
 
-// custoChart — Proposta Aprovada vs Projetada (aba Análise Propostas)
-new Chart(document.getElementById('custoChart'), {
+// custoChart
+const custoChartInst = new Chart(document.getElementById('custoChart'), {
   type:'bar',
   data:{
-    labels:custoLabels,
+    labels:custo.map(r=>abbr(r.name)),
     datasets:[
-      { label:'Proposta Aprovada', data:custo.map(r=>r.apv), backgroundColor:'#888888', borderRadius:3 },
+      { label:'Proposta Aprovada',  data:custo.map(r=>r.apv), backgroundColor:'#888888', borderRadius:3 },
       { label:'Proposta Projetada', data:custo.map(r=>r.prj), backgroundColor:custo.map(r=>r.prj<=r.apv?'#15803d':'#b91c1c'), borderRadius:3 }
     ]
   },
-  options:{
-    ...base,
-    plugins:{ legend:{display:false}, tooltip:ttCusto },
-    scales:scBrl
-  }
+  options:{ ...base, plugins:{ legend:{display:false}, tooltip:ttBrl }, scales:scBrl }
 });
 
-// ─── 8. INICIALIZAÇÃO ─────────────────────────────────────────────────────────
-renderOverview();
-renderPL();
-renderOverburn();
-renderCusto();
+// ─── 9. ATUALIZAÇÃO DE GRÁFICOS ───────────────────────────────────────────────
+function updateCharts(proj, ob, cst) {
+  // plChart + gapChart + plDetail
+  const pLabels = proj.map(p => abbr(p.name));
+  const pPl = proj.map(p => p.pl);
+  plChartInst.data.labels = pLabels;
+  plChartInst.data.datasets[0].data = pPl;
+  plChartInst.data.datasets[0].backgroundColor = pPl.map(plColor);
+  plChartInst.update();
+  gapChartInst.data.labels = pLabels;
+  gapChartInst.data.datasets[0].data = proj.map(p => p.gap/1000);
+  gapChartInst.data.datasets[0].backgroundColor = proj.map(p => p.gap>=0?'#15803d':'#b91c1c');
+  gapChartInst.update();
+  plDetailInst.data.labels = pLabels;
+  plDetailInst.data.datasets[0].data = pPl;
+  plDetailInst.data.datasets[0].backgroundColor = pPl.map(plColor);
+  plDetailInst.update();
+  // totalChart — respeita área selecionada
+  const obVals = obDeptVals(currentObDept, ob);
+  totalChartInst.data.labels = ob.map(p => abbr(p.name));
+  totalChartInst.data.datasets[0].data = obVals;
+  totalChartInst.data.datasets[0].backgroundColor = obVals.map(obColor);
+  totalChartInst.update();
+  // custoChart
+  custoChartInst.data.labels = cst.map(r => abbr(r.name));
+  custoChartInst.data.datasets[0].data = cst.map(r => r.apv);
+  custoChartInst.data.datasets[1].data = cst.map(r => r.prj);
+  custoChartInst.data.datasets[1].backgroundColor = cst.map(r => r.prj<=r.apv?'#15803d':'#b91c1c');
+  custoChartInst.update();
+}
+
+// ─── 10. INICIALIZAÇÃO ────────────────────────────────────────────────────────
+renderAll();
 </script>
 </body>
 </html>
