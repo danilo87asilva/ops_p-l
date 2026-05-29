@@ -286,6 +286,37 @@
   }
   .form-note strong { font-weight: 700; }
 
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    background: #141414;
+    border-bottom: 1px solid var(--id-border);
+    padding: 10px 32px;
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: nowrap;
+  }
+  .filter-group { display: flex; align-items: center; gap: 6px; }
+  .filter-label { font-size: 10px; font-weight: 700; color: var(--id-gray); text-transform: uppercase; letter-spacing: 0.8px; white-space: nowrap; }
+  .filter-select {
+    background: var(--id-card); border: 1px solid var(--id-border);
+    color: var(--id-white); font-size: 11px; font-weight: 600;
+    padding: 5px 28px 5px 10px; border-radius: 4px;
+    cursor: pointer; outline: none; min-width: 130px;
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+  }
+  .filter-select:focus { border-color: var(--id-yellow); }
+  .filter-select option { background: var(--id-card); }
+  .filter-sep { width: 1px; height: 20px; background: var(--id-border); margin: 0 4px; }
+  .filter-clear {
+    background: none; border: 1px solid var(--id-border);
+    color: var(--id-gray); font-size: 10px; font-weight: 700;
+    padding: 5px 10px; border-radius: 4px; cursor: pointer;
+    text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.15s;
+  }
+  .filter-clear:hover { border-color: var(--id-yellow); color: var(--id-yellow); }
+  .filter-status { font-size: 10px; color: var(--id-yellow); font-weight: 600; margin-left: auto; }
+
   /* ── CHART BAR (CSS) ── */
   .bar-chart { padding: 16px 20px; }
   .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
@@ -324,6 +355,44 @@
   <button class="tab-btn" onclick="showTab('performance')">📈 Performance</button>
 </nav>
 
+<!-- FILTER BAR — visível apenas no Dashboard -->
+<div class="filter-bar" id="dashboard-filters">
+  <div class="filter-group">
+    <span class="filter-label">Ano</span>
+    <select class="filter-select" id="f-ano" onchange="onAnoChange()">
+      <option value="todos">Todos</option>
+    </select>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Unidade</span>
+    <select class="filter-select" id="f-unidade" onchange="onUnidadeChange()">
+      <option value="todos">Todos</option>
+      <option>iDX</option>
+      <option>Creatura</option>
+      <option>Indie</option>
+      <option>Intelecta</option>
+    </select>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Núcleo</span>
+    <select class="filter-select" id="f-nucleo" onchange="applyFilters()">
+      <option value="todos">Todos</option>
+      <option>New Business</option>
+      <option>Letícia Maciel</option>
+      <option>Mariana Mozza</option>
+      <option>Luciana Rosa</option>
+      <option>Guilherme Rollemberg</option>
+      <option>Zuma Mota</option>
+      <option>Cristina Kuchiki</option>
+      <option>Ana Torrens</option>
+    </select>
+  </div>
+  <button class="filter-clear" onclick="clearFilters()">Limpar</button>
+  <span class="filter-status" id="filter-status"></span>
+</div>
+
 <main class="main">
 
 <!-- ═══════════════════════════════════════════
@@ -334,32 +403,32 @@
   <div class="kpi-grid">
     <div class="kpi-card">
       <div class="kpi-label">Receita YTD</div>
-      <div class="kpi-value yellow">R$ 0</div>
-      <div class="kpi-sub">Meta anual: R$ 16.500.000</div>
+      <div class="kpi-value yellow" id="kpi-ytd">R$ 0</div>
+      <div class="kpi-sub" id="kpi-ytd-sub">Meta anual: R$ 12.500.000</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">% da Meta</div>
-      <div class="kpi-value yellow">0%</div>
-      <div class="kpi-sub">Realizado vs Meta Anual</div>
+      <div class="kpi-value yellow" id="kpi-pct">0%</div>
+      <div class="kpi-sub">Realizado vs Meta</div>
     </div>
     <div class="kpi-card blue">
       <div class="kpi-label">Pipeline New Biz</div>
-      <div class="kpi-value">R$ 0</div>
+      <div class="kpi-value" id="kpi-pipeline">R$ 14.000.000</div>
       <div class="kpi-sub">Valor ponderado em aberto</div>
     </div>
     <div class="kpi-card green">
       <div class="kpi-label">Projetos Ativos</div>
-      <div class="kpi-value">0</div>
+      <div class="kpi-value" id="kpi-projetos">0</div>
       <div class="kpi-sub">Em execução no período</div>
     </div>
     <div class="kpi-card orange">
       <div class="kpi-label">Upsells</div>
-      <div class="kpi-value">0</div>
+      <div class="kpi-value" id="kpi-upsells">0</div>
       <div class="kpi-sub">Expansões de carteira</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Propostas Perdidas</div>
-      <div class="kpi-value">0</div>
+      <div class="kpi-value" id="kpi-perdidas">0</div>
       <div class="kpi-sub">Total no ano</div>
     </div>
   </div>
@@ -369,66 +438,65 @@
     <div class="table-wrap">
       <div class="table-header-bar">Receita Realizada × Meta — por Mês</div>
       <div class="bar-chart">
-        <div style="font-size:10px;color:var(--id-gray);margin-bottom:12px;">Meta mensal: R$ 1.041.667 / mês · Meta total: R$ 12.500.000</div>
-        <!-- placeholder bars - all zero since no data entered yet -->
-        <div class="bar-row">
+        <div id="bar-meta-info" style="font-size:10px;color:var(--id-gray);margin-bottom:12px;">Meta mensal: R$ 1.041.667 / mês · Meta total: R$ 12.500.000</div>
+        <div class="bar-row" data-mes="JAN">
           <div class="bar-name">JAN</div>
           <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="FEV">
           <div class="bar-name">FEV</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="MAR">
           <div class="bar-name">MAR</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="ABR">
           <div class="bar-name">ABR</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="MAI">
           <div class="bar-name">MAI</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="JUN">
           <div class="bar-name">JUN</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="JUL">
           <div class="bar-name">JUL</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="AGO">
           <div class="bar-name">AGO</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="SET">
           <div class="bar-name">SET</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="OUT">
           <div class="bar-name">OUT</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="NOV">
           <div class="bar-name">NOV</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
-        <div class="bar-row">
+        <div class="bar-row" data-mes="DEZ">
           <div class="bar-name">DEZ</div>
-          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"><span class="bar-val"></span></div></div>
           <div class="bar-meta">R$ 0 / R$ 1.041.667</div>
         </div>
       </div>
@@ -444,8 +512,8 @@
             <div style="font-size:10px;color:var(--id-gray);margin-top:2px;">Avançar para proposta</div>
           </div>
           <div class="funnel-values">
-            <div class="funnel-val">0 oportunidades</div>
-            <div class="funnel-sub">R$ 0 · Ponderado: R$ 0</div>
+            <div class="funnel-val">1 oportunidade</div>
+            <div class="funnel-sub">R$ 1.000.000 · Pond.: R$ 100.000</div>
           </div>
         </div>
         <div class="funnel-item proposta">
@@ -454,8 +522,8 @@
             <div style="font-size:10px;color:var(--id-gray);margin-top:2px;">Follow-up ativo</div>
           </div>
           <div class="funnel-values">
-            <div class="funnel-val">0 oportunidades</div>
-            <div class="funnel-sub">R$ 0 · Ponderado: R$ 0</div>
+            <div class="funnel-val">1 oportunidade</div>
+            <div class="funnel-sub">R$ 8.000.000 · Pond.: R$ 800.000</div>
           </div>
         </div>
         <div class="funnel-item negociacao">
@@ -464,8 +532,8 @@
             <div style="font-size:10px;color:var(--id-gray);margin-top:2px;">Fechar contrato</div>
           </div>
           <div class="funnel-values">
-            <div class="funnel-val">0 oportunidades</div>
-            <div class="funnel-sub">R$ 0 · Ponderado: R$ 0</div>
+            <div class="funnel-val">1 oportunidade</div>
+            <div class="funnel-sub">R$ 5.000.000 · Pond.: R$ 500.000</div>
           </div>
         </div>
         <div class="funnel-item ganho">
@@ -474,8 +542,8 @@
             <div style="font-size:10px;color:var(--id-gray);margin-top:2px;">Onboarding</div>
           </div>
           <div class="funnel-values">
-            <div class="funnel-val">0 oportunidades</div>
-            <div class="funnel-sub">R$ 0 · Ponderado: R$ 0</div>
+            <div class="funnel-val">2 oportunidades</div>
+            <div class="funnel-sub">R$ 8.000.000 · Ganho YTD</div>
           </div>
         </div>
         <div class="funnel-item perdido">
@@ -485,7 +553,7 @@
           </div>
           <div class="funnel-values">
             <div class="funnel-val">0 oportunidades</div>
-            <div class="funnel-sub">R$ 0 · Ponderado: R$ 0</div>
+            <div class="funnel-sub">R$ 0 · Taxa de conv.: 0%</div>
           </div>
         </div>
       </div>
@@ -506,7 +574,7 @@
             <th>Progresso</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="receita-un-tbody">
           <tr>
             <td class="label">iDX</td>
             <td class="num meta">R$ 4.200.000</td>
@@ -652,15 +720,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td colspan="13">
-              <div class="empty-state">
-                <div class="empty-icon">📥</div>
-                <div class="empty-title">Nenhum lançamento registrado ainda</div>
-                <div class="empty-sub">Insira os dados diretamente na aba "📥 Lançamentos" do arquivo Excel</div>
-              </div>
-            </td>
-          </tr>
+          <tr><td>1</td><td>29/05/2026</td><td>TESTE</td><td>PROJETO TESTE</td><td class="num">R$ 1.000.000</td><td>MAI</td><td>Q2</td><td><span class="badge badge-blue">Fee</span></td><td>Creatura</td><td>Letícia Maciel</td><td><span class="badge badge-green">Ativo</span></td><td>Rodrigo Ribeiro</td><td>—</td></tr>
+          <tr><td>2</td><td>29/05/2026</td><td>TESTE</td><td>PROJETO TESTE</td><td class="num">R$ 500.000</td><td>MAI</td><td>Q2</td><td><span class="badge badge-blue">Fee</span></td><td>iDX</td><td>Mariana Mozza</td><td><span class="badge badge-green">Ativo</span></td><td>Rodrigo Ribeiro</td><td>—</td></tr>
+          <tr><td>3</td><td>29/05/2026</td><td>TESTE</td><td>PROJETO TESTE</td><td class="num">R$ 240.000</td><td>MAI</td><td>Q2</td><td><span class="badge badge-blue">Fee</span></td><td>Indie</td><td>Luciana Rosa</td><td><span class="badge badge-green">Ativo</span></td><td>Rodrigo Ribeiro</td><td>—</td></tr>
+          <tr><td>4</td><td>29/05/2026</td><td>TESTE</td><td>PROJETO TESTE</td><td class="num">R$ 300.000</td><td>MAI</td><td>Q2</td><td><span class="badge badge-orange">Comissão de Mídia</span></td><td>Creatura</td><td>Ana Torrens</td><td><span class="badge badge-green">Ativo</span></td><td>Rodrigo Ribeiro</td><td>—</td></tr>
+          <tr><td>5</td><td>29/05/2026</td><td>TESTE</td><td>PROJETO TESTE</td><td class="num">R$ 100.000</td><td>MAI</td><td>Q2</td><td><span class="badge badge-orange">Comissão de Mídia</span></td><td>Intelecta</td><td>Zuma Mota</td><td><span class="badge badge-green">Ativo</span></td><td>Rodrigo Ribeiro</td><td>—</td></tr>
+          <tr><td>6</td><td>29/05/2026</td><td>TESTE</td><td>PROJETO TESTE</td><td class="num">R$ 30.000</td><td>MAI</td><td>Q2</td><td><span class="badge badge-yellow">Projeto</span></td><td>Intelecta</td><td>Cristina Kuchiki</td><td><span class="badge badge-green">Ativo</span></td><td>Rodrigo Ribeiro</td><td>—</td></tr>
+          <tr><td>7</td><td>29/05/2026</td><td>TESTE</td><td>PROJETO TESTE</td><td class="num">R$ 20.000</td><td>MAI</td><td>Q2</td><td><span class="badge badge-yellow">Projeto</span></td><td>Intelecta</td><td>Zuma Mota</td><td><span class="badge badge-green">Ativo</span></td><td>Rodrigo Ribeiro</td><td>—</td></tr>
+          <tr><td>8</td><td>29/05/2026</td><td>TESTE</td><td>PROJETO TESTE</td><td class="num">R$ 5.000</td><td>JUN</td><td>Q2</td><td><span class="badge badge-blue">Fee</span></td><td>Intelecta</td><td>New Business</td><td><span class="badge badge-green">Ativo</span></td><td>Rodrigo Ribeiro</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
@@ -718,39 +785,23 @@
         </thead>
         <tbody>
           <tr class="subtotal"><td colspan="16" style="padding:8px 14px;font-size:10px;color:var(--id-gray);font-weight:700;text-transform:uppercase;letter-spacing:1px;">UNIDADES DE NEGÓCIO</td></tr>
-          <tr>
-            <td class="label">iDX</td>
-            <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
-            <td class="num">R$ 0</td><td class="num meta">R$ 4.200.000</td><td class="num red">0%</td>
-          </tr>
-          <tr>
-            <td class="label">Creatura</td>
-            <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
-            <td class="num">R$ 0</td><td class="num meta">R$ 3.600.000</td><td class="num red">0%</td>
-          </tr>
-          <tr>
-            <td class="label">Indie</td>
-            <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
-            <td class="num">R$ 0</td><td class="num meta">R$ 2.800.000</td><td class="num red">0%</td>
-          </tr>
-          <tr>
-            <td class="label">Intelecta</td>
-            <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
-            <td class="num">R$ 0</td><td class="num meta">R$ 1.900.000</td><td class="num red">0%</td>
-          </tr>
+          <tr><td class="label">iDX</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">500.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 500.000</td><td class="num meta">R$ 4.200.000</td><td class="num red">11.9%</td></tr>
+          <tr><td class="label">Creatura</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">1.300.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 1.300.000</td><td class="num meta">R$ 3.600.000</td><td class="num red">36.1%</td></tr>
+          <tr><td class="label">Indie</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">240.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 240.000</td><td class="num meta">R$ 2.800.000</td><td class="num red">8.6%</td></tr>
+          <tr><td class="label">Intelecta</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">150.000</td><td class="num">5.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 155.000</td><td class="num meta">R$ 1.900.000</td><td class="num red">8.2%</td></tr>
           <tr class="subtotal"><td colspan="16" style="padding:8px 14px;font-size:10px;color:var(--id-gray);font-weight:700;text-transform:uppercase;letter-spacing:1px;">NÚCLEOS DE CONTA</td></tr>
-          <tr><td class="label">New Business</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td><td class="num meta">R$ 800.000</td><td class="num red">0%</td></tr>
-          <tr><td class="label">Letícia Maciel</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td><td class="num meta">R$ 3.100.000</td><td class="num red">0%</td></tr>
-          <tr><td class="label">Mariana Mozza</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td><td class="num meta">R$ 2.800.000</td><td class="num red">0%</td></tr>
-          <tr><td class="label">Luciana Rosa</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td><td class="num meta">R$ 2.500.000</td><td class="num red">0%</td></tr>
-          <tr><td class="label">Guilherme Rollemberg</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td><td class="num meta">R$ 2.200.000</td><td class="num red">0%</td></tr>
-          <tr><td class="label">Zuma Mota</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td><td class="num meta">R$ 1.900.000</td><td class="num red">0%</td></tr>
-          <tr><td class="label">Cristina Kuchiki</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td><td class="num meta">R$ 1.700.000</td><td class="num red">0%</td></tr>
-          <tr><td class="label">Ana Torrens</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td><td class="num meta">R$ 1.500.000</td><td class="num red">0%</td></tr>
+          <tr><td class="label">New Business</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">5.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 5.000</td><td class="num meta">R$ 800.000</td><td class="num red">0.6%</td></tr>
+          <tr><td class="label">Letícia Maciel</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">1.000.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 1.000.000</td><td class="num meta">R$ 3.100.000</td><td class="num red">32.3%</td></tr>
+          <tr><td class="label">Mariana Mozza</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">500.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 500.000</td><td class="num meta">R$ 2.800.000</td><td class="num red">17.9%</td></tr>
+          <tr><td class="label">Luciana Rosa</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">240.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 240.000</td><td class="num meta">R$ 2.500.000</td><td class="num red">9.6%</td></tr>
+          <tr><td class="label">Guilherme Rollemberg</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num meta">R$ 2.200.000</td><td class="num red">0.0%</td></tr>
+          <tr><td class="label">Zuma Mota</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">120.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 120.000</td><td class="num meta">R$ 1.900.000</td><td class="num red">6.3%</td></tr>
+          <tr><td class="label">Cristina Kuchiki</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">30.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 30.000</td><td class="num meta">R$ 1.700.000</td><td class="num red">1.8%</td></tr>
+          <tr><td class="label">Ana Torrens</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">300.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 300.000</td><td class="num meta">R$ 1.500.000</td><td class="num red">20.0%</td></tr>
           <tr class="total-row">
             <td class="label yellow">TOTAL GERAL</td>
-            <td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td>
-            <td class="num yellow">R$ 0</td><td class="num yellow">R$ 12.500.000</td><td class="num yellow">0%</td>
+            <td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">2.190.000</td><td class="num yellow">5.000</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td>
+            <td class="num yellow">R$ 2.195.000</td><td class="num yellow">R$ 12.500.000</td><td class="num yellow">17.6%</td>
           </tr>
         </tbody>
       </table>
@@ -781,32 +832,32 @@
         <tbody>
           <tr>
             <td class="label">Fee</td>
-            <td class="num">R$ 0</td>
-            <td class="num">0%</td>
+            <td class="num">R$ 1.745.000</td>
+            <td class="num yellow">79,5%</td>
             <td class="num meta">50%</td>
-            <td class="num red">-50pp</td>
-            <td><span class="badge badge-gray">Sem dados</span></td>
+            <td class="num green">+29,5pp</td>
+            <td><span class="badge badge-yellow">Acima da meta</span></td>
           </tr>
           <tr>
             <td class="label">Projeto</td>
-            <td class="num">R$ 0</td>
-            <td class="num">0%</td>
+            <td class="num">R$ 50.000</td>
+            <td class="num red">2,3%</td>
             <td class="num meta">35%</td>
-            <td class="num red">-35pp</td>
-            <td><span class="badge badge-gray">Sem dados</span></td>
+            <td class="num red">-32,7pp</td>
+            <td><span class="badge badge-red">Abaixo da meta</span></td>
           </tr>
           <tr>
             <td class="label">Comissão de Mídia</td>
-            <td class="num">R$ 0</td>
-            <td class="num">0%</td>
+            <td class="num">R$ 400.000</td>
+            <td class="num green">18,2%</td>
             <td class="num meta">15%</td>
-            <td class="num red">-15pp</td>
-            <td><span class="badge badge-gray">Sem dados</span></td>
+            <td class="num green">+3,2pp</td>
+            <td><span class="badge badge-green">Acima da meta</span></td>
           </tr>
           <tr class="total-row">
             <td class="label yellow">TOTAL GERAL</td>
-            <td class="num yellow">R$ 0</td>
-            <td class="num yellow">0%</td>
+            <td class="num yellow">R$ 2.195.000</td>
+            <td class="num yellow">100%</td>
             <td class="num yellow">100%</td>
             <td class="num yellow">—</td>
             <td></td>
@@ -831,10 +882,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td class="label">Fee</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td></tr>
-          <tr><td class="label">Projeto</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td></tr>
-          <tr><td class="label">Comissão de Mídia</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0</td></tr>
-          <tr class="total-row"><td class="label yellow">TOTAL GERAL</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">R$ 0</td></tr>
+          <tr><td class="label">Fee</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">1.740.000</td><td class="num">5.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 1.745.000</td></tr>
+          <tr><td class="label">Projeto</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">50.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 50.000</td></tr>
+          <tr><td class="label">Comissão de Mídia</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">400.000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 400.000</td></tr>
+          <tr class="total-row"><td class="label yellow">TOTAL GERAL</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">2.190.000</td><td class="num yellow">5.000</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">0</td><td class="num yellow">R$ 2.195.000</td></tr>
         </tbody>
       </table>
     </div>
@@ -911,13 +962,34 @@
         </thead>
         <tbody>
           <tr>
-            <td colspan="14">
-              <div class="empty-state">
-                <div class="empty-icon">🚀</div>
-                <div class="empty-title">Nenhuma oportunidade registrada ainda</div>
-                <div class="empty-sub">Insira os dados diretamente na aba "🚀 New Business" do arquivo Excel</div>
-              </div>
-            </td>
+            <td>29/05/2026</td><td class="label">TESTE2</td><td>PROJETO TESTE 2</td><td>AGRO</td><td>Projeto Pontual</td>
+            <td class="num">R$ 1.000.000</td>
+            <td><span class="badge badge-blue">Em Prospecção</span></td>
+            <td class="num">10%</td><td>JUN</td><td>iDX</td><td>Letícia Maciel</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>29/05/2026</td><td class="label">TESTE3</td><td>PROJETO TESTE 3</td><td>BELEZA</td><td>Projeto Pontual</td>
+            <td class="num">R$ 8.000.000</td>
+            <td><span class="badge badge-yellow">Proposta Enviada</span></td>
+            <td class="num">10%</td><td>JUN</td><td>Creatura</td><td>Mariana Mozza</td><td>29/05/2026</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>29/05/2026</td><td class="label">TESTE4</td><td>PROJETO TESTE 4</td><td>AUTOMOTIVO</td><td>Projeto Pontual</td>
+            <td class="num">R$ 5.000.000</td>
+            <td><span class="badge badge-orange">Negociação</span></td>
+            <td class="num">10%</td><td>JUN</td><td>Indie</td><td>Luciana Rosa</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>29/05/2026</td><td class="label">TESTE5</td><td>PROJETO TESTE 5</td><td>FOOD</td><td>Projeto Pontual</td>
+            <td class="num">R$ 2.000.000</td>
+            <td><span class="badge badge-green">Ganho</span></td>
+            <td class="num">10%</td><td>JUN</td><td>Intelecta</td><td>Guilherme Rollemberg</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>29/05/2026</td><td class="label">TESTE6</td><td>PROJETO TESTE 6</td><td>AGRO</td><td>Projeto Pontual</td>
+            <td class="num">R$ 6.000.000</td>
+            <td><span class="badge badge-green">Ganho</span></td>
+            <td class="num">10%</td><td>JUN</td><td>iDX</td><td>Zuma Mota</td><td>—</td><td>—</td><td>—</td>
           </tr>
         </tbody>
       </table>
@@ -1002,41 +1074,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><span class="rank-num gold">1</span></td>
-            <td class="label">New Business</td>
-            <td class="num meta">R$ 800.000</td>
-            <td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td>
-            <td class="num">R$ 0</td>
-            <td class="num red">0%</td>
-            <td class="num red">-R$ 800.000</td>
-            <td class="num">R$ 0</td>
-          </tr>
-          <tr>
-            <td><span class="rank-num silver">2</span></td>
-            <td class="label">Letícia Maciel</td>
-            <td class="num meta">R$ 3.100.000</td>
-            <td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td>
-            <td class="num">R$ 0</td>
-            <td class="num red">0%</td>
-            <td class="num red">-R$ 3.100.000</td>
-            <td class="num">R$ 0</td>
-          </tr>
-          <tr>
-            <td><span class="rank-num bronze">3</span></td>
-            <td class="label">Mariana Mozza</td>
-            <td class="num meta">R$ 2.800.000</td>
-            <td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td>
-            <td class="num">R$ 0</td>
-            <td class="num red">0%</td>
-            <td class="num red">-R$ 2.800.000</td>
-            <td class="num">R$ 0</td>
-          </tr>
-          <tr><td><span class="rank-num">4</span></td><td class="label">Luciana Rosa</td><td class="num meta">R$ 2.500.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0%</td><td class="num red">-R$ 2.500.000</td><td class="num">R$ 0</td></tr>
-          <tr><td><span class="rank-num">5</span></td><td class="label">Guilherme Rollemberg</td><td class="num meta">R$ 2.200.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0%</td><td class="num red">-R$ 2.200.000</td><td class="num">R$ 0</td></tr>
-          <tr><td><span class="rank-num">6</span></td><td class="label">Zuma Mota</td><td class="num meta">R$ 1.900.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0%</td><td class="num red">-R$ 1.900.000</td><td class="num">R$ 0</td></tr>
-          <tr><td><span class="rank-num">7</span></td><td class="label">Cristina Kuchiki</td><td class="num meta">R$ 1.700.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0%</td><td class="num red">-R$ 1.700.000</td><td class="num">R$ 0</td></tr>
-          <tr><td><span class="rank-num">8</span></td><td class="label">Ana Torrens</td><td class="num meta">R$ 1.500.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0%</td><td class="num red">-R$ 1.500.000</td><td class="num">R$ 0</td></tr>
+<tr><td><span class="rank-num gold">1</span></td><td class="label">Letícia Maciel</td><td class="num meta">R$ 3.100.000</td><td class="num">R$ 0</td><td class="num">R$ 1.000.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 1.000.000</td><td class="num red">32.3%</td><td class="num red">-R$ 2.100.000</td><td class="num">R$ 2.400.000</td></tr>
+          <tr><td><span class="rank-num silver">2</span></td><td class="label">Mariana Mozza</td><td class="num meta">R$ 2.800.000</td><td class="num">R$ 0</td><td class="num">R$ 500.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 500.000</td><td class="num red">17.9%</td><td class="num red">-R$ 2.300.000</td><td class="num">R$ 1.200.000</td></tr>
+          <tr><td><span class="rank-num bronze">3</span></td><td class="label">Ana Torrens</td><td class="num meta">R$ 1.500.000</td><td class="num">R$ 0</td><td class="num">R$ 300.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 300.000</td><td class="num red">20.0%</td><td class="num red">-R$ 1.200.000</td><td class="num">R$ 720.000</td></tr>
+          <tr><td><span class="rank-num">4</span></td><td class="label">Luciana Rosa</td><td class="num meta">R$ 2.500.000</td><td class="num">R$ 0</td><td class="num">R$ 240.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 240.000</td><td class="num red">9.6%</td><td class="num red">-R$ 2.260.000</td><td class="num">R$ 576.000</td></tr>
+          <tr><td><span class="rank-num">5</span></td><td class="label">Zuma Mota</td><td class="num meta">R$ 1.900.000</td><td class="num">R$ 0</td><td class="num">R$ 120.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 120.000</td><td class="num red">6.3%</td><td class="num red">-R$ 1.780.000</td><td class="num">R$ 288.000</td></tr>
+          <tr><td><span class="rank-num">6</span></td><td class="label">Cristina Kuchiki</td><td class="num meta">R$ 1.700.000</td><td class="num">R$ 0</td><td class="num">R$ 30.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 30.000</td><td class="num red">1.8%</td><td class="num red">-R$ 1.670.000</td><td class="num">R$ 72.000</td></tr>
+          <tr><td><span class="rank-num">7</span></td><td class="label">New Business</td><td class="num meta">R$ 800.000</td><td class="num">R$ 0</td><td class="num">R$ 5.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 5.000</td><td class="num red">0.6%</td><td class="num red">-R$ 795.000</td><td class="num">R$ 12.000</td></tr>
+          <tr><td><span class="rank-num">8</span></td><td class="label">Guilherme Rollemberg</td><td class="num meta">R$ 2.200.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0.0%</td><td class="num red">-R$ 2.200.000</td><td class="num">R$ 0</td></tr>
         </tbody>
       </table>
     </div>
@@ -1059,10 +1104,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td><span class="rank-num gold">1</span></td><td class="label">iDX</td><td class="num meta">R$ 4.200.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0%</td><td class="num red">-R$ 4.200.000</td><td class="num">R$ 0</td></tr>
-          <tr><td><span class="rank-num silver">2</span></td><td class="label">Creatura</td><td class="num meta">R$ 3.600.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0%</td><td class="num red">-R$ 3.600.000</td><td class="num">R$ 0</td></tr>
-          <tr><td><span class="rank-num bronze">3</span></td><td class="label">Indie</td><td class="num meta">R$ 2.800.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0%</td><td class="num red">-R$ 2.800.000</td><td class="num">R$ 0</td></tr>
-          <tr><td><span class="rank-num">4</span></td><td class="label">Intelecta</td><td class="num meta">R$ 1.900.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num red">0%</td><td class="num red">-R$ 1.900.000</td><td class="num">R$ 0</td></tr>
+<tr><td><span class="rank-num gold">1</span></td><td class="label">Creatura</td><td class="num meta">R$ 3.600.000</td><td class="num">R$ 0</td><td class="num">R$ 1.300.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 1.300.000</td><td class="num red">36.1%</td><td class="num red">-R$ 2.300.000</td><td class="num">R$ 3.120.000</td></tr>
+          <tr><td><span class="rank-num silver">2</span></td><td class="label">iDX</td><td class="num meta">R$ 4.200.000</td><td class="num">R$ 0</td><td class="num">R$ 500.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 500.000</td><td class="num red">11.9%</td><td class="num red">-R$ 3.700.000</td><td class="num">R$ 1.200.000</td></tr>
+          <tr><td><span class="rank-num bronze">3</span></td><td class="label">Indie</td><td class="num meta">R$ 2.800.000</td><td class="num">R$ 0</td><td class="num">R$ 240.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 240.000</td><td class="num red">8.6%</td><td class="num red">-R$ 2.560.000</td><td class="num">R$ 576.000</td></tr>
+          <tr><td><span class="rank-num">4</span></td><td class="label">Intelecta</td><td class="num meta">R$ 1.900.000</td><td class="num">R$ 0</td><td class="num">R$ 155.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 155.000</td><td class="num red">8.2%</td><td class="num red">-R$ 1.745.000</td><td class="num">R$ 372.000</td></tr>
         </tbody>
       </table>
     </div>
@@ -1072,16 +1117,211 @@
 </main>
 
 <script>
+  // ── YEAR ──────────────────────────────────────────────────────────
   const CY = new Date().getFullYear();
   document.querySelectorAll('.yr').forEach(el => el.textContent = CY);
-  document.title = document.title.replace(/\d{4}/, CY);
+  document.title = `ID/TBWA | Dashboard Executivo de Negócios ${CY}`;
 
+  // ── TABS ──────────────────────────────────────────────────────────
   function showTab(id) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
     event.target.classList.add('active');
+    // filter bar só no Dashboard
+    document.getElementById('dashboard-filters').style.display = id === 'dashboard' ? 'flex' : 'none';
   }
+
+  // ── DATA ──────────────────────────────────────────────────────────
+  // Array de lançamentos gerado a partir do Excel. Cada objeto:
+  // { data, cliente, projeto, valor, mes, tipo, unidade, nucleo, ano, upsell }
+  const LANCAMENTOS = [
+    {data:'29/05/2026', cliente:'TESTE', projeto:'PROJETO TESTE', valor:1000000, mes:'MAI', quarter:'Q2', tipo:'Fee',              unidade:'Creatura',  nucleo:'Letícia Maciel',    ano:2026, upsell:false},
+    {data:'29/05/2026', cliente:'TESTE', projeto:'PROJETO TESTE', valor:500000,  mes:'MAI', quarter:'Q2', tipo:'Fee',              unidade:'iDX',       nucleo:'Mariana Mozza',      ano:2026, upsell:false},
+    {data:'29/05/2026', cliente:'TESTE', projeto:'PROJETO TESTE', valor:240000,  mes:'MAI', quarter:'Q2', tipo:'Fee',              unidade:'Indie',     nucleo:'Luciana Rosa',       ano:2026, upsell:false},
+    {data:'29/05/2026', cliente:'TESTE', projeto:'PROJETO TESTE', valor:300000,  mes:'MAI', quarter:'Q2', tipo:'Comissão de Mídia', unidade:'Creatura',  nucleo:'Ana Torrens',        ano:2026, upsell:false},
+    {data:'29/05/2026', cliente:'TESTE', projeto:'PROJETO TESTE', valor:100000,  mes:'MAI', quarter:'Q2', tipo:'Comissão de Mídia', unidade:'Intelecta', nucleo:'Zuma Mota',          ano:2026, upsell:false},
+    {data:'29/05/2026', cliente:'TESTE', projeto:'PROJETO TESTE', valor:30000,   mes:'MAI', quarter:'Q2', tipo:'Projeto',          unidade:'Intelecta', nucleo:'Cristina Kuchiki',   ano:2026, upsell:false},
+    {data:'29/05/2026', cliente:'TESTE', projeto:'PROJETO TESTE', valor:20000,   mes:'MAI', quarter:'Q2', tipo:'Projeto',          unidade:'Intelecta', nucleo:'Zuma Mota',          ano:2026, upsell:false},
+    {data:'29/05/2026', cliente:'TESTE', projeto:'PROJETO TESTE', valor:5000,    mes:'JUN', quarter:'Q2', tipo:'Fee',              unidade:'Intelecta', nucleo:'New Business',       ano:2026, upsell:false}
+  ];
+
+  const METAS_UNIDADE = {
+    'iDX': 4200000, 'Creatura': 3600000, 'Indie': 2800000, 'Intelecta': 1900000
+  };
+  const META_TOTAL_AGENCIA = 12500000;
+  const METAS_NUCLEO = {
+    'Letícia Maciel': 3100000, 'Mariana Mozza': 2800000, 'Luciana Rosa': 2500000,
+    'Guilherme Rollemberg': 2200000, 'Zuma Mota': 1900000,
+    'Cristina Kuchiki': 1700000, 'Ana Torrens': 1500000, 'New Business': 800000
+  };
+  const ALL_NUCLEOS_LIST = [
+    'New Business','Letícia Maciel','Mariana Mozza','Luciana Rosa',
+    'Guilherme Rollemberg','Zuma Mota','Cristina Kuchiki','Ana Torrens'
+  ];
+  const MESES = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+  const ALL_UNIDADES = ['iDX','Creatura','Indie','Intelecta'];
+
+  // ── HELPERS ───────────────────────────────────────────────────────
+  function fmt(v) {
+    if (!v) return 'R$ 0';
+    return 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+  }
+
+  function getMetaForContext(unidade, nucleo) {
+    if (nucleo !== 'todos') return METAS_NUCLEO[nucleo] || 0;
+    if (unidade !== 'todos') return METAS_UNIDADE[unidade] || 0;
+    return META_TOTAL_AGENCIA;
+  }
+
+  // ── INIT FILTERS ─────────────────────────────────────────────────
+  function initFilters() {
+    // Popula Ano dinamicamente a partir dos dados
+    const anos = [...new Set(LANCAMENTOS.map(l => l.ano))].sort();
+    const fAno = document.getElementById('f-ano');
+    anos.forEach(a => {
+      const opt = document.createElement('option');
+      opt.value = a; opt.textContent = a;
+      fAno.appendChild(opt);
+    });
+    applyFilters();
+  }
+
+  // ── CASCATA ───────────────────────────────────────────────────────
+  function onAnoChange() {
+    onUnidadeChange();
+  }
+
+  function onUnidadeChange() {
+    const unidade = document.getElementById('f-unidade').value;
+    const fNucleo = document.getElementById('f-nucleo');
+    const prev = fNucleo.value;
+
+    // Nucleos disponíveis: se há dados, filtra pelos que existem naquela unidade
+    // Se não há dados, mostra todos
+    let nucleos;
+    if (LANCAMENTOS.length > 0 && unidade !== 'todos') {
+      nucleos = [...new Set(
+        LANCAMENTOS.filter(l => l.unidade === unidade).map(l => l.nucleo)
+      )].sort();
+    } else {
+      nucleos = ALL_NUCLEOS_LIST;
+    }
+
+    fNucleo.innerHTML = '<option value="todos">Todos</option>';
+    nucleos.forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n; opt.textContent = n;
+      if (n === prev) opt.selected = true;
+      fNucleo.appendChild(opt);
+    });
+
+    applyFilters();
+  }
+
+  function clearFilters() {
+    document.getElementById('f-ano').value = 'todos';
+    document.getElementById('f-unidade').value = 'todos';
+    onUnidadeChange(); // rebuilds núcleo + dispara applyFilters
+  }
+
+  // ── APPLY FILTERS ─────────────────────────────────────────────────
+  function applyFilters() {
+    const ano     = document.getElementById('f-ano').value;
+    const unidade = document.getElementById('f-unidade').value;
+    const nucleo  = document.getElementById('f-nucleo').value;
+
+    const data = LANCAMENTOS.filter(l => {
+      if (ano     !== 'todos' && String(l.ano)     !== String(ano))     return false;
+      if (unidade !== 'todos' && l.unidade !== unidade) return false;
+      if (nucleo  !== 'todos' && l.nucleo  !== nucleo)  return false;
+      return true;
+    });
+
+    // Status label
+    const active = [ano, unidade, nucleo].filter(v => v !== 'todos').length;
+    document.getElementById('filter-status').textContent =
+      active > 0 ? `${data.length} lançamento${data.length !== 1 ? 's' : ''} filtrado${data.length !== 1 ? 's' : ''}` : '';
+
+    updateDashboard(data, { ano, unidade, nucleo });
+  }
+
+  // ── UPDATE DASHBOARD ──────────────────────────────────────────────
+  function updateDashboard(data, ctx) {
+    const ytd  = data.reduce((s, l) => s + (l.valor || 0), 0);
+    const meta = getMetaForContext(ctx.unidade, ctx.nucleo);
+    const pct  = meta > 0 ? Math.round((ytd / meta) * 100) : 0;
+
+    // KPIs
+    document.getElementById('kpi-ytd').textContent     = fmt(ytd);
+    document.getElementById('kpi-pct').textContent     = pct + '%';
+    document.getElementById('kpi-ytd-sub').textContent = 'Meta: ' + fmt(meta);
+    document.getElementById('kpi-projetos').textContent = data.filter(l => l.tipo === 'Projeto').length;
+    document.getElementById('kpi-upsells').textContent  = data.filter(l => l.upsell).length;
+    // kpi-perdidas vem da aba New Business, não de lançamentos — mantém estático por ora
+    document.getElementById('kpi-perdidas').textContent = '0';
+
+    // Bar chart — receita por mês
+    const metaMensal = meta / 12;
+    document.getElementById('bar-meta-info').textContent =
+      `Meta mensal: ${fmt(Math.round(metaMensal))} / mês · Meta total: ${fmt(meta)}`;
+
+    MESES.forEach(mes => {
+      const val = data
+        .filter(l => (l.mes || '').toUpperCase() === mes)
+        .reduce((s, l) => s + (l.valor || 0), 0);
+
+      const row = document.querySelector(`.bar-row[data-mes="${mes}"]`);
+      if (!row) return;
+
+      const fill  = row.querySelector('.bar-fill');
+      const valEl = row.querySelector('.bar-val');
+      const metaEl = row.querySelector('.bar-meta');
+      const pctW  = metaMensal > 0 ? Math.min(100, (val / metaMensal) * 100) : 0;
+
+      fill.style.width = pctW + '%';
+      fill.style.background = pctW >= 100 ? 'var(--id-green)' : 'var(--id-yellow)';
+      if (valEl) valEl.textContent = val > 0 ? fmt(val) : '';
+      if (metaEl) metaEl.textContent = fmt(val) + ' / ' + fmt(Math.round(metaMensal));
+    });
+
+    // Receita por UN — tbody reativo
+    const tbody = document.getElementById('receita-un-tbody');
+    if (!tbody) return;
+
+    const unidades = ctx.unidade !== 'todos' ? [ctx.unidade] : ALL_UNIDADES;
+    let totalReal = 0, totalMeta = 0;
+
+    const rows = unidades.map(un => {
+      const unVal  = data.filter(l => l.unidade === un).reduce((s, l) => s + (l.valor || 0), 0);
+      const unMeta = METAS_UNIDADE[un] || 0;
+      const unPct  = unMeta > 0 ? Math.round((unVal / unMeta) * 100) : 0;
+      const cls    = unPct >= 100 ? 'green' : unPct >= 50 ? '' : 'red';
+      const barW   = Math.min(100, unPct);
+      totalReal += unVal; totalMeta += unMeta;
+      return `<tr>
+        <td class="label">${un}</td>
+        <td class="num meta">${fmt(unMeta)}</td>
+        <td class="num">${fmt(unVal)}</td>
+        <td class="num ${cls}">${unPct}%</td>
+        <td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill ${cls}" style="width:${barW}%"></div></div><div class="progress-pct">${(unVal/1000).toFixed(0)}k / ${(unMeta/1000).toFixed(0)}k</div></div></td>
+      </tr>`;
+    });
+
+    const totPct = totalMeta > 0 ? Math.round((totalReal / totalMeta) * 100) : 0;
+    rows.push(`<tr class="total-row">
+      <td class="label yellow">TOTAL AGÊNCIA</td>
+      <td class="num yellow">${fmt(totalMeta)}</td>
+      <td class="num yellow">${fmt(totalReal)}</td>
+      <td class="num yellow">${totPct}%</td>
+      <td></td>
+    </tr>`);
+
+    tbody.innerHTML = rows.join('');
+  }
+
+  // ── BOOT ──────────────────────────────────────────────────────────
+  initFilters();
 </script>
 </body>
 </html>
