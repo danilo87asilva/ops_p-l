@@ -108,6 +108,58 @@
   .bar-fill .bar-val{font-size:10px;font-weight:700;color:var(--id-black);}
   .bar-meta{font-size:10px;color:var(--id-gray);min-width:130px;}
   .cat-note{padding:10px 16px;font-size:10px;color:var(--id-gray);border-top:1px solid var(--id-border);line-height:1.5;}
+
+  /* ===== RESPONSIVIDADE MOBILE ===== */
+  /* Todas as tabelas de dados scrollam horizontalmente — padrão correto para tabelas densas */
+  .table-scroll table{min-width:600px;}
+
+  @media(max-width:768px){
+    /* Header */
+    .header{padding:10px 16px;gap:8px;}
+    .header-title{font-size:13px;}
+    .header-sub{font-size:10px;}
+    .header-badge{display:none;}
+    /* Nav */
+    .nav-tabs{padding:0 10px;}
+    .tab-btn{font-size:11px;padding:10px 12px;}
+    /* Main */
+    .main{padding:16px 12px;}
+    /* Dashboard filter bar — empilha verticalmente */
+    .filter-bar{flex-wrap:wrap;padding:8px 12px;gap:6px;}
+    .filter-group{flex:1 1 130px;}
+    .filter-sep{display:none;}
+    .filter-clear{margin-top:2px;}
+    .filter-status{width:100%;margin-left:0;text-align:center;}
+    /* KPIs — 2 colunas em vez de auto */
+    .kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+    .kpi-card{padding:14px 12px;}
+    .kpi-value{font-size:20px;}
+    .kpi-label{font-size:9px;}
+    .kpi-sub{font-size:10px;}
+    /* Grid-2 já vai para 1 col em 900px, mas garante aqui também */
+    .grid-2{grid-template-columns:1fr;}
+    /* Bar chart */
+    .bar-chart{padding:12px 14px;}
+    .bar-name{min-width:28px;font-size:9px;}
+    .bar-meta{min-width:80px;font-size:9px;}
+    /* Funil */
+    .funnel{padding:12px;}
+    .funnel-item{flex-direction:column;align-items:flex-start;gap:4px;}
+    .funnel-values{text-align:left;}
+    /* Tabelas */
+    .table-header-bar{font-size:11px;padding:10px 14px;flex-wrap:wrap;gap:6px;}
+    .section-title{font-size:11px;letter-spacing:0.4px;}
+    /* Cards instruções */
+    .instr-card{padding:16px;}
+    .form-note{font-size:11px;padding:12px 16px;}
+  }
+
+  @media(max-width:480px){
+    /* Telas muito pequenas: KPIs em coluna única */
+    .kpi-grid{grid-template-columns:1fr;}
+    .header-title{font-size:12px;}
+    .tab-btn{font-size:10px;padding:9px 10px;}
+  }
 </style>
 </head>
 <body>
