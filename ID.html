@@ -200,7 +200,7 @@
 <div class="kpi-card"><div class="kpi-label">Receita YTD</div><div class="kpi-value yellow" id="kpi-ytd">—</div><div class="kpi-sub" id="kpi-ytd-sub">Meta anual: R$ 15.700.000</div></div>
 <div class="kpi-card"><div class="kpi-label">% da Meta</div><div class="kpi-value yellow" id="kpi-pct">—</div><div class="kpi-sub">Realizado vs Meta</div></div>
 <div class="kpi-card blue"><div class="kpi-label">Pipeline de Negócios</div><div class="kpi-value" id="kpi-pipeline">—</div><div class="kpi-sub">Oportunidades em aberto (excl. Ganho e Perdido)</div></div>
-<div class="kpi-card orange"><div class="kpi-label">Upsell + New Business</div><div class="kpi-value" id="kpi-upsells">—</div><div class="kpi-sub">Oportunidades em aberto (excl. Ganho e Perdido)</div></div>
+<div class="kpi-card orange"><div class="kpi-label">Oportunidades em Aberto</div><div class="kpi-value" id="kpi-upsells">—</div><div class="kpi-sub">Todas as propostas excl. Ganho e Perdido</div></div>
 <div class="kpi-card green"><div class="kpi-label">Projetos Ganhos</div><div class="kpi-value" id="kpi-projetos">—</div><div class="kpi-sub">Status = Ganho</div></div>
 <div class="kpi-card"><div class="kpi-label">Propostas Perdidas</div><div class="kpi-value" id="kpi-perdidas">—</div><div class="kpi-sub">Total: <span id="kpi-perdidas-val">—</span></div></div>
 </div>
@@ -571,7 +571,7 @@
     document.getElementById('kpi-pct').textContent     = pct + '%';
     document.getElementById('kpi-ytd-sub').textContent = 'Meta: ' + fmt(meta);
     document.getElementById('kpi-projetos').textContent = all.filter(l => l.status==='Ganho').length;
-    document.getElementById('kpi-upsells').textContent  = all.filter(l => (l.categoria==='Upsell'||l.categoria==='New Business') && l.status!=='Ganho' && l.status!=='Perdido').length;
+    document.getElementById('kpi-upsells').textContent  = all.filter(l => l.status!=='Ganho' && l.status!=='Perdido').length;
     const _perds = all.filter(l => l.status==='Perdido');
     document.getElementById('kpi-perdidas').textContent = _perds.length;
     const _perdsValEl = document.getElementById('kpi-perdidas-val');
