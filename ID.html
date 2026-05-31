@@ -20,7 +20,7 @@
   .header-title{font-size:16px;font-weight:700;color:var(--id-white);}
   .header-sub{font-size:11px;color:var(--id-gray);margin-top:2px;}
   .header-badge{background:var(--id-yellow-dim);border:1px solid var(--id-yellow);color:var(--id-yellow);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;}
-  .nav-tabs{background:var(--id-dark);border-bottom:1px solid var(--id-border);padding:0 32px;display:flex;gap:4px;overflow-x:auto;}
+  .nav-tabs{background:var(--id-dark);border-bottom:1px solid var(--id-border);padding:0 32px;display:flex;gap:4px;overflow-x:auto;position:sticky;top:82px;z-index:99;}
   .nav-tabs::-webkit-scrollbar{height:3px;}
   .nav-tabs::-webkit-scrollbar-thumb{background:var(--id-border);}
   .tab-btn{background:none;border:none;color:var(--id-gray);font-size:12px;font-weight:600;padding:12px 16px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;letter-spacing:0.3px;}
@@ -84,7 +84,7 @@
   .instr-card h3{font-size:13px;font-weight:700;color:var(--id-yellow);margin-bottom:16px;}
   .form-note{background:var(--id-yellow-dim);border:1px solid var(--id-yellow);border-radius:8px;padding:16px 20px;margin-bottom:20px;font-size:12px;color:var(--id-yellow);line-height:1.7;}
   .form-note strong{font-weight:700;}
-  .filter-bar{background:#141414;border-bottom:1px solid var(--id-border);padding:10px 32px;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;}
+  .filter-bar{background:#141414;border-bottom:1px solid var(--id-border);padding:10px 32px;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;position:sticky;top:125px;z-index:98;}
   .filter-group{display:flex;align-items:center;gap:6px;}
   .filter-label{font-size:10px;font-weight:700;color:var(--id-gray);text-transform:uppercase;letter-spacing:0.8px;white-space:nowrap;}
   .filter-select{background:var(--id-card);border:1px solid var(--id-border);color:var(--id-white);font-size:11px;font-weight:600;padding:5px 28px 5px 10px;border-radius:4px;cursor:pointer;outline:none;min-width:110px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;}
@@ -111,7 +111,7 @@
 
   /* ===== RESPONSIVIDADE MOBILE ===== */
   /* Todas as tabelas de dados scrollam horizontalmente — padrão correto para tabelas densas */
-  .table-scroll table{min-width:600px;}
+  .table-scroll table{min-width:max-content;}
 
   @media(max-width:768px){
     /* Header */
@@ -120,8 +120,9 @@
     .header-sub{font-size:10px;}
     .header-badge{display:none;}
     /* Nav */
-    .nav-tabs{padding:0 10px;}
+    .nav-tabs{padding:0 10px;top:66px;}
     .tab-btn{font-size:11px;padding:10px 12px;}
+    .filter-bar{top:103px;}
     /* Main */
     .main{padding:16px 12px;}
     /* Dashboard filter bar — empilha verticalmente */
@@ -176,7 +177,8 @@
 <div class="kpi-card orange"><div class="kpi-label">Upsells</div><div class="kpi-value" id="kpi-upsells">—</div><div class="kpi-sub">Expansões de carteira</div></div>
 <div class="kpi-card"><div class="kpi-label">Propostas Perdidas</div><div class="kpi-value" id="kpi-perdidas">—</div><div class="kpi-sub">Total no ano</div></div>
 </div>
-<div class="grid-2">
+<div class="table-wrap"><div class="table-header-bar">Receita YTD × Meta Anual</div><div class="bar-chart" id="ytd-meta-bars" style="min-height:44px;"></div></div>
+<div class="table-wrap"><div class="table-header-bar">Projeção: YTD + Pipeline em Aberto × Meta Anual <span style="font-size:10px;color:var(--id-gray);font-weight:400;margin-left:6px;">· cenário se todo o pipeline converter</span></div><div class="bar-chart" id="proj-meta-bars" style="min-height:44px;"></div></div>
 <div class="table-wrap"><div class="table-header-bar">Receita Realizada × Meta — por Mês</div><div class="bar-chart"><div id="bar-meta-info" style="font-size:10px;color:var(--id-gray);margin-bottom:12px;"></div><div class="bar-row" data-mes="JAN"><div class="bar-name">JAN</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--id-yellow)"><span class="bar-val"></span></div></div><div class="bar-meta"></div></div>
 <div class="bar-row" data-mes="FEV"><div class="bar-name">FEV</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--id-yellow)"><span class="bar-val"></span></div></div><div class="bar-meta"></div></div>
 <div class="bar-row" data-mes="MAR"><div class="bar-name">MAR</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--id-yellow)"><span class="bar-val"></span></div></div><div class="bar-meta"></div></div>
@@ -189,12 +191,6 @@
 <div class="bar-row" data-mes="OUT"><div class="bar-name">OUT</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--id-yellow)"><span class="bar-val"></span></div></div><div class="bar-meta"></div></div>
 <div class="bar-row" data-mes="NOV"><div class="bar-name">NOV</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--id-yellow)"><span class="bar-val"></span></div></div><div class="bar-meta"></div></div>
 <div class="bar-row" data-mes="DEZ"><div class="bar-name">DEZ</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--id-yellow)"><span class="bar-val"></span></div></div><div class="bar-meta"></div></div></div></div>
-<div class="table-wrap"><div class="table-header-bar">New Business — Funil Resumido</div><div class="funnel"><div class="funnel-item prospeccao"><div><div class="funnel-label">🔵 Em Prospecção</div><div style="font-size:10px;color:var(--id-gray);margin-top:2px;">Avançar para proposta</div></div><div class="funnel-values"><div class="funnel-val">0 oportunidades</div><div class="funnel-sub">R$ 0 · Pond.: R$ 0</div></div></div>
-<div class="funnel-item proposta"><div><div class="funnel-label">🟡 Proposta Enviada</div><div style="font-size:10px;color:var(--id-gray);margin-top:2px;">Follow-up ativo</div></div><div class="funnel-values"><div class="funnel-val">2 oportunidades</div><div class="funnel-sub">R$ 115.000 · Pond.: R$ 57.500</div></div></div>
-<div class="funnel-item negociacao"><div><div class="funnel-label">🟠 Negociação</div><div style="font-size:10px;color:var(--id-gray);margin-top:2px;">Fechar contrato</div></div><div class="funnel-values"><div class="funnel-val">1 oportunidade</div><div class="funnel-sub">R$ 25.000 · Pond.: R$ 25.000</div></div></div>
-<div class="funnel-item ganho"><div><div class="funnel-label">🟢 Ganho</div><div style="font-size:10px;color:var(--id-gray);margin-top:2px;">Onboarding</div></div><div class="funnel-values"><div class="funnel-val">1 oportunidade</div><div class="funnel-sub">R$ 250.000 · Ganho YTD</div></div></div>
-<div class="funnel-item perdido"><div><div class="funnel-label">🔴 Perdido</div><div style="font-size:10px;color:var(--id-gray);margin-top:2px;">Análise de causa</div></div><div class="funnel-values"><div class="funnel-val">1 oportunidade</div><div class="funnel-sub">R$ 5.000 · Pond.: R$ 2.500</div></div></div></div></div>
-</div>
 <div class="table-wrap"><div class="table-header-bar">Receita por Unidade de Negócio × Meta <span class="yr">2026</span></div><div class="table-scroll"><table style="table-layout:fixed;width:100%"><colgroup><col style="width:22%"><col style="width:18%"><col style="width:18%"><col style="width:12%"><col style="width:30%"></colgroup><thead><tr><th>Unidade</th><th class="num">Meta Anual</th><th class="num">Realizado</th><th class="num">% Meta</th><th>Progresso</th></tr></thead><tbody id="receita-un-tbody"></tbody></table></div></div>
 <div class="table-wrap"><div class="table-header-bar">Receita por Núcleo de Negócio × Meta <span class="yr">2026</span></div><div class="table-scroll"><table style="table-layout:fixed;width:100%"><colgroup><col style="width:22%"><col style="width:18%"><col style="width:18%"><col style="width:12%"><col style="width:30%"></colgroup><thead><tr><th>Núcleo</th><th class="num">Meta Anual</th><th class="num">Realizado</th><th class="num">% Meta</th><th>Progresso</th></tr></thead><tbody id="receita-nuc-tbody"></tbody></table></div></div>
 </section>
@@ -264,10 +260,10 @@
 </section>
 <section class="section" id="tab-mix">
 <div class="section-title">📊 <span>Mix de Receita</span> — Fee × Projeto × Comissão de Mídia</div>
-<div class="table-wrap" style="margin-bottom:24px;"><div class="table-header-bar">% Share Resultado por Tipo — Anual</div><div class="table-scroll"><table><thead><tr><th>Tipo de Receita</th><th class="num">Realizado</th><th class="num">% Share Resultado</th><th class="num">% Share Meta</th><th class="num">Variação</th><th>Status</th></tr></thead><tbody><tr><td class="label">Fee</td><td class="num">R$ 1.745.000</td><td class="num green">68.6%</td><td class="num meta">50%</td><td class="num green">+18.6pp</td><td><span class="badge badge-green">Acima da meta</span></td></tr>
-<tr><td class="label">Projeto</td><td class="num">R$ 400.000</td><td class="num red">15.7%</td><td class="num meta">35%</td><td class="num red">-19.3pp</td><td><span class="badge badge-red">Abaixo da meta</span></td></tr>
-<tr><td class="label">Comissão de Mídia</td><td class="num">R$ 400.000</td><td class="num green">15.7%</td><td class="num meta">15%</td><td class="num green">+0.7pp</td><td><span class="badge badge-green">Acima da meta</span></td></tr>
-<tr class="total-row"><td class="label yellow">TOTAL GERAL</td><td class="num yellow">R$ 2.545.000</td><td class="num yellow">100%</td><td class="num yellow">100%</td><td class="num yellow">—</td><td></td></tr></tbody></table></div></div>
+<div class="table-wrap" style="margin-bottom:24px;"><div class="table-header-bar">% Share Resultado por Tipo — Anual</div><div class="table-scroll"><table><thead><tr><th>Tipo de Receita</th><th class="num">Realizado</th><th class="num">% Share Resultado</th></tr></thead><tbody><tr><td class="label">Fee</td><td class="num">R$ 1.745.000</td><td class="num">68.6%</td></tr>
+<tr><td class="label">Projeto</td><td class="num">R$ 400.000</td><td class="num">15.7%</td></tr>
+<tr><td class="label">Comissão de Mídia</td><td class="num">R$ 400.000</td><td class="num">15.7%</td></tr>
+<tr class="total-row"><td class="label yellow">TOTAL GERAL</td><td class="num yellow">R$ 2.545.000</td><td class="num yellow">100%</td></tr></tbody></table></div></div>
 <div class="table-wrap"><div class="table-header-bar">Receita por Tipo × Mês</div><div class="table-scroll"><table><thead><tr><th>Tipo</th><th class="num">JAN</th><th class="num">FEV</th><th class="num">MAR</th><th class="num">ABR</th><th class="num">MAI</th><th class="num">JUN</th><th class="num">JUL</th><th class="num">AGO</th><th class="num">SET</th><th class="num">OUT</th><th class="num">NOV</th><th class="num">DEZ</th><th class="num">TOTAL</th></tr></thead><tbody><tr><td class="label">Fee</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 1.740.000</td><td class="num">R$ 5.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 1.745.000</td></tr>
 <tr><td class="label">Projeto</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 50.000</td><td class="num">R$ 100.000</td><td class="num">R$ 250.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 400.000</td></tr>
 <tr><td class="label">Comissão de Mídia</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 400.000</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 0</td><td class="num">R$ 400.000</td></tr>
@@ -530,6 +526,37 @@
       const totPctNuc=totMetaNuc>0?Math.round((totRealNuc/totMetaNuc)*100*10)/10:0;
       nucRows.push(`<tr class="total-row"><td class="label yellow">TOTAL N\u00daCLEOS</td><td class="num yellow">${fmt(totMetaNuc)}</td><td class="num yellow">${fmt(totRealNuc)}</td><td class="num yellow">${totPctNuc}%</td><td></td></tr>`);
       tbodyNuc.innerHTML = nucRows.join('');
+    }
+
+    // Barra única: Receita YTD vs Meta — responde ao filtro ativo
+    const ytdBarsEl = document.getElementById('ytd-meta-bars');
+    if (ytdBarsEl) {
+      const realPct = meta > 0 ? Math.round((ytd/meta)*100*10)/10 : 0;
+      const barW    = meta > 0 ? Math.min(100,(ytd/meta)*100).toFixed(1) : (ytd>0?'100':'0');
+      const color   = realPct >= 100 ? 'var(--id-green)' : 'var(--id-yellow)';
+      const info    = meta > 0 ? fmt(ytd)+' / '+fmt(meta)+' · '+realPct+'%' : fmt(ytd);
+      ytdBarsEl.innerHTML = '<div class="bar-row">'
+        +'<div class="bar-name" style="min-width:180px;text-align:right">Receita YTD</div>'
+        +'<div class="bar-track"><div class="bar-fill" style="width:'+barW+'%;background:'+color+';transition:width 0.6s ease">'
+        +'<span class="bar-val">'+fmt(ytd)+'</span></div></div>'
+        +'<div class="bar-meta">'+info+'</div>'
+        +'</div>';
+    }
+
+    // Barra projeção: YTD + Pipeline em aberto vs Meta
+    const projBarsEl = document.getElementById('proj-meta-bars');
+    if (projBarsEl) {
+      const proj     = ytd + pipelineTotal;
+      const projPct  = meta > 0 ? Math.round((proj/meta)*100*10)/10 : 0;
+      const projW    = meta > 0 ? Math.min(100,(proj/meta)*100).toFixed(1) : (proj>0?'100':'0');
+      const projColor = projPct >= 100 ? 'var(--id-green)' : 'var(--id-blue)';
+      const projInfo  = meta > 0 ? fmt(proj)+' / '+fmt(meta)+' · '+projPct+'%' : fmt(proj);
+      projBarsEl.innerHTML = '<div class="bar-row">'
+        +'<div class="bar-name" style="min-width:180px;text-align:right">YTD + Pipeline</div>'
+        +'<div class="bar-track"><div class="bar-fill" style="width:'+projW+'%;background:'+projColor+';transition:width 0.6s ease">'
+        +'<span class="bar-val">'+fmt(proj)+'</span></div></div>'
+        +'<div class="bar-meta">'+projInfo+'</div>'
+        +'</div>';
     }
   }
   initFilters();
