@@ -149,7 +149,7 @@
     </div>
     <div class="header-meta">
       Ampfy<br>
-      <span style="color:#ffffff;font-weight:500">Atualização: 09/06/2026 16:02</span>
+      <span style="color:#ffffff;font-weight:500">Atualização: 19/06/2026 15:31</span>
     </div>
   </div>
 </div>
@@ -359,7 +359,7 @@ const projects = [
   { cliente:'Bauducco',      name:'Fini',               rec:'R$ 161.405', res:'+R$ 60.296',  pl:43.57,   acao:'OK',      ativo:true,  gap:65707,   dtIni:2026, dtFim:2026 },
   { cliente:'Casa Bauducco', name:'Dia dos Namorados',  rec:'R$ 30.178',  res:'+R$ 14.877',  pl:57.49,   acao:'OK',      ativo:true,  gap:30178,   dtIni:2026, dtFim:2026 },
   { cliente:'Bauducco',      name:'No Bread',           rec:'R$ 30.414',  res:'-R$ 71.800',  pl:-275.30, acao:'CRITICO', ativo:false, gap:-82515,  dtIni:2026, dtFim:2026 },
-  { cliente:'Casa Bauducco', name:'Natal 2025',         rec:'R$ 358.259', res:'-R$ 82.149',  pl:-26.74,  acao:'CRITICO', ativo:false, gap:-203787, dtIni:2025, dtFim:2025 },
+  { cliente:'Casa Bauducco', name:'Natal 2025',         rec:'R$ 328.388', res:'-R$ 107.763', pl:-38.27,  acao:'CRITICO', ativo:false, gap:-233659, dtIni:2025, dtFim:2025 },
   { cliente:'Bauducco',      name:'Reality Natal 2025', rec:'R$ 134.705', res:'-R$ 27.558',  pl:-23.86,  acao:'CRITICO', ativo:false, gap:-47769,  dtIni:2025, dtFim:2025 },
   { cliente:'Casa Bauducco', name:'Novo Menu',          rec:'R$ 198.233', res:'-R$ 24.164',  pl:-14.22,  acao:'CRITICO', ativo:false, gap:-89328,  dtIni:2025, dtFim:2026 },
   { cliente:'Casa Bauducco', name:'Páscoa 2026',        rec:'R$ 202.488', res:'-R$ 10.324',  pl:-5.95,   acao:'CRITICO', ativo:false, gap:-39058,  dtIni:2025, dtFim:2026 },
@@ -370,7 +370,7 @@ const projects = [
 
 const brutas = [
   'R$ 500.000','R$ 104.852','R$ 161.405','R$ 30.178',
-  'R$ 30.414','R$ 358.259','R$ 134.705','R$ 198.233','R$ 202.488','R$ 140.084','R$ 15.093','R$ 30.275'
+  'R$ 30.414','R$ 328.388','R$ 134.705','R$ 198.233','R$ 202.488','R$ 140.084','R$ 15.093','R$ 30.275'
 ];
 
 // overburn: [vendido, consumido] por departamento
@@ -380,7 +380,7 @@ const overburn = [
   { cliente:'Bauducco',      name:'Fini',               plan:[94,62],    cri:[504,239],   mid:[100,21],   ate:[70,59],    ope:[72,42],    tot:[840,423],   ativo:true,  dtIni:2026, dtFim:2026 },
   { cliente:'Casa Bauducco', name:'Dia dos Namorados',  plan:[0,0],      cri:[84,0],      mid:[56,0],     ate:[20,0],     ope:[20,0],     tot:[180,0],     ativo:true,  dtIni:2026, dtFim:2026 },
   { cliente:'Bauducco',      name:'No Bread',           plan:[0,0],      cri:[34,315],    mid:[79,40],    ate:[16,165],   ope:[14,5],     tot:[143,525],   ativo:false, dtIni:2026, dtFim:2026 },
-  { cliente:'Casa Bauducco', name:'Natal 2025',         plan:[120,153],  cri:[1036,1477], mid:[285,594],  ate:[86,263],   ope:[44,100],   tot:[1571,2586], ativo:false, dtIni:2025, dtFim:2025 },
+  { cliente:'Casa Bauducco', name:'Natal 2025',         plan:[88,153],   cri:[981,1477],  mid:[269,594],  ate:[68,263],   ope:[40,100],   tot:[1446,2586], ativo:false, dtIni:2025, dtFim:2025 },
   { cliente:'Bauducco',      name:'Reality Natal 2025', plan:[52,0],     cri:[312,369],   mid:[196,236],  ate:[30,133],   ope:[35,136],   tot:[625,874],   ativo:false, dtIni:2025, dtFim:2025 },
   { cliente:'Casa Bauducco', name:'Novo Menu',          plan:[66,102],   cri:[596,585],   mid:[157,349],  ate:[68,242],   ope:[28,64],    tot:[915,1341],  ativo:false, dtIni:2025, dtFim:2026 },
   { cliente:'Casa Bauducco', name:'Páscoa 2026',        plan:[68,110],   cri:[639,641],   mid:[176,176],  ate:[66,87],    ope:[42,75],    tot:[991,1088],  ativo:false, dtIni:2025, dtFim:2026 },
@@ -396,7 +396,7 @@ const custo = [
   { cliente:'Bauducco',      name:'Fini',               horas:'423h',    aprovada:'R$ 161.405',   projetada:'R$ 95.698',    apv:161.4,  prj:95.7,   gap:65707,   ativo:true,  acao:'OK',      dtIni:2026, dtFim:2026 },
   { cliente:'Casa Bauducco', name:'Dia dos Namorados',  horas:'0h',      aprovada:'R$ 30.178',    projetada:'R$ 0',         apv:30.2,   prj:0.0,    gap:30178,   ativo:true,  acao:'OK',      dtIni:2026, dtFim:2026 },
   { cliente:'Bauducco',      name:'No Bread',           horas:'525h',    aprovada:'R$ 30.414',    projetada:'R$ 112.930',   apv:30.4,   prj:112.9,  gap:-82515,  ativo:false, acao:'CRITICO', dtIni:2026, dtFim:2026 },
-  { cliente:'Casa Bauducco', name:'Natal 2025',         horas:'2.586h',  aprovada:'R$ 358.259',   projetada:'R$ 562.046',   apv:358.3,  prj:562.0,  gap:-203787, ativo:false, acao:'CRITICO', dtIni:2025, dtFim:2025 },
+  { cliente:'Casa Bauducco', name:'Natal 2025',         horas:'2.586h',  aprovada:'R$ 328.388',   projetada:'R$ 562.046',   apv:328.4,  prj:562.0,  gap:-233659, ativo:false, acao:'CRITICO', dtIni:2025, dtFim:2025 },
   { cliente:'Bauducco',      name:'Reality Natal 2025', horas:'874h',    aprovada:'R$ 134.705',   projetada:'R$ 182.474',   apv:134.7,  prj:182.5,  gap:-47769,  ativo:false, acao:'CRITICO', dtIni:2025, dtFim:2025 },
   { cliente:'Casa Bauducco', name:'Novo Menu',          horas:'1.341h',  aprovada:'R$ 198.233',   projetada:'R$ 287.561',   apv:198.2,  prj:287.6,  gap:-89328,  ativo:false, acao:'CRITICO', dtIni:2025, dtFim:2026 },
   { cliente:'Casa Bauducco', name:'Páscoa 2026',        horas:'1.088h',  aprovada:'R$ 202.488',   projetada:'R$ 241.546',   apv:202.5,  prj:241.5,  gap:-39058,  ativo:false, acao:'CRITICO', dtIni:2025, dtFim:2026 },
