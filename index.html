@@ -63,6 +63,9 @@
     .filter-btn { padding:5px 14px; border-radius:4px; border:1.5px solid var(--border); background:var(--bg); color:var(--muted); font-family:'Red Hat Display',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:all .15s; }
     .filter-btn:hover { border-color:var(--black); color:var(--black); }
     .filter-btn.active { background:var(--black); border-color:var(--black); color:#fff; }
+    .filter-btn.margin-toggle { border-color:#b45309; color:#b45309; }
+    .filter-btn.margin-toggle:hover { border-color:#92400e; color:#92400e; }
+    .filter-btn.margin-toggle.active { background:#b45309; border-color:#b45309; color:#fff; }
     /* Filtros globais */
     .global-filters { display:flex; flex-direction:row; gap:16px; align-items:center; padding:10px 52px; background:var(--bg2); border-bottom:1px solid var(--border); flex-wrap:wrap; position:sticky; top:52px; z-index:9; box-shadow:0 2px 6px rgba(0,0,0,.04); }
     .global-filter-group { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
@@ -182,6 +185,10 @@
     <button class="filter-btn" onclick="setGlobalFilter('status','ativo',this)">🔄 Ativos</button>
     <button class="filter-btn" onclick="setGlobalFilter('status','finalizado',this)">✅ Finalizados</button>
     <button class="filter-btn" onclick="setGlobalFilter('status','critico',this)">⚠️ Críticos</button>
+  </div>
+  <div class="global-filter-group" style="padding-left:16px;border-left:1.5px solid var(--border);margin-left:auto;">
+    <span class="global-filter-label">Cenário</span>
+    <button class="filter-btn margin-toggle" id="btn-margin" onclick="toggleMarginMode(this)" title="Reduz horas consumidas em 30% — simula margem de erro de apontamento">⚠️ Margem Erro Timesheet</button>
   </div>
 </div>
 
@@ -405,7 +412,24 @@ const custo = [
   { cliente:'Bauducco',      name:'Gamescomm',          horas:'121h',    aprovada:'R$ 30.275',    projetada:'R$ 27.199',    apv:30.3,   prj:27.2,   gap:3076,    ativo:false, acao:'OK',      dtIni:2026, dtFim:2026 }
 ];
 
-// ─── 2. FUNÇÕES UTILITÁRIAS ───────────────────────────────────────────────────
+// ─── 2. MARGEM ERRO TIMESHEET ─────────────────────────────────────────────────
+let marginMode = false;
+const RATES = { plan:274.70, cri:227.51, mid:187.54, ate:198.70, ope:205.40 };
+function mC(c) { return marginMode ? Math.round(c * 0.7) : c; }
+function adjPrj(r) {
+  if (!marginMode) return r.prj;
+  const ob = overburn.find(p => p.name === r.name);
+  if (!ob) return r.prj;
+  return (mC(ob.plan[1])*RATES.plan + mC(ob.cri[1])*RATES.cri + mC(ob.mid[1])*RATES.mid + mC(ob.ate[1])*RATES.ate + mC(ob.ope[1])*RATES.ope) / 1000;
+}
+function adjGap(r) { return Math.round(r.apv*1000 - adjPrj(r)*1000); }
+function toggleMarginMode(btn) {
+  marginMode = !marginMode;
+  btn.classList.toggle('active', marginMode);
+  renderAll();
+}
+
+// ─── 3. FUNÇÕES UTILITÁRIAS ───────────────────────────────────────────────────
 function parseBRL(s) {
   if (!s) return 0;
   const neg = s.includes('-');
@@ -420,7 +444,8 @@ function fmtTotalBRL(v, showSign = true) {
 }
 function obHoursCellTotal(arr) {
   if (!arr || (arr[0]===0 && arr[1]===0)) return `<td>n/a</td>`;
-  const [v, c] = arr;
+  const [v, c0] = arr;
+  const c = mC(c0);
   const pct = v === 0 ? null : Math.round(c/v*100);
   const pctStr = pct !== null ? ` (${pct}%)` : '';
   const color = pct === null ? '' : pct > 100 ? 'color:var(--red)' : 'color:var(--green)';
@@ -443,7 +468,8 @@ function statusDot(ativo) {
 
 function obHoursCell(arr) {
   if (!arr || (arr[0]===0 && arr[1]===0)) return `<td><span class="ob-muted">n/a</span></td>`;
-  const [v, c] = arr;
+  const [v, c0] = arr;
+  const c = mC(c0);
   const pct = v === 0 ? null : Math.round(c/v*100);
   const cls = (v===0 || c>v) ? 'ob-red' : 'ob-green';
   const pctStr = pct !== null ? ` (${pct}%)` : '';
@@ -585,15 +611,20 @@ function renderOverburn(ob) {
 function renderCusto(cst) {
   const rows = cst.map(r => {
     const ob = overburn.find(p => p.name === r.name);
-    const gapStr = r.gap >= 0
-      ? `<span class="val-green">+R$ ${r.gap.toLocaleString('pt-BR')}</span>`
-      : `<span class="val-red">-R$ ${Math.abs(r.gap).toLocaleString('pt-BR')}</span>`;
+    const prj = adjPrj(r);
+    const gap = adjGap(r);
+    const prjStr = marginMode
+      ? `R$ ${Math.round(prj * 1000).toLocaleString('pt-BR')}`
+      : r.projetada;
+    const gapStr = gap >= 0
+      ? `<span class="val-green">+R$ ${gap.toLocaleString('pt-BR')}</span>`
+      : `<span class="val-red">-R$ ${Math.abs(gap).toLocaleString('pt-BR')}</span>`;
     return `<tr>
       <td>${r.cliente}</td>
       <td>${r.name}</td>
       <td>${r.aprovada}</td>
       ${obHoursCell(ob ? ob.tot : null)}
-      <td class="${r.prj <= r.apv ? 'val-green' : 'val-red'}">${r.projetada}</td>
+      <td class="${prj <= r.apv ? 'val-green' : 'val-red'}">${prjStr}</td>
       <td>${gapStr}</td>
       <td>${acaoBadge(r.acao)}</td>
       <td>${statusDot(r.ativo)}</td>
@@ -602,8 +633,8 @@ function renderCusto(cst) {
   let totalRow = '';
   if (cst.length > 0) {
     const apvTotal = cst.reduce((s,r) => s + r.apv, 0);
-    const prjTotal = cst.reduce((s,r) => s + r.prj, 0);
-    const gapTotal = cst.reduce((s,r) => s + r.gap, 0);
+    const prjTotal = cst.reduce((s,r) => s + adjPrj(r), 0);
+    const gapTotal = cst.reduce((s,r) => s + adjGap(r), 0);
     const hrsV = cst.reduce((s,r) => { const ob=overburn.find(p=>p.name===r.name); return s+(ob?ob.tot[0]:0); }, 0);
     const hrsC = cst.reduce((s,r) => { const ob=overburn.find(p=>p.name===r.name); return s+(ob?ob.tot[1]:0); }, 0);
     totalRow = `<tr class="total-row">
@@ -662,9 +693,9 @@ function updateKPIs(proj, ob, cst) {
   setText('kpi-pl-fin-sub',    finPos.length === 1 ? `Apenas ${finPos[0].name}` : finPos.length > 1 ? finPos.map(p => p.name).join(', ') : 'Nenhum');
 
   // ── Overburn ──
-  const obTotals = ob.map(p => p.tot[0] === 0 ? 0 : Math.round(p.tot[1] / p.tot[0] * 100));
-  const obAtes   = ob.map(p => p.ate[0] === 0 ? 0 : Math.round(p.ate[1] / p.ate[0] * 100));
-  const obCris   = ob.map(p => p.cri[0] === 0 ? 0 : Math.round(p.cri[1] / p.cri[0] * 100));
+  const obTotals = ob.map(p => p.tot[0] === 0 ? 0 : Math.round(mC(p.tot[1]) / p.tot[0] * 100));
+  const obAtes   = ob.map(p => p.ate[0] === 0 ? 0 : Math.round(mC(p.ate[1]) / p.ate[0] * 100));
+  const obCris   = ob.map(p => p.cri[0] === 0 ? 0 : Math.round(mC(p.cri[1]) / p.cri[0] * 100));
   const withOB   = ob.filter((_,i) => obTotals[i] > 100).length;
   setText('kpi-ob-count-val', `${withOB} / ${ob.length}`);
   setText('kpi-ob-count-sub', 'Total consumido > vendido');
@@ -684,14 +715,14 @@ function updateKPIs(proj, ob, cst) {
   }
 
   // ── Custo ──
-  const negCst  = cst.filter(r => r.gap < 0);
-  const posCst  = cst.filter(r => r.gap > 0);
-  const gapCons = cst.reduce((s,r) => s + r.gap, 0);
+  const negCst  = cst.filter(r => adjGap(r) < 0);
+  const posCst  = cst.filter(r => adjGap(r) > 0);
+  const gapCons = cst.reduce((s,r) => s + adjGap(r), 0);
   setText('kpi-custo-neg-val', `${negCst.length} / ${cst.length}`);
   setText('kpi-custo-neg-sub', 'Custo superou o aprovado');
-  if (negCst.length > 0) { const bn = negCst.reduce((a,b) => a.gap < b.gap ? a : b); setText('kpi-custo-gap-neg-val', fmtK(bn.gap)); setText('kpi-custo-gap-neg-sub', bn.name); }
+  if (negCst.length > 0) { const bn = negCst.reduce((a,b) => adjGap(a) < adjGap(b) ? a : b); setText('kpi-custo-gap-neg-val', fmtK(adjGap(bn))); setText('kpi-custo-gap-neg-sub', bn.name); }
   else { setText('kpi-custo-gap-neg-val', '—'); setText('kpi-custo-gap-neg-sub', 'Sem gaps negativos'); }
-  if (posCst.length > 0) { const bp = posCst.reduce((a,b) => a.gap > b.gap ? a : b); setText('kpi-custo-gap-pos-val', fmtK(bp.gap)); setText('kpi-custo-gap-pos-sub', bp.name); }
+  if (posCst.length > 0) { const bp = posCst.reduce((a,b) => adjGap(a) > adjGap(b) ? a : b); setText('kpi-custo-gap-pos-val', fmtK(adjGap(bp))); setText('kpi-custo-gap-pos-sub', bp.name); }
   else { setText('kpi-custo-gap-pos-val', '—'); setText('kpi-custo-gap-pos-sub', 'Sem gaps positivos'); }
   const elTotal = document.getElementById('kpi-custo-total-val');
   if (elTotal) { elTotal.textContent = fmtK(gapCons); elTotal.className = `kpi-val ${gapCons >= 0 ? 'green' : 'red'}`; }
@@ -761,7 +792,7 @@ const obDepts = {
 };
 let currentObDept = 'tot';
 function obDeptVals(key, data) {
-  return data.map(p => { const [v,c] = p[key]; return (v===0 && c===0) ? 0 : v===0 ? 0 : Math.round(c/v*100); });
+  return data.map(p => { const [v,c] = p[key]; const c2=mC(c); return (v===0 && c===0) ? 0 : v===0 ? 0 : Math.round(c2/v*100); });
 }
 const initTotVals = obDeptVals('tot', overburn);
 const totalChartInst = new Chart(document.getElementById('totalChart'), {
@@ -821,8 +852,8 @@ function updateCharts(proj, ob, cst) {
   // custoChart
   custoChartInst.data.labels = cst.map(r => abbr(r.name));
   custoChartInst.data.datasets[0].data = cst.map(r => r.apv);
-  custoChartInst.data.datasets[1].data = cst.map(r => r.prj);
-  custoChartInst.data.datasets[1].backgroundColor = cst.map(r => r.prj<=r.apv?'#15803d':'#b91c1c');
+  custoChartInst.data.datasets[1].data = cst.map(r => adjPrj(r));
+  custoChartInst.data.datasets[1].backgroundColor = cst.map(r => adjPrj(r)<=r.apv?'#15803d':'#b91c1c');
   custoChartInst.update();
 }
 
