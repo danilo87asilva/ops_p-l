@@ -185,9 +185,9 @@
     <button class="filter-btn" onclick="setGlobalFilter('status','finalizado',this)">✅ Finalizados</button>
     <button class="filter-btn" onclick="setGlobalFilter('status','critico',this)">⚠️ Críticos</button>
   </div>
-  <div class="global-filter-group" style="padding-left:16px;border-left:1.5px solid var(--border);margin-left:auto;flex-shrink:0;">
+  <div id="cenario-group" class="global-filter-group" style="padding-left:16px;border-left:1.5px solid var(--border);margin-left:auto;flex-shrink:0;display:none;">
     <span class="global-filter-label">Cenário</span>
-    <button class="filter-btn margin-toggle" id="btn-margin" onclick="toggleMarginMode(this)" title="Reduz horas consumidas em 30% — simula margem de erro de apontamento">⚠️ MARGEM ERRO<br>(-) 30% TIMESHEET</button>
+    <button class="filter-btn margin-toggle" id="btn-margin" onclick="toggleMarginMode(this)" title="Reduz horas consumidas em 30% — simula margem de erro de apontamento">⚠️ MARGEM ERRO<br>-30% TIMESHEET</button>
   </div>
 </div>
 
@@ -481,6 +481,8 @@ function showTab(id, btn) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
+  const cg = document.getElementById('cenario-group');
+  if (cg) cg.style.display = (id === 'overburn' || id === 'custo') ? '' : 'none';
   setTimeout(fitTables, 0);
 }
 
